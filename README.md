@@ -32,15 +32,13 @@ Definitions:
 * Decay: Reduces the EP and GP of every guild member by a given percent.
 * Initial/Minimum GP: The GP that all new guild members start at. This also defines the minimum amount of GP any guild member can have.
 
-__**IMPORTANT**__ - The initial/minimum GP should NEVER be exactly 0.
-
 * Standby EP: EP awarded to guild members that are not in the raid.
 * Standby EP Percent: The percent of standard EP allocation should awarded to standby members.
 
 To install:
   1. Download this addon 
   2. Extract it to ../Interface/AddOns/ 
-  3. Rename the extracted folder from cepgp-master to cepgp
+  3. Rename the extracted folder from cepgp-retail-master to cepgp
 
 **Note:**
 If you get an error when adding an item to override for example (such as item not found), but you're sure you've spelled it correctly, then the item likely does not exist in your cache. This is a restriction in the API, items are cached as you see them in game. After seeing this item, you should not receive this error again (unless you delete your cache). This error should not prevent any functionality.
