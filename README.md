@@ -1,6 +1,8 @@
 # Classic EPGP
 **Do not redistribute this addon. Post a link to this github page instead**
 
+__**IMPORTANT: This is currently a work in progress and HAS NOT been tested fully with the current retail API. Please do not assume that in its current state, that this addon will work**__
+
 An addon designed to handle your guild's EPGP standings by storing the respective values in your Officer Notes. Another primary function of the addon is to handle loot moderation which you must be the master looter to utilise.
 
 For this addon to work, anyone using the addon must be able to at the very least view Officer Notes. To adjust EP and GP values you must be able to edit Officer Notes.
