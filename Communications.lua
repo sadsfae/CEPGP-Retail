@@ -300,7 +300,9 @@ end
 
 function CEPGP_SendAddonMsg(message, channel)
 	if channel ~= nil then
-		C_ChatInfo.SendAddonMessage("CEPGP", message, string.upper(channel));
+		if channel == "GUILD" and IsInGuild() then
+			C_ChatInfo.SendAddonMessage("CEPGP", message, string.upper(channel));
+		end
 	elseif UnitInRaid("player") then
 		C_ChatInfo.SendAddonMessage("CEPGP", message, "RAID");
 	end
