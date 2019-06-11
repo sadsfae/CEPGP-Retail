@@ -856,10 +856,6 @@ function CEPGP_toggleBossConfigFrame(fName)
 	end
 end
 
-function capitaliseFirstLetter(str)
-	str = string.gsub(" "..str, "%W%l", string.upper):sub(2)
-	return str;
-end
 
 function CEPGP_button_options_OnClick()
 	CEPGP_updateGuild();
