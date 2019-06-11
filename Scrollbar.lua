@@ -18,7 +18,7 @@ function CEPGP_UpdateLootScrollBar()
 		if CEPGP_debugMode and not UnitInRaid("player") then
 			class = UnitClass("player");
 		end
-		for i = 1, GetNumRaidMembers() do
+		for i = 1, GetNumGroupMembers() do
 			if name == GetRaidRosterInfo(i) then
 				_, _, _, _, class = GetRaidRosterInfo(i);
 			end
@@ -212,7 +212,7 @@ function CEPGP_UpdateRaidScrollBar()
 	local offNote;
 	local colour;
 	t = {};
-	tSize = GetNumRaidMembers();
+	tSize = GetNumGroupMembers();
 	for x = 1, tSize do
 		name, _, group, _, class = GetRaidRosterInfo(x);
 		local a = CEPGP_getGuildInfo(name);
@@ -295,7 +295,7 @@ function CEPGP_UpdateVersionScrollBar()
 	if CEPGP_vSearch == "GUILD" then
 		tSize = GetNumGuildMembers();
 	else
-		tSize = GetNumRaidMembers();
+		tSize = GetNumGroupMembers();
 	end
 	if tSize == 0 then
 		for y = 1, 18, 1 do

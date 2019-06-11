@@ -66,7 +66,7 @@ function CEPGP_initialise()
 		end
 	end
 	if UnitInRaid("player") then
-		for i = 1, GetNumRaidMembers() do
+		for i = 1, GetNumGroupMembers() do
 			name = GetRaidRosterInfo(i);
 			CEPGP_raidRoster[name] = name;
 		end 
@@ -428,7 +428,7 @@ function CEPGP_rosterUpdate(event)
 		CEPGP_SendAddonMsg("version-check", "RAID");
 		CEPGP_updateGuild();
 		CEPGP_raidRoster = {};
-		for i = 1, GetNumRaidMembers() do
+		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
 			if CEPGP_tContains(CEPGP_standbyRoster, name) then
 				for k, v in pairs(CEPGP_standbyRoster) do

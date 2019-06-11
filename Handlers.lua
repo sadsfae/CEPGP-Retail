@@ -31,7 +31,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 				if inGuild then
 					SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
 				else
-					local total = GetNumRaidMembers();
+					local total = GetNumGroupMembers();
 					for i = 1, total do
 						if arg2 == GetRaidRosterInfo(i) then
 							_, _, _, _, class = GetRaidRosterInfo(i);
@@ -98,7 +98,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			else
 				local count = 1;
 				if string.lower(arg1) == "!infoclass" then
-					for i = 1, GetNumRaidMembers() do
+					for i = 1, GetNumGroupMembers() do
 						local name = GetRaidRosterInfo(i);
 						for x = 1, table.getn(gRoster) do
 							if gRoster[x][1] == name and gRoster[x][3] == unitClass then
@@ -112,7 +112,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 						end
 					end
 				else --Raid
-					for i = 1, GetNumRaidMembers() do
+					for i = 1, GetNumGroupMembers() do
 						local name = GetRaidRosterInfo(i);
 						for x = 1, CEPGP_ntgetn(gRoster) do
 							if gRoster[x][1] == name then
@@ -178,7 +178,7 @@ function CEPGP_handleCombat(name, except)
 	if name == "The Prophet Skeram" and not except then return; end
 	local EP;
 	local isLead;
-	for i = 1, GetNumRaidMembers() do
+	for i = 1, GetNumGroupMembers() do
 		if UnitName("player") == GetRaidRosterInfo(i) then
 			_, isLead = GetRaidRosterInfo(i);
 		end

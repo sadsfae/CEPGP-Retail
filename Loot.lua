@@ -53,7 +53,7 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_UpdateLootScrollBar();
 		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"));
 		local rank = 0;
-		for i = 1, GetNumRaidMembers() do
+		for i = 1, GetNumGroupMembers() do
 			if UnitName("player") == GetRaidRosterInfo(i) then
 				_, rank = GetRaidRosterInfo(i);
 			end
