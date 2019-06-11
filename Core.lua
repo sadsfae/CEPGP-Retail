@@ -211,15 +211,15 @@ function CEPGP_RaidAssistLootClosed()
 		_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() end);
 		_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() end);
 		for y = 1, 18 do
-			getglobal("LootDistButton"..y):Hide();
-			getglobal("LootDistButton" .. y .. "Info"):SetText("");
-			getglobal("LootDistButton" .. y .. "Class"):SetText("");
-			getglobal("LootDistButton" .. y .. "Rank"):SetText("");
-			getglobal("LootDistButton" .. y .. "EP"):SetText("");
-			getglobal("LootDistButton" .. y .. "GP"):SetText("");
-			getglobal("LootDistButton" .. y .. "PR"):SetText("");
-			getglobal("LootDistButton" .. y .. "Tex"):SetBackdrop(nil);
-			getglobal("LootDistButton" .. y .. "Tex2"):SetBackdrop(nil);
+			_G["LootDistButton"..y]:Hide();
+			_G["LootDistButton" .. y .. "Info"]:SetText("");
+			_G["LootDistButton" .. y .. "Class"]:SetText("");
+			_G["LootDistButton" .. y .. "Rank"]:SetText("");
+			_G["LootDistButton" .. y .. "EP"]:SetText("");
+			_G["LootDistButton" .. y .. "GP"]:SetText("");
+			_G["LootDistButton" .. y .. "PR"]:SetText("");
+			_G["LootDistButton" .. y .. "Tex"]:SetBackdrop(nil);
+			_G["LootDistButton" .. y .. "Tex2"]:SetBackdrop(nil);
 		end
 	end
 end
@@ -228,15 +228,15 @@ function CEPGP_RaidAssistLootDist(link, gp)
 	if IsRaidOfficer() then
 		local y = 1;
 		for y = 1, 18 do
-			getglobal("LootDistButton"..y):Hide();
-			getglobal("LootDistButton" .. y .. "Info"):SetText("");
-			getglobal("LootDistButton" .. y .. "Class"):SetText("");
-			getglobal("LootDistButton" .. y .. "Rank"):SetText("");
-			getglobal("LootDistButton" .. y .. "EP"):SetText("");
-			getglobal("LootDistButton" .. y .. "GP"):SetText("");
-			getglobal("LootDistButton" .. y .. "PR"):SetText("");
-			getglobal("LootDistButton" .. y .. "Tex"):SetBackdrop(nil);
-			getglobal("LootDistButton" .. y .. "Tex2"):SetBackdrop(nil);
+			_G["LootDistButton"..y]:Hide();
+			_G["LootDistButton" .. y .. "Info"]:SetText("");
+			_G["LootDistButton" .. y .. "Class"]:SetText("");
+			_G["LootDistButton" .. y .. "Rank"]:SetText("");
+			_G["LootDistButton" .. y .. "EP"]:SetText("");
+			_G["LootDistButton" .. y .. "GP"]:SetText("");
+			_G["LootDistButton" .. y .. "PR"]:SetText("");
+			_G["LootDistButton" .. y .. "Tex"]:SetBackdrop(nil);
+			_G["LootDistButton" .. y .. "Tex2"]:SetBackdrop(nil);
 			y = y + 1;
 		end
 		CEPGP_itemsTable = {};

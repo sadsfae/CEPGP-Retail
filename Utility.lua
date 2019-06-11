@@ -1,6 +1,6 @@
 function CEPGP_initialise()
 	_, _, _, CEPGP_ElvUI = GetAddOnInfo("ElvUI");
-	getglobal("CEPGP_version_number"):SetText("Running Version: " .. CEPGP_VERSION);
+	_G["CEPGP_version_number"]:SetText("Running Version: " .. CEPGP_VERSION);
 	local ver2 = string.gsub(CEPGP_VERSION, "%.", ",");
 	if not CEPGP_notice then
 		CEPGP_notice = false;
@@ -94,10 +94,11 @@ function CEPGP_calcGP(link, quantity, id)
 	if id then
 		name, link, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(id);
 	end
-	if itemsIndex[name] then
+	--[[if itemsIndex[name] then
 		ilvl = itemsIndex[name];
-	end
+	end]]
 	--ilvl = itemsIndex[name];
+	
 	if not ilvl then ilvl = 0; end
 	for k, v in pairs(OVERRIDE_INDEX) do
 		if string.lower(name) == string.lower(k) then
@@ -105,12 +106,12 @@ function CEPGP_calcGP(link, quantity, id)
 		end
 	end
 	local found = false;
-	for k, v in pairs(itemsIndex) do
+	--[[for k, v in pairs(itemsIndex) do
 		if name == k then
 			ilvl = v;
 			found = true;
 		end
-	end
+	end]]
 	--[[if not found then
 		if ((slot ~= "" and level == 60 and rarity > 3) or (slot == "" and rarity > 3))
 			and (itemType ~= "Blacksmithing" and itemType ~= "Tailoring" and itemType ~= "Alchemy" and itemType ~= "Leatherworking"
@@ -490,22 +491,22 @@ function CEPGP_toggleStandbyRanks(show)
 		end
 		for i = 1, 10 do
 			if STANDBYRANKS[i][1] then
-				getglobal("CEPGP_options_standby_ep_rank_"..i):Show();
-				getglobal("CEPGP_options_standby_ep_rank_"..i):SetText(tostring(STANDBYRANKS[i][1]));
-				getglobal("CEPGP_options_standby_ep_check_rank_"..i):Show();
+				_G["CEPGP_options_standby_ep_rank_"..i]:Show();
+				_G["CEPGP_options_standby_ep_rank_"..i]:SetText(tostring(STANDBYRANKS[i][1]));
+				_G["CEPGP_options_standby_ep_check_rank_"..i]:Show();
 				if STANDBYRANKS[i][2] == true then
-					getglobal("CEPGP_options_standby_ep_check_rank_"..i):SetChecked(true);
+					_G["CEPGP_options_standby_ep_check_rank_"..i]:SetChecked(true);
 				else
-					getglobal("CEPGP_options_standby_ep_check_rank_"..i):SetChecked(false);
+					_G["CEPGP_options_standby_ep_check_rank_"..i]:SetChecked(false);
 				end
 			else
-				getglobal("CEPGP_options_standby_ep_rank_"..i):Hide();
-				getglobal("CEPGP_options_standby_ep_check_rank_"..i):Hide();
+				_G["CEPGP_options_standby_ep_rank_"..i]:Hide();
+				_G["CEPGP_options_standby_ep_check_rank_"..i]:Hide();
 			end
 			if GuildControlGetRankName(i) == "" then
-				getglobal("CEPGP_options_standby_ep_rank_"..i):Hide();
-				getglobal("CEPGP_options_standby_ep_check_rank_"..i):Hide();
-				getglobal("CEPGP_options_standby_ep_check_rank_"..i):SetChecked(false);
+				_G["CEPGP_options_standby_ep_rank_"..i]:Hide();
+				_G["CEPGP_options_standby_ep_check_rank_"..i]:Hide();
+				_G["CEPGP_options_standby_ep_check_rank_"..i]:SetChecked(false);
 			end
 		end
 		CEPGP_options_standby_ep_list_button:Hide();
@@ -519,8 +520,8 @@ function CEPGP_toggleStandbyRanks(show)
 		CEPGP_options_standby_ep_manual_check:SetChecked(false);
 	else
 		for i = 1, 10 do
-			getglobal("CEPGP_options_standby_ep_rank_"..i):Hide();
-			getglobal("CEPGP_options_standby_ep_check_rank_"..i):Hide();
+			_G["CEPGP_options_standby_ep_rank_"..i]:Hide();
+			_G["CEPGP_options_standby_ep_check_rank_"..i]:Hide();
 		end
 		CEPGP_options_standby_ep_list_button:Show();
 		CEPGP_options_standby_ep_accept_whispers_check:Show();
@@ -880,14 +881,14 @@ function CEPGP_button_options_OnClick()
 		CEPGP_toggleStandbyRanks(false);
 	end
 	if STANDBYEP then
-		getglobal("CEPGP_options_standby_ep_check"):SetChecked(true);
+		_G["CEPGP_options_standby_ep_check"]:SetChecked(true);
 	else
-		getglobal("CEPGP_options_standby_ep_check"):SetChecked(false);
+		_G["CEPGP_options_standby_ep_check"]:SetChecked(false);
 	end
 	if STANDBYOFFLINE then
-		getglobal("CEPGP_options_standby_ep_offline_check"):SetChecked(true);
+		_G["CEPGP_options_standby_ep_offline_check"]:SetChecked(true);
 	else
-		getglobal("CEPGP_options_standby_ep_offline_check"):SetChecked(false);
+		_G["CEPGP_options_standby_ep_offline_check"]:SetChecked(false);
 	end
 	CEPGP_options_standby_ep_val:SetText(tostring(STANDBYPERCENT));
 	if CEPGP_options_standby_ep_byrank_check:GetChecked() then
@@ -904,7 +905,7 @@ function CEPGP_button_options_OnClick()
 	end
 	for k, v in pairs(SLOTWEIGHTS) do
 		if k ~= "ROBE" and k ~= "WEAPON" and k ~= "EXCEPTION" then
-			getglobal("CEPGP_options_" .. k .. "_weight"):SetText(tonumber(SLOTWEIGHTS[k]));
+			_G["CEPGP_options_" .. k .. "_weight"]:SetText(tonumber(SLOTWEIGHTS[k]));
 		end
 	end
 	CEPGP_populateFrame();
@@ -927,12 +928,12 @@ function CEPGP_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level
 	-- Hide all the buttons
 	local button, dropDownList;
 	for i = 1, UIDROPDOWNMENU_MAXLEVELS, 1 do
-		dropDownList = getglobal("DropDownList"..i);
+		dropDownList = _G["DropDownList"..i];
 		if ( i >= UIDROPDOWNMENU_MENU_LEVEL or frame:GetName() ~= UIDROPDOWNMENU_OPEN_MENU ) then
 			dropDownList.numButtons = 0;
 			dropDownList.maxWidth = 0;
 			for j=1, UIDROPDOWNMENU_MAXBUTTONS, 1 do
-				button = getglobal("DropDownList"..i.."Button"..j);
+				button = _G["DropDownList"..i.."Button"..j];
 				button:Hide();
 			end
 			dropDownList:Hide();
@@ -948,16 +949,16 @@ function CEPGP_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level
 
 	-- Change appearance based on the displayMode
 	if ( displayMode == "MENU" ) then
-		getglobal(frame:GetName().."Left"):Hide();
-		getglobal(frame:GetName().."Middle"):Hide();
-		getglobal(frame:GetName().."Right"):Hide();
-		getglobal(frame:GetName().."ButtonNormalTexture"):SetTexture("");
-		getglobal(frame:GetName().."ButtonDisabledTexture"):SetTexture("");
-		getglobal(frame:GetName().."ButtonPushedTexture"):SetTexture("");
-		getglobal(frame:GetName().."ButtonHighlightTexture"):SetTexture("");
-		getglobal(frame:GetName().."Button"):ClearAllPoints();
-		getglobal(frame:GetName().."Button"):SetPoint("LEFT", frame:GetName().."Text", "LEFT", -9, 0);
-		getglobal(frame:GetName().."Button"):SetPoint("RIGHT", frame:GetName().."Text", "RIGHT", 6, 0);
+		_G[frame:GetName().."Left"]:Hide();
+		_G[frame:GetName().."Middle"]:Hide();
+		_G[frame:GetName().."Right"]:Hide();
+		_G[frame:GetName().."ButtonNormalTexture"]:SetTexture("");
+		_G[frame:GetName().."ButtonDisabledTexture"]:SetTexture("");
+		_G[frame:GetName().."ButtonPushedTexture"]:SetTexture("");
+		_G[frame:GetName().."ButtonHighlightTexture"]:SetTexture("");
+		_G[frame:GetName().."Button"]:ClearAllPoints();
+		_G[frame:GetName().."Button"]:SetPoint("LEFT", frame:GetName().."Text", "LEFT", -9, 0);
+		_G[frame:GetName().."Button"]:SetPoint("RIGHT", frame:GetName().."Text", "RIGHT", 6, 0);
 		frame.displayMode = "MENU";
 	end
 

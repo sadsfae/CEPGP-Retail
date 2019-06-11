@@ -95,7 +95,7 @@ bossNameIndex = {
 					["Taerar"] = 7
 				}
 
-itemsIndex = 
+--[[itemsIndex = 
 {
 	--worldBoEepics
 	["teebusblazinglongsword"]=65,
@@ -1190,4 +1190,4 @@ itemsIndex =
 	["gressil,dawnofruin"]=89,
 	["hammerofthetwistingnether"]=89,
 	["thehungeringcold"]=89
-}
+}]]

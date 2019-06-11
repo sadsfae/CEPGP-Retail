@@ -378,17 +378,17 @@
 				PlaySound(856);
 			</OnClick>
 			<OnEnter>
-				if GetItemInfo(getglobal(self:GetName() .. "item"):GetText()) then
+				if GetItemInfo(_G[self:GetName() .. "item"]:GetText()) then
 					CEPGP_setOverrideLink(self:GetName() .. "item", "enter");
 				end
 			</OnEnter>
 			<OnLeave>
-				if GetItemInfo(getglobal(self:GetName() .. "item"):GetText()) then
+				if GetItemInfo(_G[self:GetName() .. "item"]:GetText()) then
 					CEPGP_setOverrideLink(self:GetName() .. "item", "leave");
 				end
 			</OnLeave>
 			<OnShow>
-				local item = getglobal(self:GetName() .. "item"):GetText();
+				local item = _G[self:GetName() .. "item"]:GetText();
 				if item then
 					if GetItemInfo(item) then
 						local _, link = GetItemInfo(item);
@@ -641,7 +641,7 @@
 			</OnEditFocusLost>
 			<OnShow>
 				local name = strsub(self:GetName(), 15, strfind(self:GetName(), "_EP")-1);
-				local target = getglobal("CEPGP_options_" .. name .. "_val");
+				local target = _G["CEPGP_options_" .. name .. "_val"];
 				if name == "The Edge of Madness" then
 					name = "Gri'lek"; --All bosses in the edge of madness will have the same value
 				elseif name == "The Bug Trio" then
@@ -680,7 +680,7 @@
 			</OnEditFocusLost>
 			<OnShow>				
 				local slot = strsub(self:GetName(), 15, strfind(self:GetName(), "_weight")-1);
-				self:SetPoint('LEFT', getglobal("CEPGP_options_slot_" .. slot), 'RIGHT', 10, 0);
+				self:SetPoint('LEFT', _G["CEPGP_options_slot_" .. slot], 'RIGHT', 10, 0);
 			</OnShow>
 		</Scripts>
 	</EditBox>
@@ -749,7 +749,7 @@
 			</OnClick>
 			<OnShow>
 				local name = strsub(self:GetName(), 15, strfind(self:GetName(), "_auto_check")-1);
-				local target = getglobal("CEPGP_options_" .. name .. "_EP_value");
+				local target = _G["CEPGP_options_" .. name .. "_EP_value"];
 				if name == "The Edge of Madness" then
 					name = "Gri'lek"; --All bosses in the edge of madness will have the same value
 				elseif name == "The Bug Trio" then
@@ -786,7 +786,7 @@
 				end
 			</OnClick>
 			<OnShow>
-				local target = getglobal("CEPGP_options_standby_ep_rank_" .. self:GetID());
+				local target = _G["CEPGP_options_standby_ep_rank_" .. self:GetID()];
 				self:SetPoint("LEFT", target, "LEFT", 100, 0);
 			</OnShow>
 		</Scripts>

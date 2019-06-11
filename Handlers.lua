@@ -309,7 +309,7 @@ function CEPGP_handleLoot(event, arg1, arg2)
 	if event == "LOOT_CLOSED" then
 		CEPGP_distributing = false;
 		CEPGP_distItemLink = nil;
-		getglobal("distributing"):Hide();
+		_G["distributing"]:Hide();
 		if CEPGP_mode == "loot" then
 			CEPGP_cleanTable();
 			if CEPGP_isML() == 0 then
@@ -352,22 +352,22 @@ function CEPGP_handleLoot(event, arg1, arg2)
 			if CEPGP_distPlayer ~= "" then
 				CEPGP_distributing = false;
 				if CEPGP_distGP then
-					SendChatMessage("Awarded " .. getglobal("CEPGP_distribute_item_name"):GetText() .. " to ".. CEPGP_distPlayer .. " for " .. CEPGP_distribute_GP_value:GetText() .. " GP", CHANNEL, CEPGP_LANGUAGE);
+					SendChatMessage("Awarded " .. _G["CEPGP_distribute_item_name"]:GetText() .. " to ".. CEPGP_distPlayer .. " for " .. CEPGP_distribute_GP_value:GetText() .. " GP", CHANNEL, CEPGP_LANGUAGE);
 					CEPGP_addGP(CEPGP_distPlayer, CEPGP_distribute_GP_value:GetText(), true, CEPGP_distItemLink);
 				else
-					SendChatMessage("Awarded " .. getglobal("CEPGP_distribute_item_name"):GetText() .. " to ".. CEPGP_distPlayer .. " for free", CHANNEL, CEPGP_LANGUAGE);
+					SendChatMessage("Awarded " .. _G["CEPGP_distribute_item_name"]:GetText() .. " to ".. CEPGP_distPlayer .. " for free", CHANNEL, CEPGP_LANGUAGE);
 				end
 				CEPGP_distPlayer = "";
 				CEPGP_distribute_popup:Hide();
 				CEPGP_distribute:Hide();
-				getglobal("distributing"):Hide();
+				_G["distributing"]:Hide();
 				CEPGP_loot:Show();
 			else
 				CEPGP_distributing = false;
-				SendChatMessage(getglobal("CEPGP_distribute_item_name"):GetText() .. " has been distributed without EPGP", CHANNEL, CEPGP_LANGUAGE);
+				SendChatMessage(_G["CEPGP_distribute_item_name"]:GetText() .. " has been distributed without EPGP", CHANNEL, CEPGP_LANGUAGE);
 				CEPGP_distribute_popup:Hide();
 				CEPGP_distribute:Hide();
-				getglobal("distributing"):Hide();
+				_G["distributing"]:Hide();
 				CEPGP_loot:Show();
 			end
 		end

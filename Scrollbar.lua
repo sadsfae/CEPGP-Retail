@@ -54,7 +54,7 @@ function CEPGP_UpdateLootScrollBar()
 		yoffset = y + FauxScrollFrame_GetOffset(DistributeScrollFrame);
 		if (yoffset <= tSize) then
 			if not CEPGP_tContains(t, yoffset, true) then
-				getglobal("LootDistButton" .. y):Hide();
+				_G["LootDistButton" .. y]:Hide();
 			else
 				name = t[yoffset][1];
 				class = t[yoffset][2];
@@ -83,49 +83,49 @@ function CEPGP_UpdateLootScrollBar()
 				end
 				tex = {bgFile = tex,};
 				tex2 = {bgFile = tex2,};
-				getglobal("LootDistButton" .. y):Show();
-				getglobal("LootDistButton" .. y .. "Info"):SetText(name);
-				getglobal("LootDistButton" .. y .. "Info"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("LootDistButton" .. y .. "Class"):SetText(class);
-				getglobal("LootDistButton" .. y .. "Class"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("LootDistButton" .. y .. "Rank"):SetText(rank);
-				getglobal("LootDistButton" .. y .. "Rank"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("LootDistButton" .. y .. "EP"):SetText(EP);
-				getglobal("LootDistButton" .. y .. "EP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("LootDistButton" .. y .. "GP"):SetText(GP);
-				getglobal("LootDistButton" .. y .. "GP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("LootDistButton" .. y .. "PR"):SetText(math.floor((EP/GP)*100)/100);
-				getglobal("LootDistButton" .. y .. "PR"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("LootDistButton" .. y .. "Tex"):SetBackdrop(tex);
-				getglobal("LootDistButton" .. y .. "Tex2"):SetBackdrop(tex2);
-				getglobal("LootDistButton" .. y .. "Tex"):SetScript('OnLeave', function()
+				_G["LootDistButton" .. y]:Show();
+				_G["LootDistButton" .. y .. "Info"]:SetText(name);
+				_G["LootDistButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["LootDistButton" .. y .. "Class"]:SetText(class);
+				_G["LootDistButton" .. y .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["LootDistButton" .. y .. "Rank"]:SetText(rank);
+				_G["LootDistButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["LootDistButton" .. y .. "EP"]:SetText(EP);
+				_G["LootDistButton" .. y .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["LootDistButton" .. y .. "GP"]:SetText(GP);
+				_G["LootDistButton" .. y .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["LootDistButton" .. y .. "PR"]:SetText(math.floor((EP/GP)*100)/100);
+				_G["LootDistButton" .. y .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["LootDistButton" .. y .. "Tex"]:SetBackdrop(tex);
+				_G["LootDistButton" .. y .. "Tex2"]:SetBackdrop(tex2);
+				_G["LootDistButton" .. y .. "Tex"]:SetScript('OnLeave', function()
 																		GameTooltip:Hide()
 																	end);
-				getglobal("LootDistButton" .. y .. "Tex2"):SetScript('OnLeave', function()
+				_G["LootDistButton" .. y .. "Tex2"]:SetScript('OnLeave', function()
 																		GameTooltip:Hide()
 																	end);
 				if iString then
-					getglobal("LootDistButton" .. y .. "Tex"):SetScript('OnEnter', function()	
+					_G["LootDistButton" .. y .. "Tex"]:SetScript('OnEnter', function()	
 																			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 																			GameTooltip:SetHyperlink(iString)
 																			GameTooltip:Show()
 																		end);
 					if iString2 then
-						getglobal("LootDistButton" .. y .. "Tex2"):SetScript('OnEnter', function()	
+						_G["LootDistButton" .. y .. "Tex2"]:SetScript('OnEnter', function()	
 														GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 														GameTooltip:SetHyperlink(iString2)
 														GameTooltip:Show()
 													end);				
 					else
-						getglobal("LootDistButton" .. y .. "Tex2"):SetScript('OnEnter', function() end);
+						_G["LootDistButton" .. y .. "Tex2"]:SetScript('OnEnter', function() end);
 					end
 				
 				else
-					getglobal("LootDistButton" .. y .. "Tex"):SetScript('OnEnter', function() end);
+					_G["LootDistButton" .. y .. "Tex"]:SetScript('OnEnter', function() end);
 				end
 			end
 		else
-			getglobal("LootDistButton" .. y):Hide();
+			_G["LootDistButton" .. y]:Hide();
 		end
 	end
 end
@@ -166,7 +166,7 @@ function CEPGP_UpdateGuildScrollBar()
 		yoffset = y + FauxScrollFrame_GetOffset(GuildScrollFrame);
 		if (yoffset <= tSize) then
 			if not CEPGP_tContains(t, yoffset, true) then
-				getglobal("GuildButton" .. y):Hide();
+				_G["GuildButton" .. y]:Hide();
 			else
 				name = t[yoffset][1]
 				class = t[yoffset][2];
@@ -179,22 +179,22 @@ function CEPGP_UpdateGuildScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
-				getglobal("GuildButton" .. y .. "Info"):SetText(name);
-				getglobal("GuildButton" .. y .. "Info"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("GuildButton" .. y .. "Class"):SetText(class);
-				getglobal("GuildButton" .. y .. "Class"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("GuildButton" .. y .. "Rank"):SetText(rank);
-				getglobal("GuildButton" .. y .. "Rank"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("GuildButton" .. y .. "EP"):SetText(EP);
-				getglobal("GuildButton" .. y .. "EP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("GuildButton" .. y .. "GP"):SetText(GP);
-				getglobal("GuildButton" .. y .. "GP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("GuildButton" .. y .. "PR"):SetText(PR);
-				getglobal("GuildButton" .. y .. "PR"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("GuildButton" .. y):Show();
+				_G["GuildButton" .. y .. "Info"]:SetText(name);
+				_G["GuildButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["GuildButton" .. y .. "Class"]:SetText(class);
+				_G["GuildButton" .. y .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["GuildButton" .. y .. "Rank"]:SetText(rank);
+				_G["GuildButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["GuildButton" .. y .. "EP"]:SetText(EP);
+				_G["GuildButton" .. y .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["GuildButton" .. y .. "GP"]:SetText(GP);
+				_G["GuildButton" .. y .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["GuildButton" .. y .. "PR"]:SetText(PR);
+				_G["GuildButton" .. y .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["GuildButton" .. y]:Show();
 			end
 		else
-			getglobal("GuildButton" .. y):Hide();
+			_G["GuildButton" .. y]:Hide();
 		end
 	end
 end
@@ -247,7 +247,7 @@ function CEPGP_UpdateRaidScrollBar()
 		yoffset = y + FauxScrollFrame_GetOffset(RaidScrollFrame);
 		if (yoffset <= tSize) then
 			if not CEPGP_tContains(t, yoffset, true) then
-				getglobal("RaidButton" .. y):Hide();
+				_G["RaidButton" .. y]:Hide();
 			else
 				t2 = t[yoffset];
 				name = t2[1];
@@ -262,22 +262,22 @@ function CEPGP_UpdateRaidScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
-				getglobal("RaidButton" .. y .. "Group"):SetText(group);
-				getglobal("RaidButton" .. y .. "Group"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("RaidButton" .. y .. "Info"):SetText(name);
-				getglobal("RaidButton" .. y .. "Info"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("RaidButton" .. y .. "Rank"):SetText(rank);
-				getglobal("RaidButton" .. y .. "Rank"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("RaidButton" .. y .. "EP"):SetText(EP);
-				getglobal("RaidButton" .. y .. "EP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("RaidButton" .. y .. "GP"):SetText(GP);
-				getglobal("RaidButton" .. y .. "GP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("RaidButton" .. y .. "PR"):SetText(PR);
-				getglobal("RaidButton" .. y .. "PR"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("RaidButton" .. y):Show();
+				_G["RaidButton" .. y .. "Group"]:SetText(group);
+				_G["RaidButton" .. y .. "Group"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["RaidButton" .. y .. "Info"]:SetText(name);
+				_G["RaidButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["RaidButton" .. y .. "Rank"]:SetText(rank);
+				_G["RaidButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["RaidButton" .. y .. "EP"]:SetText(EP);
+				_G["RaidButton" .. y .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["RaidButton" .. y .. "GP"]:SetText(GP);
+				_G["RaidButton" .. y .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["RaidButton" .. y .. "PR"]:SetText(PR);
+				_G["RaidButton" .. y .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["RaidButton" .. y]:Show();
 			end
 		else
-			getglobal("RaidButton" .. y):Hide();
+			_G["RaidButton" .. y]:Hide();
 		end
 	end
 end
@@ -299,7 +299,7 @@ function CEPGP_UpdateVersionScrollBar()
 	end
 	if tSize == 0 then
 		for y = 1, 18, 1 do
-			getglobal("versionButton" .. y):Hide();
+			_G["versionButton" .. y]:Hide();
 		end
 	end
 	if CEPGP_vSearch == "GUILD" then
@@ -326,7 +326,7 @@ function CEPGP_UpdateVersionScrollBar()
 		yoffset = y + FauxScrollFrame_GetOffset(VersionScrollFrame);
 		if (yoffset <= tSize) then
 			if not CEPGP_tContains(t, yoffset, true) then
-				getglobal("versionButton" .. y):Hide();
+				_G["versionButton" .. y]:Hide();
 			else
 				t2 = t[yoffset];
 				name = t2[1];
@@ -344,14 +344,14 @@ function CEPGP_UpdateVersionScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
-				getglobal("versionButton" .. y .. "name"):SetText(name);
-				getglobal("versionButton" .. y .. "name"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("versionButton" .. y .. "version"):SetText(version);
-				getglobal("versionButton" .. y .. "version"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("versionButton" .. y):Show();
+				_G["versionButton" .. y .. "name"]:SetText(name);
+				_G["versionButton" .. y .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["versionButton" .. y .. "version"]:SetText(version);
+				_G["versionButton" .. y .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["versionButton" .. y]:Show();
 			end
 		else
-			getglobal("versionButton" .. y):Hide();
+			_G["versionButton" .. y]:Hide();
 		end
 	end
 end
@@ -372,7 +372,7 @@ function CEPGP_UpdateOverrideScrollBar()
 	tSize = CEPGP_ntgetn(OVERRIDE_INDEX);
 	if tSize == 0 then
 		for y = 1, 18, 1 do
-			getglobal("CEPGP_overrideButton" .. y):Hide();
+			_G["CEPGP_overrideButton" .. y]:Hide();
 		end
 	end
 	local count = 1;
@@ -388,19 +388,19 @@ function CEPGP_UpdateOverrideScrollBar()
 		yoffset = y + FauxScrollFrame_GetOffset(CEPGP_overrideScrollFrame);
 		if (yoffset <= tSize) then
 			if not CEPGP_tContains(t, yoffset, true) then
-				getglobal("CEPGP_overrideButton" .. y):Hide();
+				_G["CEPGP_overrideButton" .. y]:Hide();
 			else
 				t2 = t[yoffset];
 				item = t2[1];
 				gp = t2[2];
 				quality = t2[3];
-				getglobal("CEPGP_overrideButton" .. y .. "item"):SetText(item);
-				getglobal("CEPGP_overrideButton" .. y .. "GP"):SetText(gp);
-				getglobal("CEPGP_overrideButton" .. y .. "GP"):SetTextColor(1, 1, 1);
-				getglobal("CEPGP_overrideButton" .. y):Show();
+				_G["CEPGP_overrideButton" .. y .. "item"]:SetText(item);
+				_G["CEPGP_overrideButton" .. y .. "GP"]:SetText(gp);
+				_G["CEPGP_overrideButton" .. y .. "GP"]:SetTextColor(1, 1, 1);
+				_G["CEPGP_overrideButton" .. y]:Show();
 			end
 		else
-			getglobal("CEPGP_overrideButton" .. y):Hide();
+			_G["CEPGP_overrideButton" .. y]:Hide();
 		end
 	end
 end
@@ -425,41 +425,41 @@ function CEPGP_UpdateTrafficScrollBar()
 			local GPA = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][7];
 			local item = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][8];
 			local _, colour = CEPGP_getPlayerClass(name);
-			getglobal("trafficButton" .. y .. "Name"):SetText(name);
+			_G["trafficButton" .. y .. "Name"]:SetText(name);
 			if colour then
-				getglobal("trafficButton" .. y .. "Name"):SetTextColor(colour.r, colour.g, colour.b);
+				_G["trafficButton" .. y .. "Name"]:SetTextColor(colour.r, colour.g, colour.b);
 			else
-				getglobal("trafficButton" .. y .. "Name"):SetTextColor(1, 1, 1);
+				_G["trafficButton" .. y .. "Name"]:SetTextColor(1, 1, 1);
 			end
 			_, colour = CEPGP_getPlayerClass(issuer);
-			getglobal("trafficButton" .. y .. "Issuer"):SetText(issuer);
+			_G["trafficButton" .. y .. "Issuer"]:SetText(issuer);
 			if colour then
-				getglobal("trafficButton" .. y .. "Issuer"):SetTextColor(colour.r, colour.g, colour.b);
+				_G["trafficButton" .. y .. "Issuer"]:SetTextColor(colour.r, colour.g, colour.b);
 			else
-				getglobal("trafficButton" .. y .. "Issuer"):SetTextColor(1, 1, 1);
+				_G["trafficButton" .. y .. "Issuer"]:SetTextColor(1, 1, 1);
 			end
 			if item then
-				getglobal("trafficButton" .. y .. "ItemName"):SetText(item);
-				getglobal("trafficButton" .. y .. "ItemName"):Show();
-				getglobal("trafficButton" .. y .. "Item"):SetScript('OnClick', function() SetItemRef(tostring(CEPGP_getItemString(item))) end);
+				_G["trafficButton" .. y .. "ItemName"]:SetText(item);
+				_G["trafficButton" .. y .. "ItemName"]:Show();
+				_G["trafficButton" .. y .. "Item"]:SetScript('OnClick', function() SetItemRef(tostring(CEPGP_getItemString(item))) end);
 			else
-				getglobal("trafficButton" .. y .. "ItemName"):SetText("");
-				getglobal("trafficButton" .. y .. "ItemName"):Hide();
-				getglobal("trafficButton" .. y .. "Item"):SetScript('OnClick', function() end);
+				_G["trafficButton" .. y .. "ItemName"]:SetText("");
+				_G["trafficButton" .. y .. "ItemName"]:Hide();
+				_G["trafficButton" .. y .. "Item"]:SetScript('OnClick', function() end);
 			end
-			getglobal("trafficButton" .. y .. "Action"):SetText(action);
-			getglobal("trafficButton" .. y .. "Action"):SetTextColor(1, 1, 1);
-			getglobal("trafficButton" .. y .. "EPBefore"):SetText(EPB);
-			getglobal("trafficButton" .. y .. "EPBefore"):SetTextColor(1, 1, 1);
-			getglobal("trafficButton" .. y .. "EPAfter"):SetText(EPA);
-			getglobal("trafficButton" .. y .. "EPAfter"):SetTextColor(1, 1, 1);
-			getglobal("trafficButton" .. y .. "GPBefore"):SetText(GPB);
-			getglobal("trafficButton" .. y .. "GPBefore"):SetTextColor(1, 1, 1);
-			getglobal("trafficButton" .. y .. "GPAfter"):SetText(GPA);
-			getglobal("trafficButton" .. y .. "GPAfter"):SetTextColor(1, 1, 1);
-			getglobal("trafficButton" .. y):Show();
+			_G["trafficButton" .. y .. "Action"]:SetText(action);
+			_G["trafficButton" .. y .. "Action"]:SetTextColor(1, 1, 1);
+			_G["trafficButton" .. y .. "EPBefore"]:SetText(EPB);
+			_G["trafficButton" .. y .. "EPBefore"]:SetTextColor(1, 1, 1);
+			_G["trafficButton" .. y .. "EPAfter"]:SetText(EPA);
+			_G["trafficButton" .. y .. "EPAfter"]:SetTextColor(1, 1, 1);
+			_G["trafficButton" .. y .. "GPBefore"]:SetText(GPB);
+			_G["trafficButton" .. y .. "GPBefore"]:SetTextColor(1, 1, 1);
+			_G["trafficButton" .. y .. "GPAfter"]:SetText(GPA);
+			_G["trafficButton" .. y .. "GPAfter"]:SetTextColor(1, 1, 1);
+			_G["trafficButton" .. y]:Show();
 		else
-			getglobal("trafficButton" .. y):Hide();
+			_G["trafficButton" .. y]:Hide();
 		end
 	end
 end
@@ -499,7 +499,7 @@ function CEPGP_UpdateStandbyScrollBar()
 		yoffset = y + FauxScrollFrame_GetOffset(CEPGP_StandbyScrollFrame);
 		if (yoffset <= tSize) then
 			if not CEPGP_tContains(t, yoffset, true) then
-				getglobal("CEPGP_StandbyButton" .. y):Hide();
+				_G["CEPGP_StandbyButton" .. y]:Hide();
 			else
 				name = t[yoffset][1]
 				class = t[yoffset][2];
@@ -512,22 +512,22 @@ function CEPGP_UpdateStandbyScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
-				getglobal("CEPGP_StandbyButton" .. y .. "Info"):SetText(name);
-				getglobal("CEPGP_StandbyButton" .. y .. "Info"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("CEPGP_StandbyButton" .. y .. "Class"):SetText(class);
-				getglobal("CEPGP_StandbyButton" .. y .. "Class"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("CEPGP_StandbyButton" .. y .. "Rank"):SetText(rank);
-				getglobal("CEPGP_StandbyButton" .. y .. "Rank"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("CEPGP_StandbyButton" .. y .. "EP"):SetText(EP);
-				getglobal("CEPGP_StandbyButton" .. y .. "EP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("CEPGP_StandbyButton" .. y .. "GP"):SetText(GP);
-				getglobal("CEPGP_StandbyButton" .. y .. "GP"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("CEPGP_StandbyButton" .. y .. "PR"):SetText(PR);
-				getglobal("CEPGP_StandbyButton" .. y .. "PR"):SetTextColor(colour.r, colour.g, colour.b);
-				getglobal("CEPGP_StandbyButton" .. y):Show();
+				_G["CEPGP_StandbyButton" .. y .. "Info"]:SetText(name);
+				_G["CEPGP_StandbyButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["CEPGP_StandbyButton" .. y .. "Class"]:SetText(class);
+				_G["CEPGP_StandbyButton" .. y .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["CEPGP_StandbyButton" .. y .. "Rank"]:SetText(rank);
+				_G["CEPGP_StandbyButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["CEPGP_StandbyButton" .. y .. "EP"]:SetText(EP);
+				_G["CEPGP_StandbyButton" .. y .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["CEPGP_StandbyButton" .. y .. "GP"]:SetText(GP);
+				_G["CEPGP_StandbyButton" .. y .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["CEPGP_StandbyButton" .. y .. "PR"]:SetText(PR);
+				_G["CEPGP_StandbyButton" .. y .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["CEPGP_StandbyButton" .. y]:Show();
 			end
 		else
-			getglobal("CEPGP_StandbyButton" .. y):Hide();
+			_G["CEPGP_StandbyButton" .. y]:Hide();
 		end
 	end
 end

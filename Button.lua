@@ -1,6 +1,6 @@
 function CEPGP_ListButton_OnClick(obj)
 	if strfind(obj, "Delete") then
-		local name = getglobal("CEPGP_overrideButton" .. _G[obj]:GetParent():GetID() .. "item"):GetText();
+		local name = _G["CEPGP_overrideButton" .. _G[obj]:GetParent():GetID() .. "item"]:GetText();
 		OVERRIDE_INDEX[name] = nil;
 		CEPGP_print(name .. " removed from the GP override list");
 		CEPGP_UpdateOverrideScrollBar();
@@ -15,19 +15,19 @@ function CEPGP_ListButton_OnClick(obj)
 	--[[ Distribution Menu ]]--
 	if strfind(obj, "LootDistButton") then --A player in the distribution menu is clicked
 		ShowUIPanel(CEPGP_distribute_popup);
-		CEPGP_distribute_popup_title:SetText(getglobal(_G[obj]:GetName() .. "Info"):GetText());
-		CEPGP_distPlayer = getglobal(_G[obj]:GetName() .. "Info"):GetText();
+		CEPGP_distribute_popup_title:SetText(_G[_G[obj]:GetName() .. "Info"]:GetText());
+		CEPGP_distPlayer = _G[_G[obj]:GetName() .. "Info"]:GetText();
 		CEPGP_distribute_popup:SetID(CEPGP_distribute:GetID()); --CEPGP_distribute:GetID gets the ID of the LOOT SLOT. Not the player.
 	
 		--[[ Guild Menu ]]--
 	elseif strfind(obj, "GuildButton") then --A player from the guild menu is clicked (awards EP)
-		local name = getglobal(_G[obj]:GetName() .. "Info"):GetText();
+		local name = _G[_G[obj]:GetName() .. "Info"]:GetText();
 		ShowUIPanel(CEPGP_context_popup);
 		ShowUIPanel(CEPGP_context_amount);
 		ShowUIPanel(CEPGP_context_popup_EP_check);
 		ShowUIPanel(CEPGP_context_popup_GP_check);
-		getglobal("CEPGP_context_popup_EP_check_text"):Show();
-		getglobal("CEPGP_context_popup_GP_check_text"):Show();
+		_G["CEPGP_context_popup_EP_check_text"]:Show();
+		_G["CEPGP_context_popup_GP_check_text"]:Show();
 		CEPGP_context_popup_EP_check:SetChecked(1);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
@@ -50,8 +50,8 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_amount);
 		ShowUIPanel(CEPGP_context_popup_EP_check);
 		HideUIPanel(CEPGP_context_popup_GP_check);
-		getglobal("CEPGP_context_popup_EP_check_text"):Show();
-		getglobal("CEPGP_context_popup_GP_check_text"):Hide();
+		_G["CEPGP_context_popup_EP_check_text"]:Show();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
 		CEPGP_context_popup_EP_check:SetChecked(1);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
@@ -70,8 +70,8 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_amount);
 		HideUIPanel(CEPGP_context_popup_EP_check);
 		HideUIPanel(CEPGP_context_popup_GP_check);
-		getglobal("CEPGP_context_popup_EP_check_text"):Hide();
-		getglobal("CEPGP_context_popup_GP_check_text"):Hide();
+		_G["CEPGP_context_popup_EP_check_text"]:Hide();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
 		CEPGP_context_popup_EP_check:SetChecked(nil);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
@@ -90,8 +90,8 @@ function CEPGP_ListButton_OnClick(obj)
 		HideUIPanel(CEPGP_context_amount);
 		HideUIPanel(CEPGP_context_popup_EP_check);
 		HideUIPanel(CEPGP_context_popup_GP_check);
-		getglobal("CEPGP_context_popup_EP_check_text"):Hide();
-		getglobal("CEPGP_context_popup_GP_check_text"):Hide();
+		_G["CEPGP_context_popup_EP_check_text"]:Hide();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
 		CEPGP_context_popup_EP_check:SetChecked(nil);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
@@ -105,7 +105,7 @@ function CEPGP_ListButton_OnClick(obj)
 		
 		--[[ Raid Menu ]]--
 	elseif strfind(obj, "RaidButton") then --A player from the raid menu is clicked (awards EP)
-		local name = getglobal(_G[obj]:GetName() .. "Info"):GetText();
+		local name = _G[_G[obj]:GetName() .. "Info"]:GetText();
 		if not CEPGP_getGuildInfo(name) then
 			CEPGP_print(name .. " is not a guild member - Cannot award EP or GP", true);
 			return;
@@ -114,8 +114,8 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_amount);
 		ShowUIPanel(CEPGP_context_popup_EP_check);
 		ShowUIPanel(CEPGP_context_popup_GP_check);
-		getglobal("CEPGP_context_popup_EP_check_text"):Show();
-		getglobal("CEPGP_context_popup_GP_check_text"):Show();
+		_G["CEPGP_context_popup_EP_check_text"]:Show();
+		_G["CEPGP_context_popup_GP_check_text"]:Show();
 		CEPGP_context_popup_EP_check:SetChecked(1);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Raid Moderation");
@@ -138,8 +138,8 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_amount);
 		HideUIPanel(CEPGP_context_popup_EP_check);
 		HideUIPanel(CEPGP_context_popup_GP_check);
-		getglobal("CEPGP_context_popup_EP_check_text"):Hide();
-		getglobal("CEPGP_context_popup_GP_check_text"):Hide();
+		_G["CEPGP_context_popup_EP_check_text"]:Hide();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
 		CEPGP_context_popup_EP_check:SetChecked(nil);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Raid Moderation");
@@ -155,8 +155,8 @@ function CEPGP_ListButton_OnClick(obj)
 	elseif strfind(obj, "CEPGP_standby_ep_list_add") then
 		CEPGP_context_popup_EP_check:Hide();
 		CEPGP_context_popup_GP_check:Hide();
-		getglobal("CEPGP_context_popup_EP_check_text"):Hide();
-		getglobal("CEPGP_context_popup_GP_check_text"):Hide();
+		_G["CEPGP_context_popup_EP_check_text"]:Hide();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
 		CEPGP_context_popup_header:SetText("Add to Standby");
 		CEPGP_context_popup_title:Hide();
 		CEPGP_context_popup_desc:SetText("Add a guild member to the standby list");
@@ -167,7 +167,7 @@ function CEPGP_ListButton_OnClick(obj)
 															CEPGP_addToStandby(CEPGP_context_amount:GetText());
 														end);
 	elseif strfind(obj, "CEPGP_StandbyButton") then
-		local name = getglobal(getglobal(_G[obj]:GetName()):GetParent():GetName() .. "Info"):GetText();
+		local name = _G[_G[_G[obj]:GetName()]:GetParent():GetName() .. "Info"]:GetText();
 		for i = 1, CEPGP_ntgetn(CEPGP_standbyRoster) do
 			if CEPGP_standbyRoster[i] == name then
 				table.remove(CEPGP_standbyRoster, i);
