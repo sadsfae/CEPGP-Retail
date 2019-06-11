@@ -177,12 +177,11 @@ function CEPGP_ListButton_OnClick(obj)
 	end
 end
 
-function CEPGP_setOverrideLink(arg1, arg2)
-	local link = _G[arg1]:GetText();
-	local event = arg2;
+function CEPGP_setOverrideLink(frame, event)
 	
 	if event == "enter" then
-		GameTooltip:SetOwner(_G[arg1], "ANCHOR_TOPLEFT");
+		local _, link = GetItemInfo(frame:GetText());
+		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT");
 		GameTooltip:SetHyperlink(link);
 		GameTooltip:Show()
 	else

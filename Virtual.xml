@@ -379,12 +379,12 @@
 			</OnClick>
 			<OnEnter>
 				if GetItemInfo(_G[self:GetName() .. "item"]:GetText()) then
-					CEPGP_setOverrideLink(self:GetName() .. "item", "enter");
+					CEPGP_setOverrideLink(_G[self:GetName() .. "item"], "enter");
 				end
 			</OnEnter>
 			<OnLeave>
 				if GetItemInfo(_G[self:GetName() .. "item"]:GetText()) then
-					CEPGP_setOverrideLink(self:GetName() .. "item", "leave");
+					CEPGP_setOverrideLink(_G[self:GetName() .. "item"], "leave");
 				end
 			</OnLeave>
 			<OnShow>
