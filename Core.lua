@@ -271,6 +271,7 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 	if not GetGuildRosterShowOffline() then
 		SetGuildRosterShowOffline(true);
 		local total = GetNumGroupMembers();
+		CEPGP_print(total);
 		if total > 0 then
 			for i = 1, total do
 				local name = GetRaidRosterInfo(i);

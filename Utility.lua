@@ -389,7 +389,7 @@ end
 function CEPGP_rosterUpdate(event)
 	if event == "GUILD_ROSTER_UPDATE" then
 		CEPGP_roster = {};
-		if CanEditOfficerNote() == 1 then
+		if CanEditOfficerNote() then
 			ShowUIPanel(CEPGP_guild_add_EP);
 			ShowUIPanel(CEPGP_guild_decay);
 			ShowUIPanel(CEPGP_guild_reset);
