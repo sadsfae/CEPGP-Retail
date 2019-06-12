@@ -220,7 +220,7 @@
 								</Anchors>
 								<Scripts>
 									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(240, CEPGP_UpdateGuildScrollBar); 
+										FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateGuildScrollBar); 
 									</OnVerticalScroll>
 									<OnShow>
 										CEPGP_UpdateGuildScrollBar();
@@ -622,7 +622,7 @@
 								</Anchors>
 								<Scripts>
 									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(240, CEPGP_UpdateRaidScrollBar); 
+										FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateRaidScrollBar); 
 									</OnVerticalScroll>
 									<OnShow>
 										CEPGP_UpdateRaidScrollBar();
@@ -3915,7 +3915,7 @@
 						</Anchors>
 						<Scripts>
 							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(240, CEPGP_UpdateVersionScrollBar); 
+								FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateVersionScrollBar); 
 							</OnVerticalScroll>
 							<OnShow>
 								CEPGP_UpdateVersionScrollBar();

@@ -82,6 +82,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		end
 		CEPGP_UpdateVersionScrollBar();
 	elseif message == "version-check" then
+		if not sender then return; end
 		CEPGP_updateGuild();
 		if CEPGP_roster[sender] then
 			CEPGP_SendAddonMsg(sender .. "versioncheck " .. CEPGP_VERSION, "GUILD");

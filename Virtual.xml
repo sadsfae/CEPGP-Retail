@@ -2,10 +2,10 @@
 ..\FrameXML\UI.xsd">
 	
 	<Button name="CEPGPHeaderButton" virtual="true">
-		<ButtonText name="$parentText"/>
-		<NormalFont inherits="GameFontNormal"/>
-		<HighlightFont inherits="GameFontHighlight"/>
-		<DisabledFont inherits="GameFontDisable"/>
+		<ButtonText style="$parentText"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<DisabledFont style="GameFontDisable"/>
 	</Button>
 	
 	<CheckButton name="UIOptionsCheckButtonTemplate" virtual="true" inherits="OptionsCheckButtonTemplate">

@@ -81,6 +81,7 @@ function CEPGP_UpdateLootScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
+				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
 				tex = {bgFile = tex,};
 				tex2 = {bgFile = tex2,};
 				_G["LootDistButton" .. y]:Show();
@@ -179,6 +180,7 @@ function CEPGP_UpdateGuildScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
+				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
 				_G["GuildButton" .. y .. "Info"]:SetText(name);
 				_G["GuildButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
 				_G["GuildButton" .. y .. "Class"]:SetText(class);
@@ -344,6 +346,7 @@ function CEPGP_UpdateVersionScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
+				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
 				_G["versionButton" .. y .. "name"]:SetText(name);
 				_G["versionButton" .. y .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 				_G["versionButton" .. y .. "version"]:SetText(version);
@@ -512,6 +515,7 @@ function CEPGP_UpdateStandbyScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
+				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
 				_G["CEPGP_StandbyButton" .. y .. "Info"]:SetText(name);
 				_G["CEPGP_StandbyButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
 				_G["CEPGP_StandbyButton" .. y .. "Class"]:SetText(class);
