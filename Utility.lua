@@ -476,12 +476,55 @@ function CEPGP_addToStandby(player)
 	end
 end
 
-function CEPGP_standardiseString(value)
-	--Returns the same string with the first letter as capital
-	if not value then return; end
-	local first = string.upper(strsub(value, 1, 1)); --The uppercase first character of the string
-	local rest = strsub(value, 2, strlen(value)); --The remainder of the string
-	return first .. rest;
+function CEPGP_standardiseString(str)
+	--Returns the string with proper nouns capitalised
+	if not str then return; end
+	local result = "";
+	local _, delims = string.gsub(str, " ", "");
+	local values = CEPGP_split(str, " ", delims);
+	for k, v in pairs(values) do
+		if v == "of" or (v == "the" and k > 1) then
+			result = result .. v;
+		else
+			local first = string.upper(string.sub(v, 1, 1));
+			if k <= delims then
+				result = result .. first .. string.lower(string.sub(v, 2, string.len(v))) .. " ";
+			else
+				result = result .. first .. string.lower(string.sub(v, 2, string.len(v)));
+			end
+		end
+	end
+	
+	_, delims = string.gsub(result, "%-", "");
+	values = CEPGP_split(result, "%-", delims);
+	result = "";
+	for k, v in pairs(values) do
+		local first = string.upper(string.sub(v, 1, 1));
+		if k <= delims then
+			result = result .. first .. string.sub(v, 2, string.len(v)) .. "-";
+		else
+			result = result .. first .. string.lower(string.sub(v, 2, string.len(v)));
+		end
+	end
+	
+	return result;
+
+end
+
+function CEPGP_split(str, delim, iters) --String to be split, delimiter, number of iterations
+	local frags = {};
+	local remainder = str;
+	local count = 1;
+	for i = 1, iters+1 do
+		if string.find(remainder, delim) then
+			frags[count] = string.sub(remainder, 1, string.find(remainder, delim)-1);
+			remainder = string.sub(remainder, string.find(remainder, delim)+1, string.len(remainder));
+		else
+			frags[count] = string.sub(remainder, 1, string.len(remainder));
+		end
+		count = count + 1;
+	end
+	return frags;
 end
 
 function CEPGP_toggleStandbyRanks(show)
@@ -855,7 +898,6 @@ function CEPGP_toggleBossConfigFrame(fName)
 		end;
 	end
 end
-
 
 function CEPGP_button_options_OnClick()
 	CEPGP_updateGuild();
