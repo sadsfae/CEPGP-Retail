@@ -64,7 +64,7 @@ TRAFFIC = {};
 
 
 --[[ EVENT AND COMMAND HANDLER ]]--
-function CEPGP_OnEvent(event, arg1, arg2, ...)
+function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 	if event == "ADDON_LOADED" and arg1 == "CEPGP" then --arg1 = addon name
 		CEPGP_initialise();
 	elseif event == "GUILD_ROSTER_UPDATE" or event == "RAID_ROSTER_UPDATE" then
@@ -78,7 +78,7 @@ function CEPGP_OnEvent(event, arg1, arg2, ...)
 		end
 			
 	
-	elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "need" and CEPGP_distributing) or
+	elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!need" and CEPGP_distributing) or
 		(event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info") or
 		(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
 			CEPGP_handleComms(event, arg1, arg2);
@@ -225,7 +225,7 @@ function CEPGP_RaidAssistLootClosed()
 end
 
 function CEPGP_RaidAssistLootDist(link, gp)
-	if IsRaidOfficer() then
+	if UnitIsGroupAssistant("player") then
 		local y = 1;
 		for y = 1, 18 do
 			_G["LootDistButton"..y]:Hide();

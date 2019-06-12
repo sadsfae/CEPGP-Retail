@@ -46,7 +46,6 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_distItemLink = link;
 		CEPGP_DistID = id;
 		CEPGP_distSlot = slot;
-		tex = {bgFile = tex,};
 		gp = _G[CEPGP_mode..'itemGP'..x]:GetText();
 		CEPGP_lootSlot = slotNum;
 		CEPGP_responses = {};
@@ -81,10 +80,11 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
 		CEPGP_distribute:Show();
 		CEPGP_loot:Hide();
+		CEPGP_print(link);
 		_G["CEPGP_distribute_item_name"]:SetText(link);
-		_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString) end);
-		_G["CEPGP_distribute_item_tex"]:SetBackdrop(tex);
-		_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT") GameTooltip:SetHyperlink(iString) GameTooltip:Show() end);
+		_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name) end);
+		_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() GameTooltip:SetOwner(_G["CEPGP_distribute_item_tex"], "ANCHOR_TOPLEFT") GameTooltip:SetHyperlink(iString) GameTooltip:Show() end);
+		_G["CEPGP_distribute_item_texture"]:SetTexture({bgFile = tex,});
 		_G["CEPGP_distribute_item_tex"]:SetScript('OnLeave', function() GameTooltip:Hide() end);
 		_G["CEPGP_distribute_GP_value"]:SetText(gp);
 		CEPGP_distributing = true;

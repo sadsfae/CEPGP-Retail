@@ -1028,6 +1028,18 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
+						<Texture name="CEPGP_distribute_item_texture">
+						<Size>
+							<AbsDimension x="30" y="30" />
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="CEPGP_distribute_item_name">
+								<Offset>
+									<AbsDimension x="-32" y="5" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Texture>
 					</Layer>
 				</Layers>
 				<Frames>
@@ -1237,11 +1249,7 @@
 							<AbsDimension x="30" y="30" />
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="CEPGP_distribute_item_name">
-								<Offset>
-									<AbsDimension x="-32" y="5" />
-								</Offset>
-							</Anchor>
+							<Anchor point="CENTER" relativeTo="CEPGP_distribute_item_texture" relativePoint="CENTER" />
 						</Anchors>
 					</Button>
 					<Button name="CEPGP_distribute_item_name_frame">
@@ -3792,76 +3800,6 @@
 			</OnMouseUp>
 			<OnEvent>
 				CEPGP_OnEvent(event, ...);
-				if event == "ADDON_LOADED" and arg1 == "CEPGP" then --arg1 = addon name
-					CEPGP_initialise();
-				elseif event == "GUILD_ROSTER_UPDATE" or event == "RAID_ROSTER_UPDATE" then
-					CEPGP_rosterUpdate(event);
-					
-				elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == CEPGP_standby_whisper_msg and CEPGP_standby_manual and CEPGP_standby_accept_whispers then
-					if not CEPGP_tContains(CEPGP_standbyRoster, arg2)
-					and not CEPGP_tContains(CEPGP_raidRoster, arg2, true)
-					and CEPGP_tContains(CEPGP_roster, arg2, true) then
-						CEPGP_addToStandby(arg2);
-					end
-						
-				
-				elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "need" and CEPGP_distributing) or
-					(event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info") or
-					(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
-						CEPGP_handleComms(event, arg1, arg2);
-				
-				elseif event == "CHAT_MSG_COMBAT_HOSTILE_DEATH" then
-					if string.find(arg1, "dies") then
-						local name = string.sub(arg1, 0, string.find(arg1, "dies")-2);
-						if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
-							CEPGP_handleCombat(name);
-							return;
-						end
-						if name == "Flamewaker Elite" or name == "Flamewaker Healer" then
-							CEPGP_handleCombat(name, true);
-						end
-						if bossNameIndex[name] then
-							CEPGP_handleCombat(name);
-						end
-					end
-					
-				elseif event == "CHAT_MSG_MONSTER_EMOTE" then
-					if arg1 == "%s is resurrected by a nearby ally!" then
-						if arg2 == "Zealot Lor'Khan" then
-							CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] = false;
-						elseif arg2 == "Zealot Zath" then
-							CEPGP_THEKAL_PARAMS["ZATH_DEAD"] = false;
-						elseif arg2 == "High Priest Thekal" and not (CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] or CEPGP_THEKAL_PARAMS["ZATH_DEAD"]) then
-							CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] = false;
-						end
-					
-					elseif arg1 == "%s casts Destroy Egg" then --Razorgore the Untamed
-						CEPGP_kills = CEPGP_kills + 1;
-					end
-					
-				elseif event == "CHAT_MSG_MONSTER_YELL" then
-					if arg2 == "The Prophet Skeram" then
-						if arg1 == "You only delay... the inevetable." then
-							CEPGP_handleCombat(arg2, true);
-						end
-					end
-					
-				elseif (event == "LOOT_OPENED" or event == "LOOT_CLOSED" or event == "LOOT_SLOT_CLEARED") then
-					CEPGP_handleLoot(event, arg1, arg2);
-					
-				elseif (event == "CHAT_MSG_ADDON") then
-					if (arg1 == "CEPGP")then
-						CEPGP_IncAddonMsg(arg2, arg4);
-					end
-				elseif event == "PLAYER_REGEN_ENABLED" then -- Player has been removed from combat. Shouldn't trigger for feign death / vanish / combat res
-					if not UnitAffectingCombat("player") and not UnitIsDead("player") then
-						if CEPGP_debugMode then
-							CEPGP_print("Combat reset");
-						end
-						CEPGP_kills = 0;
-						CEPGP_THEKAL_PARAMS = {["ZATH_DEAD"] = false, ["LOR'KHAN_DEAD"] = false, ["THEKAL_DEAD"] = false};
-					end
-				end
 			</OnEvent>
 		</Scripts>
 	</Frame>
