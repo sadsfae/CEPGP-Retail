@@ -336,7 +336,7 @@ function CEPGP_strSplit(msgStr, c)
 	local table_str = {};
 	local capture = string.format("(.-)%s", c);
 	
-	for v in string.gfind(msgStr, capture) do
+	for v in string.gmatch(msgStr, capture) do
 		table.insert(table_str, v);
 	end
 	
@@ -617,7 +617,7 @@ function CEPGP_getEPGP(offNote, index, name)
 			if string.find(offNote, ',[0-9]+') then
 				EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 				GP = strsub(offNote, string.find(offNote, ',[0-9]+')+1, string.find(offNote, '[^0-9,]')-1);
-				if CanEditOfficerNote() == 1 then
+				if CanEditOfficerNote() then
 					GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 					CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
 				end
@@ -625,14 +625,14 @@ function CEPGP_getEPGP(offNote, index, name)
 			elseif string.find(offNote, '[0-9]+$') then
 				EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 				GP = strsub(offNote, string.find(offNote, '[0-9]+$'), string.len(offNote));
-				if CanEditOfficerNote() == 1 then
+				if CanEditOfficerNote() then
 					GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 					CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
 				end
 				return EP,GP;
 			else
 				EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-				if CanEditOfficerNote() == 1 then
+				if CanEditOfficerNote() then
 					GuildRosterSetOfficerNote(index, EP .. "," .. BASEGP);
 					CEPGP_print("An error was found with " .. name .. "'s GP. Their EP has been retained as " .. EP .. " but their GP will need to be manually set if known.");
 				end
@@ -644,7 +644,7 @@ function CEPGP_getEPGP(offNote, index, name)
 			
 			if string.find(offNote, '[^0-9]+,[0-9]+$') then --EP might still be intact, but characters might be padding between EP and the comma
 				EP = strsub(offNote, 1, string.find(offNote, '[^0-9]+,')-1);
-				if CanEditOfficerNote() == 1 then
+				if CanEditOfficerNote() then
 					GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 					CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
 				end
@@ -652,14 +652,14 @@ function CEPGP_getEPGP(offNote, index, name)
 				
 			elseif string.find(offNote, '^[^0-9]+[0-9]+,[0-9]+$') then --or pheraps the error is at the start of the string?
 				EP = strsub(offNote, string.find(offNote, '[0-9]+,'), string.find(offNote, ',[0-9]+$')-1);
-				if CanEditOfficerNote() == 1 then
+				if CanEditOfficerNote() then
 					GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 					CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
 				end
 				return EP, GP;
 				
 			else --EP cannot be salvaged
-				if CanEditOfficerNote() == 1 then
+				if CanEditOfficerNote() then
 					GuildRosterSetOfficerNote(index, "0," .. GP);
 					CEPGP_print("An error was found with " .. name .. "'s EP. Their GP has been retained as " .. GP .. " but their EP will need to be manually set if known. For now, their EP has defaulted to 0.");
 				end

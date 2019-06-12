@@ -271,11 +271,15 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 	if not GetGuildRosterShowOffline() then
 		SetGuildRosterShowOffline(true);
 		local total = GetNumGroupMembers();
-		CEPGP_print(total);
 		if total > 0 then
 			for i = 1, total do
 				local name = GetRaidRosterInfo(i);
+				for k, v in pairs(CEPGP_roster) do
+					print(k);
+					print(v[1]);
+				end
 				if CEPGP_tContains(CEPGP_roster, name, true) then
+					print("abc");
 					local index = CEPGP_getGuildInfo(name);
 					if not CEPGP_checkEPGP(CEPGP_roster[name][5]) then
 						GuildRosterSetOfficerNote(index, amount .. "," .. BASEGP);

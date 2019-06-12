@@ -517,7 +517,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if CanEditOfficerNote() == nil then
+								if CanEditOfficerNote() then
 									self:Hide();
 								end
 							</OnLoad>
@@ -540,7 +540,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if CanEditOfficerNote() == nil then
+								if not CanEditOfficerNote() then
 									self:Hide();
 								end
 							</OnLoad>
@@ -563,7 +563,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if CanEditOfficerNote() == nil then
+								if not CanEditOfficerNote() then
 									self:Hide();
 								end
 							</OnLoad>
@@ -913,13 +913,13 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if CanEditOfficerNote() == nil then
+								if not CanEditOfficerNote() then
 									self:Hide();
 								end
 							</OnLoad>
 							<OnClick>
 								PlaySound(799);
-								CEPGP_ListButton_OnClick(self);
+								CEPGP_ListButton_OnClick(self:GetName());
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -1779,7 +1779,7 @@
 								end
 								SetGuildRosterShowOffline(true);
 								CEPGP_updateGuild();
-								if CanEditOfficerNote() == 1 then
+								if CanEditOfficerNote() then
 									for i = 1, GetNumGuildMembers() do
 										local name, rank, rankIndex, _, class, _, _, officerNote = GetGuildRosterInfo(i);
 										if officerNote then

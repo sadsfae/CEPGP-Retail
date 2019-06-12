@@ -7,7 +7,7 @@ function CEPGP_ListButton_OnClick(obj)
 		return;
 	end
 	
-	if CanEditOfficerNote() == nil and not CEPGP_debugMode then
+	if not CanEditOfficerNote() and not CEPGP_debugMode then
 		CEPGP_print("You don't have access to modify EPGP", 1);
 		return;
 	end
