@@ -5117,13 +5117,10 @@
 							CEPGP_print("Enter an item name", true);
 							return;
 						end
-						local item;
-						if not GetItemInfo(CEPGP_override_item_name:GetText()) then
-							item = CEPGP_override_item_name:GetText();
-							CEPGP_print(item .. " not found in cache. self item will be updated when cached");
-						else
-							_, item = GetItemInfo(CEPGP_override_item_name:GetText());
-						end;
+						local item = CEPGP_standardiseString(CEPGP_override_item_name:GetText());
+						if GetItemInfo(item) then
+							_, item = GetItemInfo(item); --Converts the item name to a link
+						end
 						local gp;
 						if CEPGP_override_item_gp:GetText() == "" then
 							gp = 0;
@@ -5132,14 +5129,14 @@
 						end
 						if (OVERRIDE_INDEX[item] and overwrite) or not OVERRIDE_INDEX[item] then
 							OVERRIDE_INDEX[item] = gp;
-							CEPGP_print("GP value for " .. CEPGP_override_item_name:GetText() .. " has been overriden to " .. gp);
+							CEPGP_print("GP value for " .. item .. " has been overriden to " .. gp);
 							CEPGP_UpdateOverrideScrollBar();
 							CEPGP_override_confirm = false;
 							CEPGP_override_item_name:SetText("");
 							CEPGP_override_item_gp:SetText("");
 							CEPGP_override_item_name:SetFocus();
 						else
-							CEPGP_print(CEPGP_override_item_name:GetText() .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
+							CEPGP_print(item .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
 							CEPGP_override_confirm = true;
 						end
 					</OnEnterPressed>
@@ -5184,7 +5181,7 @@
 								CEPGP_print("Enter an item name", true);
 							return;
 						end
-						local item = CEPGP_override_item_name:GetText();
+						local item = CEPGP_standardiseString(CEPGP_override_item_name:GetText());
 						local gp;
 						if CEPGP_override_item_gp:GetText() == "" then
 							gp = 0;
@@ -5193,7 +5190,7 @@
 						end
 						if (OVERRIDE_INDEX[item] and CEPGP_override_confirm) or not OVERRIDE_INDEX[item] then
 							OVERRIDE_INDEX[item] = gp;
-							CEPGP_print("GP value for " .. CEPGP_override_item_name:GetText() .. " has been overriden to " .. gp);
+							CEPGP_print("GP value for " .. item .. " has been overriden to " .. gp);
 							CEPGP_UpdateOverrideScrollBar();
 							CEPGP_override_confirm = false;
 							CEPGP_override_item_name:SetText("");
@@ -5201,7 +5198,7 @@
 							CEPGP_override_item_gp:SetText("");
 							CEPGP_override_item_gp:ClearFocus();
 						else
-							CEPGP_print(CEPGP_override_item_name:GetText() .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
+							CEPGP_print(item .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
 							CEPGP_override_confirm = true;
 						end
 					</OnClick>

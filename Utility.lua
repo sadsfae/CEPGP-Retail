@@ -480,30 +480,31 @@ function CEPGP_standardiseString(str)
 	--Returns the string with proper nouns capitalised
 	if not str then return; end
 	local result = "";
-	local _, delims = string.gsub(str, " ", "");
+	local _, delims = string.gsub(str, " ", ""); --accommodates for spaces
 	local values = CEPGP_split(str, " ", delims);
 	for k, v in pairs(values) do
-		if v == "of" or (v == "the" and k > 1) then
-			result = result .. v;
-		else
-			local first = string.upper(string.sub(v, 1, 1));
-			if k <= delims then
-				result = result .. first .. string.lower(string.sub(v, 2, string.len(v))) .. " ";
-			else
-				result = result .. first .. string.lower(string.sub(v, 2, string.len(v)));
+		if string.find(v, "%-") then
+			_, delims2 = string.gsub(v, "%-", ""); --accommodates for hyphens
+			values2 = CEPGP_split(v, "%-", delims2);
+			for index, value in pairs(values2) do
+				local first = string.upper(string.sub(value, 1, 1));
+				if index <= delims2 then
+					result = result .. first .. string.sub(value, 2, string.len(value)) .. "-";
+				else
+					result = result .. first .. string.lower(string.sub(value, 2, string.len(value)));
+				end
 			end
-		end
-	end
-	
-	_, delims = string.gsub(result, "%-", "");
-	values = CEPGP_split(result, "%-", delims);
-	result = "";
-	for k, v in pairs(values) do
-		local first = string.upper(string.sub(v, 1, 1));
-		if k <= delims then
-			result = result .. first .. string.sub(v, 2, string.len(v)) .. "-";
 		else
-			result = result .. first .. string.lower(string.sub(v, 2, string.len(v)));
+			if v == "of" or (v == "the" and k > 1) then
+				result = result .. v .. " ";
+			else
+				local first = string.upper(string.sub(v, 1, 1));
+				if k <= delims then
+					result = result .. first .. string.lower(string.sub(v, 2, string.len(v))) .. " ";
+				else
+					result = result .. first .. string.lower(string.sub(v, 2, string.len(v)));
+				end
+			end
 		end
 	end
 	
