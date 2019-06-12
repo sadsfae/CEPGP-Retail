@@ -263,7 +263,7 @@ function CEPGP_populateFrame(CEPGP_criteria, items, lootNum)
 				_G[CEPGP_mode..'item'..i].text:SetTextColor(colour.r, colour.g, colour.b);
 				_G[CEPGP_mode..'item'..i].text:SetPoint('CENTER',_G[CEPGP_mode..'item'..i]);
 				_G[CEPGP_mode..'item'..i]:SetWidth(_G[CEPGP_mode..'item'..i].text:GetStringWidth());
-				_G[CEPGP_mode..'item'..i]:SetScript('OnClick', function() SetItemRef(link) end);
+				_G[CEPGP_mode..'item'..i]:SetScript('OnClick', function() SetItemRef(link, iString) end);
 				
 				_G[CEPGP_mode..'itemGP'..i]:SetText(gp);
 				_G[CEPGP_mode..'itemGP'..i]:SetTextColor(colour.r, colour.g, colour.b);
@@ -309,14 +309,14 @@ function CEPGP_populateFrame(CEPGP_criteria, items, lootNum)
 					subframe.itemGP:SetPoint('CENTER', _G[CEPGP_mode..'itemGP'..(i-1)], 'BOTTOM', 0, -20);
 				end
 				
-				subframe.icon:SetScript('OnClick', function() SetItemRef(iString) end);
+				subframe.icon:SetScript('OnClick', function() SetItemRef(link, iString) end);
 				
 				subframe.itemName.text = subframe.itemName:CreateFontString(CEPGP_mode..'EPGP_i'..name..'text', 'OVERLAY', 'GameFontNormal');
 				subframe.itemName.text:SetPoint('CENTER', _G[CEPGP_mode..'item'..i]);
 				subframe.itemName.text:SetText(link);
 				subframe.itemName.text:SetTextColor(colour.r, colour.g, colour.b);
 				subframe.itemName:SetWidth(subframe.itemName.text:GetStringWidth());
-				subframe.itemName:SetScript('OnClick', function() SetItemRef(iString) end);
+				subframe.itemName:SetScript('OnClick', function() SetItemRef(link, iString) end);
 				
 				subframe.itemGP:SetText(gp);
 				subframe.itemGP:SetTextColor(colour.r, colour.g, colour.b);

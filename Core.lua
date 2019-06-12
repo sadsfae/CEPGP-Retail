@@ -83,9 +83,9 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 		(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
 			CEPGP_handleComms(event, arg1, arg2);
 	
-	elseif event == "CHAT_MSG_COMBAT_HOSTILE_DEATH" then
-		if string.find(arg1, "dies") then
-			local name = string.sub(arg1, 0, string.find(arg1, "dies")-2);
+	elseif event == "COMBAT_LOG_EVENT" then
+		local _, action, _, _, _, _, _, _, name = CombatLogGetCurrentEventInfo();
+		if action == "PARTY_KILL" then
 			if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
 				CEPGP_handleCombat(name);
 				return;

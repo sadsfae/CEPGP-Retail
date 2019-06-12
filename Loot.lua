@@ -80,7 +80,7 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
 		CEPGP_distribute:Show();
 		CEPGP_loot:Hide();
-		CEPGP_print(link);
+		CEPGP_print("asd" .. link);
 		_G["CEPGP_distribute_item_name"]:SetText(link);
 		_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name) end);
 		_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() GameTooltip:SetOwner(_G["CEPGP_distribute_item_tex"], "ANCHOR_TOPLEFT") GameTooltip:SetHyperlink(iString) GameTooltip:Show() end);
