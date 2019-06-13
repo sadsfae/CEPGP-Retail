@@ -148,7 +148,7 @@ function CEPGP_UpdateGuildScrollBar()
 	for x = 1, tSize do
 		name = CEPGP_indexToName(x);
 		index, class, rank, rankIndex, offNote = CEPGP_getGuildInfo(name);
-		EP, GP = CEPGP_getEPGP(offNote)
+		EP, GP = CEPGP_getEPGP(offNote, x, name)
 		t[x] = {
 			[1] = name,
 			[2] = class,
@@ -222,7 +222,7 @@ function CEPGP_UpdateRaidScrollBar()
 			rank = CEPGP_roster[name][3];
 			rankIndex = CEPGP_roster[name][4];
 			offNote = CEPGP_roster[name][5];
-			EP, GP = CEPGP_getEPGP(offNote);
+			EP, GP = CEPGP_getEPGP(offNote, _, name);
 			PR = CEPGP_roster[name][6];
 		end
 		if not CEPGP_roster[name] then

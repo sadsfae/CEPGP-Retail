@@ -4377,7 +4377,7 @@
 						self:RegisterForClicks('LeftButtonDown');
 					</OnLoad>
 					<OnClick>
-						if self:GetChecked() == 1 then
+						if self:GetChecked() then
 							CEPGP_context_popup_GP_check:SetChecked(nil);
 							CEPGP_context_popup_desc:SetText("Adding EP");
 						else
@@ -4399,7 +4399,7 @@
 						self:RegisterForClicks('LeftButtonDown');
 					</OnLoad>
 					<OnClick>
-						if self:GetChecked() == 1 then
+						if self:GetChecked() then
 							CEPGP_context_popup_EP_check:SetChecked(nil);
 							CEPGP_context_popup_desc:SetText("Adding GP");
 						else
