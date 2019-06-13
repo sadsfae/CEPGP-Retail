@@ -101,9 +101,8 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 		elseif action == "SPELL_CAST_SUCCESS" then
 			local spellID, spellName;
 			_, _, _, _, name, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo();
-			if name == "Razorgore the Untamed" and spellID == 19873 then
+			if name == "Razorgore the Untamed" and spellID == 19873 then --Razorgore casts destroy egg
 				CEPGP_kills = CEPGP_kills + 1;
-				print(CEPGP_kills);
 			end
 		end
 		
@@ -117,9 +116,9 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 				CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] = false;
 			end
 		
-		elseif arg1 == "%s casts Destroy Egg" then --Razorgore the Untamed
+		--[[elseif arg1 == "%s casts Destroy Egg" then --Razorgore the Untamed
 			CEPGP_kills = CEPGP_kills + 1;
-		end
+		end]] --Still useful if classic release relies on emotes or combat log for this event
 		
 	elseif event == "CHAT_MSG_MONSTER_YELL" then
 		if arg2 == "The Prophet Skeram" then

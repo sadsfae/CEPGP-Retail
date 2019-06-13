@@ -245,11 +245,11 @@ function CEPGP_getCombatModule(name)
 	
 	--Razorgore the Untamed
 	if name == "Razorgore the Untamed" then
-		print(name);
-		print(CEPGP_kills);
 		if CEPGP_kills == 30 then --For this encounter, CEPGP_kills is used for the eggs
 			CEPGP_combatModule = "Razorgore the Untamed";
 			return true;
+		else
+			return false;
 		end
 	end
 	
