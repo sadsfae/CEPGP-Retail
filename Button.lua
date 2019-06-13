@@ -211,7 +211,7 @@ function CEPGP_distribute_popup_OnEvent(event)
 			CEPGP_print(CEPGP_distPlayer .. "'s inventory is full", 1);
 			CEPGP_distribute_popup:Hide();
 		elseif event == "UI_ERROR_MESSAGE" and arg1 == "You can't carry any more of those items." and CEPGP_distPlayer ~= "" then
-			CEPGP_print(CEPGP_distPlayer .. " can't carry any more of self unique item", 1);
+			CEPGP_print(CEPGP_distPlayer .. " can't carry any more of this unique item", 1);
 			CEPGP_distribute_popup:Hide();
 		end
 	end

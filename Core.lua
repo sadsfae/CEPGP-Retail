@@ -84,8 +84,10 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 			CEPGP_handleComms(event, arg1, arg2);
 	
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, action, _, _, _, _, _, _, name = CombatLogGetCurrentEventInfo();
+		local _, action = CombatLogGetCurrentEventInfo();
+		local name;
 		if action == "UNIT_DIED" then
+			_, _, _, _, _, _, _, _, name = CombatLogGetCurrentEventInfo();
 			if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
 				CEPGP_handleCombat(name);
 				return;
@@ -95,6 +97,13 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 			end
 			if bossNameIndex[name] then
 				CEPGP_handleCombat(name);
+			end
+		elseif action == "SPELL_CAST_SUCCESS" then
+			local spellID, spellName;
+			_, _, _, _, name, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo();
+			if name == "Razorgore the Untamed" and spellID == 19873 then
+				CEPGP_kills = CEPGP_kills + 1;
+				print(CEPGP_kills);
 			end
 		end
 		
@@ -126,14 +135,12 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 		if (arg1 == "CEPGP")then
 			CEPGP_IncAddonMsg(arg2, arg4);
 		end
-	elseif event == "PLAYER_REGEN_ENABLED" then -- Player has been removed from combat. Shouldn't trigger for feign death / vanish / combat res
-		if not UnitAffectingCombat("player") and not UnitIsDead("player") then
-			if CEPGP_debugMode then
-				CEPGP_print("Combat reset");
-			end
-			CEPGP_kills = 0;
-			CEPGP_THEKAL_PARAMS = {["ZATH_DEAD"] = false, ["LOR'KHAN_DEAD"] = false, ["THEKAL_DEAD"] = false};
+	elseif event == "PLAYER_REGEN_DISABLED" then -- Player has started combat
+		if CEPGP_debugMode then
+			CEPGP_print("Combat started");
 		end
+		CEPGP_kills = 0;
+		CEPGP_THEKAL_PARAMS = {["ZATH_DEAD"] = false, ["LOR'KHAN_DEAD"] = false, ["THEKAL_DEAD"] = false};
 	end
 end
 
@@ -472,7 +479,7 @@ function CEPGP_addGP(player, amount, item, itemLink)
 		end
 	else
 		CEPGP_print(player .. " not found in guild CEPGP_roster - no GP given");
-		CEPGP_print("If self was a mistake, you can manually award them GP via the CEPGP guild menu");
+		CEPGP_print("If this was a mistake, you can manually award them GP via the CEPGP guild menu");
 	end
 end
 

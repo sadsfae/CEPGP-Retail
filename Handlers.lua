@@ -185,9 +185,6 @@ function CEPGP_handleCombat(name, except)
 		end
 	end
 	if (((GetLootMethod() == "master" and CEPGP_isML() == 0) or (GetLootMethod() == "group" and isLead == 2)) and CEPGP_ntgetn(CEPGP_roster) > 0) or CEPGP_debugMode then
-		if CEPGP_debugMode then
-			print(name);
-		end
 		local success = CEPGP_getCombatModule(name);
 		if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
 			name = "High Priest Thekal";
@@ -247,12 +244,14 @@ function CEPGP_getCombatModule(name)
 	end
 	
 	--Razorgore the Untamed
-	--[[if name == "Razorgore the Untamed" then
-		if CEPGP_kills == 30 then --For self encounter, CEPGP_kills is used for the eggs
+	if name == "Razorgore the Untamed" then
+		print(name);
+		print(CEPGP_kills);
+		if CEPGP_kills == 30 then --For this encounter, CEPGP_kills is used for the eggs
 			CEPGP_combatModule = "Razorgore the Untamed";
 			return true;
 		end
-	end]]
+	end
 	
 	if name == "Zealot Lor'Khan" or name == "Zealot Zath" or name == "High Priest Thekal" then
 		CEPGP_combatModule = "High Priest Thekal";

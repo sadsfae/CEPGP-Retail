@@ -117,7 +117,7 @@ function CEPGP_calcGP(link, quantity, id)
 			and (itemType ~= "Blacksmithing" and itemType ~= "Tailoring" and itemType ~= "Alchemy" and itemType ~= "Leatherworking"
 			and itemType ~= "Enchanting" and itemType ~= "Engineering" and itemType ~= "Mining") then
 			local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
-			CEPGP_print("Warning: " .. name .. " not found in index! Please report self to the addon developer");
+			CEPGP_print("Warning: " .. name .. " not found in index! Please report this to the addon developer");
 			if slot ~= "" then
 				slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 			end
@@ -623,7 +623,7 @@ function CEPGP_getEPGP(offNote, index, name)
 					GP = strsub(offNote, string.find(offNote, ',[0-9]+')+1, string.find(offNote, '[^0-9,]')-1);
 					if CanEditOfficerNote() then
 						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
+						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
 					end
 					return EP,GP;
 				elseif string.find(offNote, '[0-9]+$') then
@@ -631,7 +631,7 @@ function CEPGP_getEPGP(offNote, index, name)
 					GP = strsub(offNote, string.find(offNote, '[0-9]+$'), string.len(offNote));
 					if CanEditOfficerNote() then
 						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
+						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
 					end
 					return EP,GP;
 				else
@@ -650,7 +650,7 @@ function CEPGP_getEPGP(offNote, index, name)
 					EP = strsub(offNote, 1, string.find(offNote, '[^0-9]+,')-1);
 					if CanEditOfficerNote() then
 						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
+						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
 					end
 					return EP, GP;
 					
@@ -658,7 +658,7 @@ function CEPGP_getEPGP(offNote, index, name)
 					EP = strsub(offNote, string.find(offNote, '[0-9]+,'), string.find(offNote, ',[0-9]+$')-1);
 					if CanEditOfficerNote() then
 						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if self is correct and modify the officer note if required.");
+						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
 					end
 					return EP, GP;
 					

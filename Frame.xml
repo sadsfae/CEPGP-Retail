@@ -3788,7 +3788,7 @@
 				self:RegisterEvent("GROUP_ROSTER_UPDATE");
 				self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE");
 				self:RegisterEvent("CHAT_MSG_ADDON");
-				self:RegisterEvent("PLAYER_REGEN_ENABLED");
+				self:RegisterEvent("PLAYER_REGEN_DISABLED");
 				self:RegisterEvent("CHAT_MSG_MONSTER_YELL");
 				self:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -4774,7 +4774,7 @@
 							end
 						elseif RECORDS[name] ~= nil then
 							CEPGP_print("Are you sure you would like to restore guild EPGP standings from record [" .. name .. "]?");
-							CEPGP_print("self action CANNOT be undone. Press confirm again to restore.");
+							CEPGP_print("This action CANNOT be undone. Press confirm again to restore.");
 							CEPGP_confirmrestore = true;
 						else
 							CEPGP_print("Record [" .. name .. "] could not be found", true);
@@ -4789,7 +4789,7 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForDrag("LeftButton");
-				CEPGP_guild_log_restore_desc:SetText("Select the record you would like to restore\n\n|c00FF0000Make sure self is what you want to do.\nself will overwrite ALL current guild EPGP\nstandings with the record.");
+				CEPGP_guild_log_restore_desc:SetText("Select the record you would like to restore\n\n|c00FF0000Make sure this is what you want to do.\nThis will overwrite ALL current guild EPGP\nstandings with the record.");
 			</OnLoad>
 			<OnDragStart>
 				self:StartMoving();
@@ -5484,7 +5484,7 @@
 							CEPGP_print("EPGP traffic wiped");
 							CEPGP_traffic_clear = false;
 						else
-							CEPGP_print("You are trying to clear your EPGP traffic log. self action cannot be reversed.");
+							CEPGP_print("You are trying to clear your EPGP traffic log. This action cannot be reversed.");
 							CEPGP_print("Press Clear EPGP traffic again to confirm");
 							CEPGP_traffic_clear = true;
 						end
@@ -5772,7 +5772,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="CEPGP_debuginfo_text" inherits="GameFontNormal" text="Copy and paste self string into your github report">
+				<FontString name="CEPGP_debuginfo_text" inherits="GameFontNormal" text="Copy and paste this string into your github report">
 					<Anchors>
 						<Anchor point="TOP">
 							<Offset>
@@ -5906,7 +5906,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				CEPGP_notice_text:SetText("Thank you for choosing to use Classic EPGP!\nI hope that you enjoy using self addon and I hope that it helps your guild\nhow ever you end up using it.\n\nJust one thing you should know - self addon needs to have\nfull control over your officer notes to maintain EPGP records.\nMeaning, as self addon attempts to maintain your records, it will overwrite\nany existing officer notes. Similarly, if you want your guild members to\nbe able to see their EP and GP values, they need to be able to see\nofficer notes too. Essentially, the addon can only see what you can see.\n\nself addon is designed and really does work best if your\nyour whole guild (or at least your raid team) has it installed.\nself will provide you with functions like loot council support\nand being able to see what items your raid members are wearing\nwhen you're distributing items.\n\nI hope you enjoy using the addon and if you have any feature requests or\nfind a bug, please submit a ticket on the addon GitHub page:\ngithub.com/Alumian/CEPGP");
+				CEPGP_notice_text:SetText("Thank you for choosing to use Classic EPGP!\nI hope that you enjoy using this addon and I hope that it helps your guild\nhow ever you end up using it.\n\nJust one thing you should know - this addon needs to have\nfull control over your officer notes to maintain EPGP records.\nMeaning, as this addon attempts to maintain your records, it will overwrite\nany existing officer notes. Similarly, if you want your guild members to\nbe able to see their EP and GP values, they need to be able to see\nofficer notes too. Essentially, the addon can only see what you can see.\n\nself addon is designed and really does work best if your\nyour whole guild (or at least your raid team) has it installed.\nself will provide you with functions like loot council support\nand being able to see what items your raid members are wearing\nwhen you're distributing items.\n\nI hope you enjoy using the addon and if you have any feature requests or\nfind a bug, please submit a ticket on the addon GitHub page:\ngithub.com/Alumian/CEPGP");
 				CEPGP_notice_frame:SetWidth(CEPGP_notice_text:GetStringWidth()+25);
 			</OnLoad>
 			<OnMouseDown>
