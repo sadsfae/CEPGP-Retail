@@ -4706,7 +4706,7 @@
 				<Scripts>
 					<OnShow>
 						CEPGP_UIDropDownMenu_Initialize(self, CEPGP_initRestoreDropdown);
-						UIDropDownMenu_SetWidth(250, CEPGP_restoreDropdown);
+						UIDropDownMenu_SetWidth(self, 250);
 					</OnShow>
 				</Scripts>
 			</Button>
