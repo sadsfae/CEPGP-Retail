@@ -3785,12 +3785,13 @@
 				self:RegisterEvent("CHAT_MSG_WHISPER");
 				self:RegisterEvent("ADDON_LOADED");
 				self:RegisterEvent("GUILD_ROSTER_UPDATE");
-				self:RegisterEvent("RAID_ROSTER_UPDATE");
-				self:RegisterEvent("COMBAT_LOG_EVENT");
+				self:RegisterEvent("GROUP_ROSTER_UPDATE");
 				self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE");
 				self:RegisterEvent("CHAT_MSG_ADDON");
 				self:RegisterEvent("PLAYER_REGEN_ENABLED");
 				self:RegisterEvent("CHAT_MSG_MONSTER_YELL");
+				self:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 			</OnLoad>
 			<OnMouseDown>
 				self:StartMoving();

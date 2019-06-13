@@ -218,7 +218,7 @@ function CEPGP_UpdateRaidScrollBar()
 	for x = 1, tSize do
 		name, _, group, _, class = GetRaidRosterInfo(x);
 		local a = CEPGP_getGuildInfo(name);
-		if CEPGP_tContains(CEPGP_roster, name, true) then
+		if CEPGP_roster[name] then	--Fails check for same player because GetGuildInfo returns player-realm whereas this check is only for player name
 			rank = CEPGP_roster[name][3];
 			rankIndex = CEPGP_roster[name][4];
 			offNote = CEPGP_roster[name][5];

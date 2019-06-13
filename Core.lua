@@ -67,7 +67,7 @@ TRAFFIC = {};
 function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 	if event == "ADDON_LOADED" and arg1 == "CEPGP" then --arg1 = addon name
 		CEPGP_initialise();
-	elseif event == "GUILD_ROSTER_UPDATE" or event == "RAID_ROSTER_UPDATE" then
+	elseif event == "GUILD_ROSTER_UPDATE" or event == "GROUP_ROSTER_UPDATE" then
 		CEPGP_rosterUpdate(event);
 		
 	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == CEPGP_standby_whisper_msg and CEPGP_standby_manual and CEPGP_standby_accept_whispers then
@@ -83,9 +83,9 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 		(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
 			CEPGP_handleComms(event, arg1, arg2);
 	
-	elseif event == "COMBAT_LOG_EVENT" then
+	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, action, _, _, _, _, _, _, name = CombatLogGetCurrentEventInfo();
-		if action == "PARTY_KILL" then
+		if action == "UNIT_DIED" then
 			if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
 				CEPGP_handleCombat(name);
 				return;
@@ -274,12 +274,7 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 		if total > 0 then
 			for i = 1, total do
 				local name = GetRaidRosterInfo(i);
-				for k, v in pairs(CEPGP_roster) do
-					print(k);
-					print(v[1]);
-				end
 				if CEPGP_tContains(CEPGP_roster, name, true) then
-					print("abc");
 					local index = CEPGP_getGuildInfo(name);
 					if not CEPGP_checkEPGP(CEPGP_roster[name][5]) then
 						GuildRosterSetOfficerNote(index, amount .. "," .. BASEGP);

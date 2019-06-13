@@ -423,13 +423,14 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_UpdateRaidScrollBar();
 		end
 		CEPGP_UpdateStandbyScrollBar();
-	elseif event == "RAID_ROSTER_UPDATE" then
+	elseif event == "GROUP_ROSTER_UPDATE" then
 		CEPGP_vInfo = {};
 		CEPGP_SendAddonMsg("version-check", "RAID");
 		CEPGP_updateGuild();
 		CEPGP_raidRoster = {};
 		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
+			if not name then break; end
 			if CEPGP_tContains(CEPGP_standbyRoster, name) then
 				for k, v in pairs(CEPGP_standbyRoster) do
 					if v == name then
@@ -609,7 +610,8 @@ function CEPGP_nameToIndex(name)
 end
 
 function CEPGP_getEPGP(offNote, index, name)
-	if not CEPGP_checkEPGP(offNote) then
+	if not index then return 0, 1; end --Happens when character logs initiailly
+	if not CEPGP_checkEPGP(offNote) and offNote ~= "" then
 		if not index then return 0, BASEGP; end
 		local EP, GP;
 		--Error with player's EPGP has been detected and will attempt to be salvaged
@@ -671,6 +673,7 @@ function CEPGP_getEPGP(offNote, index, name)
 		end
 	end
 	local EP, GP = nil;
+	if offNote == "" then return 0, 1; end
 	EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 	GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
 	return EP, GP;
