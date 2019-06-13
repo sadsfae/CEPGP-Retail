@@ -224,7 +224,7 @@ function CEPGP_initRestoreDropdown(frame, level, menuList)
 	end
 end
 
-function CEPGP_restoreDropdownOnClick()
+function CEPGP_restoreDropdownOnClick(self, arg1, arg2, checked)
 	if (not checked) then
 		UIDropDownMenu_SetSelectedName(CEPGP_restoreDropdown, self:GetText());
 	end
