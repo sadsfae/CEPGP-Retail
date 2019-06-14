@@ -4766,8 +4766,8 @@
 									end
 								end
 								CEPGP_print("Guild EPGP standings have been restored from record [" .. name .. "]");
-								TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "EPGP standings restored from log [" .. name .. "]"};
-								CEPGP_ShareTraffic("Guild", UnitName("player"), "EPGP standings restored from log [" .. name .. "]");
+								TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", CEPGP_UnitFullName("player"), "EPGP standings restored from log [" .. name .. "]"};
+								CEPGP_ShareTraffic("Guild", CEPGP_UnitFullName("player"), "EPGP standings restored from log [" .. name .. "]");
 								CEPGP_UpdateTrafficScrollBar();
 								CEPGP_confirmrestore = false;
 								HideUIPanel(CEPGP_restore_guild_logs);

@@ -64,7 +64,7 @@ TRAFFIC = {};
 
 
 --[[ EVENT AND COMMAND HANDLER ]]--
-function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
+function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 	if event == "ADDON_LOADED" and arg1 == "CEPGP" then --arg1 = addon name
 		CEPGP_initialise();
 	elseif event == "GUILD_ROSTER_UPDATE" or event == "GROUP_ROSTER_UPDATE" then
@@ -77,7 +77,6 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 			CEPGP_addToStandby(arg2);
 		end
 			
-	
 	elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!need" and CEPGP_distributing) or
 		(event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info") or
 		(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
@@ -330,13 +329,13 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 	end
 	if msg then
 		CEPGP_SendAddonMsg("update");
-		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Add Raid EP +" .. amount .. " - " .. encounter};
-		CEPGP_ShareTraffic("Raid", UnitName("player"), "Add Raid EP +" .. amount .. " - " .. encounter);
+		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", CEPGP_UnitFullName("player"), "Add Raid EP +" .. amount .. " - " .. encounter};
+		CEPGP_ShareTraffic("Raid", CEPGP_UnitFullName("player"), "Add Raid EP +" .. amount .. " - " .. encounter);
 		SendChatMessage(msg, "RAID", CEPGP_LANGUAGE);
 	else
 		CEPGP_SendAddonMsg("update");
-		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Add Raid EP +" .. amount};
-		CEPGP_ShareTraffic("Raid", UnitName("player"), "Add Raid EP +" .. amount);
+		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", CEPGP_UnitFullName("player"), "Add Raid EP +" .. amount};
+		CEPGP_ShareTraffic("Raid", CEPGP_UnitFullName("player"), "Add Raid EP +" .. amount);
 		SendChatMessage(amount .. " EP awarded to all raid members", CHANNEL, CEPGP_LANGUAGE);
 	end
 	CEPGP_UpdateTrafficScrollBar();
@@ -401,8 +400,8 @@ function CEPGP_addGuildEP(amount)
 		end		
 	end
 	CEPGP_SendAddonMsg("update");
-	TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Add Guild EP +" .. amount};
-	CEPGP_ShareTraffic("Guild", UnitName("player"), "Add Guild EP +" .. amount);
+	TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", CEPGP_UnitFullName("player"), "Add Guild EP +" .. amount};
+	CEPGP_ShareTraffic("Guild", CEPGP_UnitFullName("player"), "Add Guild EP +" .. amount);
 	CEPGP_UpdateTrafficScrollBar();
 	SendChatMessage(amount .. " EP awarded to all guild members", CHANNEL, CEPGP_LANGUAGE);
 end
@@ -452,7 +451,7 @@ function CEPGP_addGP(player, amount, item, itemLink)
 		EP,GP = CEPGP_getEPGP(offNote);
 		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 			[1] = player,
-			[2] = UnitName("player"),
+			[2] = CEPGP_UnitFullName("player"),
 			[3] = "Add GP +" .. amount,
 			[4] = EP,
 			[5] = EP,
@@ -462,7 +461,7 @@ function CEPGP_addGP(player, amount, item, itemLink)
 		if itemLink then
 			TRAFFIC[CEPGP_ntgetn(TRAFFIC)][8] = itemLink;
 		end
-		CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount, EP, EP, GP, GP + amount, CEPGP_getItemID(CEPGP_getItemString(itemLink)));
+		CEPGP_ShareTraffic(player, CEPGP_UnitFullName("player"), "Add GP +" .. amount, EP, EP, GP, GP + amount, CEPGP_getItemID(CEPGP_getItemString(itemLink)));
 		CEPGP_UpdateTrafficScrollBar();
 		GP = tonumber(GP) + amount;
 		EP = tonumber(EP);
@@ -501,14 +500,14 @@ function CEPGP_addEP(player, amount)
 		EP,GP = CEPGP_getEPGP(offNote);
 		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 			[1] = player,
-			[2] = UnitName("player"),
+			[2] = CEPGP_UnitFullName("player"),
 			[3] = "Add EP +" .. amount,
 			[4] = EP,
 			[5] = EP + amount,
 			[6] = GP,
 			[7] = GP
 		};
-		CEPGP_ShareTraffic(player, UnitName("player"), "Add EP +" .. amount, EP, EP + amount, GP, GP);
+		CEPGP_ShareTraffic(player, CEPGP_UnitFullName("player"), "Add EP +" .. amount, EP, EP + amount, GP, GP);
 		CEPGP_UpdateTrafficScrollBar();
 		EP = tonumber(EP) + amount;
 		GP = tonumber(GP);
@@ -577,8 +576,8 @@ function CEPGP_decay(amount)
 		end
 	end
 	CEPGP_SendAddonMsg("update");
-	TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Decay EPGP -" .. amount .. "%"}; 
-	CEPGP_ShareTraffic("Guild", UnitName("player"), "Decay EPGP -" .. amount .. "%");
+	TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", CEPGP_UnitFullName("player"), "Decay EPGP -" .. amount .. "%"}; 
+	CEPGP_ShareTraffic("Guild", CEPGP_UnitFullName("player"), "Decay EPGP -" .. amount .. "%");
 	CEPGP_UpdateTrafficScrollBar();
 	SendChatMessage("Guild EPGP decayed by " .. amount .. "%", CHANNEL, CEPGP_LANGUAGE, CHANNEL);
 	
@@ -603,8 +602,8 @@ function CEPGP_resetAll()
 		end
 	end
 	CEPGP_SendAddonMsg("update");
-	TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Cleared EPGP standings"};
-	CEPGP_ShareTraffic("Guild", UnitName("player"), "Cleared EPGP standings");
+	TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", CEPGP_UnitFullName("player"), "Cleared EPGP standings"};
+	CEPGP_ShareTraffic("Guild", CEPGP_UnitFullName("player"), "Cleared EPGP standings");
 	CEPGP_UpdateTrafficScrollBar();
 	SendChatMessage("All EPGP standings have been cleared!", "GUILD", CEPGP_LANGUAGE);
 end

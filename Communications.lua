@@ -1,5 +1,5 @@
 function CEPGP_IncAddonMsg(message, sender)
-	if strfind(message, "CEPGP_distributing") and strfind(message, UnitName("player")) then
+	if strfind(message, "CEPGP_distributing") and strfind(message, CEPGP_UnitFullName("player")) then
 		local _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
 		if not slot then
 			slot = string.sub(message, strfind(message, "~")+1);
@@ -37,7 +37,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		end
 		
 		
-	elseif strfind(message, "receiving") and strfind(message, UnitName("player")) then
+	elseif strfind(message, "receiving") and strfind(message, CEPGP_UnitFullName("player")) then
 		local itemID;
 		local itemID2;
 		if strfind(message, " ") then
@@ -72,7 +72,7 @@ function CEPGP_IncAddonMsg(message, sender)
 			end
 			CEPGP_UpdateLootScrollBar();
 		end
-	elseif strfind(message, UnitName("player").."versioncheck") then
+	elseif strfind(message, CEPGP_UnitFullName("player").."versioncheck") then
 		
 		if CEPGP_vSearch == "GUILD" then
 			CEPGP_groupVersion[sender] = string.sub(message, strfind(message, " ")+1);
@@ -110,7 +110,7 @@ function CEPGP_IncAddonMsg(message, sender)
 				end
 			end
 		end
-	elseif strfind(message, "RaidAssistLoot") and sender ~= UnitName("player") then
+	elseif strfind(message, "RaidAssistLoot") and sender ~= CEPGP_UnitFullName("player") then
 		if strfind(message, "RaidAssistLootDist") then
 			local link = string.sub(message, 19, strfind(message, ",")-1);
 			local gp = string.sub(message, strfind(message, ",")+1, strfind(message, "\\")-1);
@@ -120,11 +120,11 @@ function CEPGP_IncAddonMsg(message, sender)
 		end
 		
 		
-	elseif strfind(message, "!need") and sender ~= UnitName("player") then-- and IsRaidOfficer()  then
+	elseif strfind(message, "!need") and sender ~= CEPGP_UnitFullName("player") then-- and IsRaidOfficer()  then
 		local arg2 = string.sub(message, strfind(message, ",")+1, strfind(message, "`")-1); --!need,sendername`itemID
 		table.insert(CEPGP_responses, arg2);
 		local slot = nil;
-		CEPGP_DistID = string.sub(message, 7+string.len(UnitName("player"))+1, string.len(message));
+		CEPGP_DistID = string.sub(message, 7+string.len(CEPGP_UnitFullName("player"))+1, string.len(message));
 		if CEPGP_DistID then
 			_, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
 		end
@@ -134,11 +134,11 @@ function CEPGP_IncAddonMsg(message, sender)
 		else
 			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-nil~nil");
 		end
-	elseif strfind(message, "STANDBYEP"..UnitName("player")) then
+	elseif strfind(message, "STANDBYEP"..CEPGP_UnitFullName("player")) then
 		CEPGP_print(string.sub(message, strfind(message, ",")+1));
-	elseif strfind(message, "!info"..UnitName("player")) then
-		CEPGP_print(string.sub(message, 5+string.len(UnitName("player"))+1));
-	elseif message == UnitName("player").."-import" then
+	elseif strfind(message, "!info"..CEPGP_UnitFullName("player")) then
+		CEPGP_print(string.sub(message, 5+string.len(CEPGP_UnitFullName("player"))+1));
+	elseif message == CEPGP_UnitFullName("player").."-import" then
 		local lane;
 		if CEPGP_raidRoster[arg4] then
 			lane = "RAID";
@@ -196,7 +196,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		end
 		CEPGP_SendAddonMsg(arg4.."-impresponse!COMPLETE~", lane);
 		
-	elseif strfind(message, UnitName("player")) and strfind(message, "-impresponse!") then
+	elseif strfind(message, CEPGP_UnitFullName("player")) and strfind(message, "-impresponse!") then
 		local option = string.sub(message, strfind(message, "!")+1, strfind(message, "~")-1);
 		
 		if option == "SLOTWEIGHTS" or option == "STANDBYRANKS" or option == "EPVALS" or option == "AUTOEP" or option == "OVERRIDE" then
@@ -275,7 +275,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 	
 	elseif strfind(message, "CEPGP_TRAFFIC") then
-		if sender == UnitName("player") then return; end
+		if sender == CEPGP_UnitFullName("player") then return; end
 		local player = string.sub(message, 21, strfind(message, "ISSUER")-1);
 		local issuer = string.sub(message, strfind(message, "ISSUER")+6, strfind(message, "ACTION")-1);
 		local action = string.sub(message, strfind(message, "ACTION")+6, strfind(message, "EPB")-1);
@@ -304,8 +304,10 @@ function CEPGP_SendAddonMsg(message, channel)
 		if channel == "GUILD" and IsInGuild() then
 			C_ChatInfo.SendAddonMessage("CEPGP", message, string.upper(channel));
 		end
-	elseif UnitInRaid("player") then
+	elseif IsInRaid("player") then --Player is in a raid group
 		C_ChatInfo.SendAddonMessage("CEPGP", message, "RAID");
+	elseif GetNumGroupMembers() > 0 and not IsInRaid("player") then --Player is in a party but not a raid
+		C_ChatInfo.SendAddonMessage("CEPGP", message, "PARTY");
 	end
 end
 

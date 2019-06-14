@@ -20,6 +20,8 @@ function CEPGP_handleComms(event, arg1, arg2)
 			if not slot then
 				CEPGP_print("Unable to retrieve item information from the server. You will not see what the recipients are currently using", true);
 			end
+			--	Sends an addon message to the person who whispered !need to me
+			--	See Communications.lua:2 to continue this chain
 			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot);
 			local EP, GP = nil;
 			local inGuild = false;
@@ -180,7 +182,7 @@ function CEPGP_handleCombat(name, except)
 	local EP;
 	local isLead;
 	for i = 1, GetNumGroupMembers() do
-		if UnitName("player") == GetRaidRosterInfo(i) then
+		if CEPGP_UnitFullName("player") == GetRaidRosterInfo(i) then
 			_, isLead = GetRaidRosterInfo(i);
 		end
 	end
@@ -201,8 +203,8 @@ function CEPGP_handleCombat(name, except)
 				end
 				
 				if STANDBYEP then
-					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule};
-					CEPGP_ShareTraffic("Guild", UnitName("Player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule);
+					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", CEPGP_UnitFullName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule};
+					CEPGP_ShareTraffic("Guild", CEPGP_UnitFullName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule);
 					CEPGP_UpdateTrafficScrollBar();
 					if CEPGP_standby_byrank then
 						for k, v in pairs(CEPGP_roster) do -- The following module handles standby EP

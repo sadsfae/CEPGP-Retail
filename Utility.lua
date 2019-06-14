@@ -80,7 +80,8 @@ function CEPGP_initialise()
 	tinsert(UISpecialFrames, "CEPGP_override");
 	tinsert(UISpecialFrames, "CEPGP_traffic");
 	
-	CEPGP_SendAddonMsg("version-check");
+	C_ChatInfo.RegisterAddonMessagePrefix("CEPGP"); --Registers CEPGP for use in the addon comms environment
+	CEPGP_SendAddonMsg("version-check", "GUILD");
 	DEFAULT_CHAT_FRAME:AddMessage("|c00FFC100Classic EPGP Version: " .. CEPGP_VERSION .. " Loaded|r");
 	DEFAULT_CHAT_FRAME:AddMessage("|c00FFC100CEPGP: Currently reporting to channel - " .. CHANNEL .. "|r");
 	
@@ -1007,6 +1008,12 @@ function CEPGP_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level
 		frame.displayMode = "MENU";
 	end
 
+end
+
+function CEPGP_UnitFullName(unit)
+	if not unit then return; end
+	local name, realm = UnitFullName(unit);
+	return name .. "-" .. realm;
 end
 
 function CEPGP_getDebugInfo()

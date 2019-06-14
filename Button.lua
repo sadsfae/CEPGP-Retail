@@ -203,7 +203,7 @@ function CEPGP_distribute_popup_OnEvent(event)
 	if event == "CHAT_MSG_LOOT" then
 		CEPGP_distPlayer = string.sub(arg1, 0, string.find(arg1, " ")-1);
 		if CEPGP_distPlayer == "You" then
-			CEPGP_distPlayer = UnitName("player");
+			CEPGP_distPlayer = CEPGP_UnitFullName("player");
 		end
 	end
 	if CEPGP_distributing then
