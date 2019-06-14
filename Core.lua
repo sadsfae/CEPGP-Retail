@@ -115,6 +115,7 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4)
 			elseif arg2 == "High Priest Thekal" and not (CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] or CEPGP_THEKAL_PARAMS["ZATH_DEAD"]) then
 				CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] = false;
 			end
+		end
 		
 		--[[elseif arg1 == "%s casts Destroy Egg" then --Razorgore the Untamed
 			CEPGP_kills = CEPGP_kills + 1;
