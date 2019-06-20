@@ -135,6 +135,9 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 		
 	elseif (event == "CHAT_MSG_ADDON") then
 		if (arg1 == "CEPGP")then
+			if string.find(arg4, "-") then
+				arg4 = string.sub(arg4, 0, string.find(arg4, "-")-1);
+			end
 			CEPGP_IncAddonMsg(arg2, arg4);
 		end
 	elseif event == "PLAYER_REGEN_DISABLED" then -- Player has started combat
