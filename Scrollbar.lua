@@ -311,6 +311,9 @@ function CEPGP_UpdateVersionScrollBar()
 	if CEPGP_vSearch == "GUILD" then
 		for x = 1, tSize do
 			name, _, _, _, class, _, _, _, online = GetGuildRosterInfo(x);
+			if string.find(name, "-") then
+				name = string.sub(name, 0, string.find(name, "-")-1);
+			end
 			t[x] = {
 				[1] = name,
 				[2] = class,
@@ -320,6 +323,9 @@ function CEPGP_UpdateVersionScrollBar()
 	else
 		for x = 1, tSize do
 			name, _, group, _, class, _, _, online = GetRaidRosterInfo(x);
+			if string.find(name, "-") then
+				name = string.sub(name, 0, string.find(name, "-")-1);
+			end
 			t[x] = {
 				[1] = name,
 				[2] = class,

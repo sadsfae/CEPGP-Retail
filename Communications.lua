@@ -1,9 +1,6 @@
 --This function gets run twice. Once by the loot master when someone whispers !need
 --and again by raid assists when the loot master's addon notifies theirs of the !need response
 function CEPGP_IncAddonMsg(message, sender)
-	if string.find(arg2, "-") then
-		sender = string.sub(sender, 0, string.find(sender, "-")-1);
-	end
 	if strfind(message, "CEPGP_distributing") and strfind(message, UnitName("player")) and strfind(message, GetRealmName()) then
 		--Recipient should see this
 		local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
