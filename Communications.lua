@@ -295,6 +295,9 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 	
 	elseif strfind(message, "CEPGP_TRAFFIC") then
+		if string.find(sender, "-") then
+			sender = string.sub(sender, 0, string.find(sender, "-")-1);
+		end
 		if sender == UnitName("player") then return; end
 		local player = string.sub(message, 21, strfind(message, "ISSUER")-1);
 		local issuer = string.sub(message, strfind(message, "ISSUER")+6, strfind(message, "ACTION")-1);
