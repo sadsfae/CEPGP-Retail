@@ -39,17 +39,37 @@
 		<Size>
 			<AbsDimension x="420" y="15"/>
 		</Size>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentIcon">
+					<Size>
+						<AbsDimension x="15" y="15" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="390" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentIcon2">
+					<Size>
+						<AbsDimension x="15" y="15" />
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
 		<Frames>
 			<Button name="$parentTex">
 				<Size>
 					<AbsDimension x="15" y="15" />
 				</Size>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-						<Offset>
-							<AbsDimension x="390" y="0" />
-						</Offset>
-					</Anchor>
+					<Anchor point="CENTER" relativeTo="$parentIcon" relativePoint="CENTER" />
 				</Anchors>
 			</Button>
 			<Button name="$parentTex2">
@@ -57,11 +77,7 @@
 					<AbsDimension x="15" y="15" />
 				</Size>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentTex" relativePoint="RIGHT">
-						<Offset>
-							<AbsDimension x="0" y="0" />
-						</Offset>
-					</Anchor>
+					<Anchor point="CENTER" relativeTo="$parentIcon2" relativePoint="CENTER" />
 				</Anchors>
 			</Button>
 		</Frames>

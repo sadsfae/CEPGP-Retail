@@ -95,10 +95,6 @@ function CEPGP_calcGP(link, quantity, id)
 	if id then
 		name, link, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(id);
 	end
-	--[[if itemsIndex[name] then
-		ilvl = itemsIndex[name];
-	end]]
-	--ilvl = itemsIndex[name];
 	
 	if not ilvl then ilvl = 0; end
 	for k, v in pairs(OVERRIDE_INDEX) do
@@ -107,12 +103,6 @@ function CEPGP_calcGP(link, quantity, id)
 		end
 	end
 	local found = false;
-	--[[for k, v in pairs(itemsIndex) do
-		if name == k then
-			ilvl = v;
-			found = true;
-		end
-	end]]
 	--[[if not found then
 		if ((slot ~= "" and level == 60 and rarity > 3) or (slot == "" and rarity > 3))
 			and (itemType ~= "Blacksmithing" and itemType ~= "Tailoring" and itemType ~= "Alchemy" and itemType ~= "Leatherworking"
@@ -405,6 +395,9 @@ function CEPGP_rosterUpdate(event)
 		end
 		for i = 1, GetNumGuildMembers() do
 			local name, rank, rankIndex, _, class, _, _, officerNote = GetGuildRosterInfo(i);
+			if string.find(name, "-") then
+				name = string.sub(name, 0, string.find(name, "-")-1);
+			end
 			if name then
 				local EP, GP = CEPGP_getEPGP(officerNote, i, name);
 				local PR = math.floor((EP/GP)*100)/100;
@@ -1008,12 +1001,6 @@ function CEPGP_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level
 		frame.displayMode = "MENU";
 	end
 
-end
-
-function CEPGP_UnitFullName(unit)
-	if not unit then return; end
-	local name, realm = UnitFullName(unit);
-	return name .. "-" .. realm;
 end
 
 function CEPGP_getDebugInfo()

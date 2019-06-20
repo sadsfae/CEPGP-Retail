@@ -40,7 +40,7 @@ end
 function CEPGP_announce(link, x, slotNum, quantity)
 	if (GetLootMethod() == "master" and CEPGP_isML() == 0) or CEPGP_debugMode then
 		local iString = CEPGP_getItemString(link);
-		local name, _, _, _, _, _, _, slot, tex = GetItemInfo(iString);
+		local name, _, _, _, _, _, _, _, slot, tex = GetItemInfo(iString);
 		local id = CEPGP_getItemID(iString);
 		CEPGP_itemsTable = {};
 		CEPGP_distItemLink = link;
@@ -50,10 +50,10 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_lootSlot = slotNum;
 		CEPGP_responses = {};
 		CEPGP_UpdateLootScrollBar();
-		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..CEPGP_UnitFullName("player"));
+		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"), "RAID");
 		local rank = 0;
 		for i = 1, GetNumGroupMembers() do
-			if CEPGP_UnitFullName("player") == GetRaidRosterInfo(i) then
+			if UnitName("player") == GetRaidRosterInfo(i) then
 				_, rank = GetRaidRosterInfo(i);
 			end
 		end
@@ -80,11 +80,10 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
 		CEPGP_distribute:Show();
 		CEPGP_loot:Hide();
-		CEPGP_print("asd" .. link);
 		_G["CEPGP_distribute_item_name"]:SetText(link);
 		_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name) end);
 		_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() GameTooltip:SetOwner(_G["CEPGP_distribute_item_tex"], "ANCHOR_TOPLEFT") GameTooltip:SetHyperlink(iString) GameTooltip:Show() end);
-		_G["CEPGP_distribute_item_texture"]:SetTexture({bgFile = tex,});
+		_G["CEPGP_distribute_item_texture"]:SetTexture(tex);
 		_G["CEPGP_distribute_item_tex"]:SetScript('OnLeave', function() GameTooltip:Hide() end);
 		_G["CEPGP_distribute_GP_value"]:SetText(gp);
 		CEPGP_distributing = true;

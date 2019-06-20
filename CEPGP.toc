@@ -1,4 +1,4 @@
-## Interface:30300
+## Interface:11302
 ## Title: Classic EPGP
 ## Author: Alumian
 ## Notes: Classic EPGP handles your guild's EPGP and master loot distribution. Usage: /CEPGP or /bce for options

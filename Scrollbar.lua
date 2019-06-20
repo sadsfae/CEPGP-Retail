@@ -62,6 +62,7 @@ function CEPGP_UpdateLootScrollBar()
 				EP = t[yoffset][5];
 				GP = t[yoffset][6];
 				PR = t[yoffset][7];
+				local link;
 				local iString = nil;
 				local iString2 = nil;
 				local tex = nil;
@@ -69,10 +70,10 @@ function CEPGP_UpdateLootScrollBar()
 				if CEPGP_itemsTable[name]then
 					if CEPGP_itemsTable[name][1] ~= nil then
 						iString = CEPGP_itemsTable[name][1].."|r";
-						_, _, _, _, _, _, _, _, tex = GetItemInfo(iString);
+						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(iString);
 						if CEPGP_itemsTable[name][2] ~= nil then
 							iString2 = CEPGP_itemsTable[name][2].."|r";
-							_, _, _, _, _, _, _, _, tex2 = GetItemInfo(iString2);
+							_, _, _, _, _, _, _, _, _, tex2 = GetItemInfo(iString2);
 						end
 					end
 				end
@@ -82,8 +83,6 @@ function CEPGP_UpdateLootScrollBar()
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
 				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
-				tex = {bgFile = tex,};
-				tex2 = {bgFile = tex2,};
 				_G["LootDistButton" .. y]:Show();
 				_G["LootDistButton" .. y .. "Info"]:SetText(name);
 				_G["LootDistButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -97,8 +96,6 @@ function CEPGP_UpdateLootScrollBar()
 				_G["LootDistButton" .. y .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
 				_G["LootDistButton" .. y .. "PR"]:SetText(math.floor((EP/GP)*100)/100);
 				_G["LootDistButton" .. y .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["LootDistButton" .. y .. "Tex"]:SetBackdrop(tex);
-				_G["LootDistButton" .. y .. "Tex2"]:SetBackdrop(tex2);
 				_G["LootDistButton" .. y .. "Tex"]:SetScript('OnLeave', function()
 																		GameTooltip:Hide()
 																	end);
@@ -107,22 +104,26 @@ function CEPGP_UpdateLootScrollBar()
 																	end);
 				if iString then
 					_G["LootDistButton" .. y .. "Tex"]:SetScript('OnEnter', function()	
-																			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
-																			GameTooltip:SetHyperlink(iString)
-																			GameTooltip:Show()
+																			GameTooltip:SetOwner(_G["LootDistButton" .. y .. "Tex"], "ANCHOR_TOPLEFT");
+																			GameTooltip:SetHyperlink(iString);
+																			GameTooltip:Show();
 																		end);
+					_G["LootDistButton" .. y .. "Icon"]:SetTexture(tex);
 					if iString2 then
 						_G["LootDistButton" .. y .. "Tex2"]:SetScript('OnEnter', function()	
-														GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+														GameTooltip:SetOwner(_G["LootDistButton" .. y .. "Tex2"], "ANCHOR_TOPLEFT")
 														GameTooltip:SetHyperlink(iString2)
 														GameTooltip:Show()
 													end);				
+						_G["LootDistButton" .. y .. "Icon2"]:SetTexture(tex);
 					else
 						_G["LootDistButton" .. y .. "Tex2"]:SetScript('OnEnter', function() end);
+						_G["LootDistButton" .. y .. "Icon2"]:SetTexture(nil);
 					end
 				
 				else
 					_G["LootDistButton" .. y .. "Tex"]:SetScript('OnEnter', function() end);
+					_G["LootDistButton" .. y .. "Icon"]:SetTexture(nil);
 				end
 			end
 		else
@@ -218,7 +219,7 @@ function CEPGP_UpdateRaidScrollBar()
 	for x = 1, tSize do
 		name, _, group, _, class = GetRaidRosterInfo(x);
 		if name == UnitName("player") then
-			name = CEPGP_UnitFullName("player");
+			name = UnitName("player");
 		end
 		if CEPGP_roster[name] then	--Fails check for same player because GetGuildInfo returns player-realm whereas this check is only for player name
 			rank = CEPGP_roster[name][3];
@@ -266,6 +267,7 @@ function CEPGP_UpdateRaidScrollBar()
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
+				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
 				_G["RaidButton" .. y .. "Group"]:SetText(group);
 				_G["RaidButton" .. y .. "Group"]:SetTextColor(colour.r, colour.g, colour.b);
 				_G["RaidButton" .. y .. "Info"]:SetText(name);

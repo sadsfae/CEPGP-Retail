@@ -1,5 +1,6 @@
 function CEPGP_handleComms(event, arg1, arg2)
 	--arg1 = message; arg2 = sender
+	--print(arg2);
 	if event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!need" and CEPGP_distributing then
 		local duplicate = false;
 		for i = 1, table.getn(CEPGP_responses) do
@@ -11,7 +12,9 @@ function CEPGP_handleComms(event, arg1, arg2)
 			end
 		end
 		if not duplicate then
-			CEPGP_SendAddonMsg("!need,"..arg2.."`"..CEPGP_DistID);
+			if CEPGP_isML() == 0 then --If you are the master looter
+				CEPGP_SendAddonMsg("!need,"..arg2.."`"..CEPGP_DistID, "RAID"); --!need,playername`itemID (of the item being distributed) is sent for sharing with raid assist
+			end
 			table.insert(CEPGP_responses, arg2);
 			if CEPGP_debugMode then
 				CEPGP_print(arg2 .. " registered (!need)");
@@ -22,7 +25,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			end
 			--	Sends an addon message to the person who whispered !need to me
 			--	See Communications.lua:2 to continue this chain
-			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot);
+			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot, "RAID");
 			local EP, GP = nil;
 			local inGuild = false;
 			if CEPGP_tContains(CEPGP_roster, arg2, true) then
@@ -182,7 +185,7 @@ function CEPGP_handleCombat(name, except)
 	local EP;
 	local isLead;
 	for i = 1, GetNumGroupMembers() do
-		if CEPGP_UnitFullName("player") == GetRaidRosterInfo(i) then
+		if UnitName("player") == GetRaidRosterInfo(i) then
 			_, isLead = GetRaidRosterInfo(i);
 		end
 	end
@@ -203,8 +206,8 @@ function CEPGP_handleCombat(name, except)
 				end
 				
 				if STANDBYEP then
-					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", CEPGP_UnitFullName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule};
-					CEPGP_ShareTraffic("Guild", CEPGP_UnitFullName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule);
+					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule};
+					CEPGP_ShareTraffic("Guild", UnitName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule);
 					CEPGP_UpdateTrafficScrollBar();
 					if CEPGP_standby_byrank then
 						for k, v in pairs(CEPGP_roster) do -- The following module handles standby EP
@@ -318,7 +321,7 @@ function CEPGP_handleLoot(event, arg1, arg2)
 		if CEPGP_mode == "loot" then
 			CEPGP_cleanTable();
 			if CEPGP_isML() == 0 then
-				CEPGP_SendAddonMsg("RaidAssistLootClosed");
+				CEPGP_SendAddonMsg("RaidAssistLootClosed", "RAID");
 			end
 			HideUIPanel(CEPGP_frame);
 		end
@@ -351,7 +354,7 @@ function CEPGP_handleLoot(event, arg1, arg2)
 
 	elseif event == "LOOT_SLOT_CLEARED" then
 		if CEPGP_isML() == 0 then
-			CEPGP_SendAddonMsg("RaidAssistLootClosed");
+			CEPGP_SendAddonMsg("RaidAssistLootClosed", "RAID");
 		end
 		if CEPGP_distributing and arg1 == CEPGP_lootSlot then
 			if CEPGP_distPlayer ~= "" then

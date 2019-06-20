@@ -1029,17 +1029,17 @@
 							</Anchors>
 						</FontString>
 						<Texture name="CEPGP_distribute_item_texture">
-						<Size>
-							<AbsDimension x="30" y="30" />
-						</Size>
-						<Anchors>
-							<Anchor point="LEFT" relativeTo="CEPGP_distribute_item_name">
-								<Offset>
-									<AbsDimension x="-32" y="5" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Texture>
+							<Size>
+								<AbsDimension x="30" y="30" />
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT" relativeTo="CEPGP_distribute_item_name">
+									<Offset>
+										<AbsDimension x="-32" y="5" />
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</Texture>
 					</Layer>
 				</Layers>
 				<Frames>
@@ -4766,8 +4766,8 @@
 									end
 								end
 								CEPGP_print("Guild EPGP standings have been restored from record [" .. name .. "]");
-								TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", CEPGP_UnitFullName("player"), "EPGP standings restored from log [" .. name .. "]"};
-								CEPGP_ShareTraffic("Guild", CEPGP_UnitFullName("player"), "EPGP standings restored from log [" .. name .. "]");
+								TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "EPGP standings restored from log [" .. name .. "]"};
+								CEPGP_ShareTraffic("Guild", UnitName("player"), "EPGP standings restored from log [" .. name .. "]");
 								CEPGP_UpdateTrafficScrollBar();
 								CEPGP_confirmrestore = false;
 								HideUIPanel(CEPGP_restore_guild_logs);
