@@ -361,7 +361,6 @@ function CEPGP_addGuildEP(amount)
 				offNote = CEPGP_roster[name][5];
 				index = CEPGP_roster[name][1];
 				if offNote == "" or offNote == "Click here to set an Officer's Note" then
-					CEPGP_print("Initialising EPGP values for " .. name);
 					GuildRosterSetOfficerNote(index, amount .. "," .. BASEGP);
 				else
 					EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
@@ -387,7 +386,6 @@ function CEPGP_addGuildEP(amount)
 				offNote = CEPGP_roster[name][5];
 				index = CEPGP_roster[name][1];
 				if offNote == "" or offNote == "Click here to set an Officer's Note" then
-					CEPGP_print("Initialising EPGP values for " .. name);
 					GuildRosterSetOfficerNote(index, amount .. "," .. BASEGP);
 				else
 					EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
@@ -429,7 +427,6 @@ function CEPGP_addStandbyEP(player, amount, boss)
 		EP = 0;
 	end
 	if offNote == "" or offNote == "Click here to set an Officer's Note" then
-		CEPGP_print("Initialising EPGP values for " .. CEPGP_roster[player][1]);
 		GuildRosterSetOfficerNote(CEPGP_roster[player][1], EP .. "," .. BASEGP);
 	else
 		GuildRosterSetOfficerNote(CEPGP_roster[player][1], EP .. "," .. GP);
@@ -449,7 +446,6 @@ function CEPGP_addGP(player, amount, item, itemLink)
 		offNote = CEPGP_roster[player][5];
 		index = CEPGP_roster[player][1];
 		if offNote == "" or offNote == "Click here to set an Officer's Note" then
-			CEPGP_print("Initialising EPGP values for " .. player);
 			GuildRosterSetOfficerNote(index, "0," .. BASEGP);
 			offNote = "0," .. BASEGP;
 		end
@@ -498,7 +494,6 @@ function CEPGP_addEP(player, amount)
 		offNote = CEPGP_roster[player][5];
 		index = CEPGP_roster[player][1];
 		if offNote == "" or offNote == "Click here to set an Officer's Note" then
-			CEPGP_print("Initialising EPGP values for " .. player);
 			GuildRosterSetOfficerNote(index, "0," .. BASEGP);
 			offNote = "0," .. BASEGP;
 		end
