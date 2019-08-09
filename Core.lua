@@ -48,6 +48,7 @@ STANDBYEP = false;
 STANDBYOFFLINE = false;
 CEPGP_standby_accept_whispers = false;
 CEPGP_standby_whisper_msg = "standby";
+CEPGP_keyword = nil;
 CEPGP_standby_byrank = true;
 CEPGP_standby_manual = false;
 CEPGP_notice = false;
@@ -77,7 +78,7 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 			CEPGP_addToStandby(arg2);
 		end
 			
-	elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!need" and CEPGP_distributing) or
+	elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == string.lower(CEPGP_keyword) and CEPGP_distributing) or
 		(event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info") or
 		(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
 			if string.find(arg2, "-") then

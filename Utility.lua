@@ -17,6 +17,9 @@ function CEPGP_initialise()
 	if BASEGP == nil then
 		BASEGP = 1;
 	end
+	if CEPGP_keyword == nil then
+		CEPGP_keyword = "!need";
+	end
 	if CEPGP_ntgetn(AUTOEP) == 0 then
 		for k, v in pairs(bossNameIndex) do
 			AUTOEP[k] = true;
@@ -911,6 +914,7 @@ function CEPGP_button_options_OnClick()
 	CEPGP_options_mod_edit:SetText(tostring(MOD));
 	CEPGP_options_coef_edit:SetText(tostring(COEF));
 	CEPGP_options_gp_base_edit:SetText(tostring(BASEGP));
+	CEPGP_options_keyword_edit:SetText(tostring(CEPGP_keyword));
 	if STANDBYEP then
 		CEPGP_options_standby_ep_check:SetChecked(true);
 	else

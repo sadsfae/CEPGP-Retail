@@ -1,6 +1,6 @@
 function CEPGP_handleComms(event, arg1, arg2)
 	--arg1 = message; arg2 = sender
-	if event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!need" and CEPGP_distributing then
+	if event == "CHAT_MSG_WHISPER" and string.lower(arg1) == string.lower(CEPGP_keyword) and CEPGP_distributing then
 		local duplicate = false;
 		for i = 1, table.getn(CEPGP_responses) do
 			if CEPGP_responses[i] == arg2 then

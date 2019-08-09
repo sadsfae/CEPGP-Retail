@@ -169,6 +169,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		CEPGP_SendAddonMsg(sender.."-impresponse!COEF~"..COEF, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!BASEGP~"..BASEGP, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!WHISPERMSG~"..CEPGP_standby_whisper_msg, lane);
+		CEPGP_SendAddonMsg(sender.."-impresponse!KEYWORD~"..CEPGP_keyword, lane);
 		if STANDBYEP then
 			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYEP~1", lane);
 		else
@@ -244,6 +245,8 @@ function CEPGP_IncAddonMsg(message, sender)
 			local val = string.sub(message, strfind(message, "~")+1);
 			if option == "CHANNEL" then
 				CHANNEL = val;
+			elseif option == "KEYWORD" then
+				CEPGP_keyword = val;
 			elseif option == "MOD" then
 				MOD = tonumber(val);
 			elseif option == "COEF" then
