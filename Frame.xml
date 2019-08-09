@@ -1777,7 +1777,6 @@
 									BASEGP = tonumber(value);
 									CEPGP_print("Updated base GP");
 								end
-								SetGuildRosterShowOffline(true);
 								CEPGP_updateGuild();
 								if CanEditOfficerNote() then
 									for i = 1, GetNumGuildMembers() do
@@ -4583,36 +4582,19 @@
 						local name = CEPGP_guild_log_save_name:GetText();
 						CEPGP_updateGuild();
 						if RECORDS[name] == nil or (CEPGP_overwritelog and name == CEPGP_recordholder) then
-							if GetGuildRosterShowOffline() == nil then
-								SetGuildRosterShowOffline(true);
-								RECORDS[name] = {};
-								SortGuildRoster(name);
-								for i = 1, GetNumGuildMembers(), 1 do
-									local _, _, _, _, _, _, _, oNote = GetGuildRosterInfo(i);
-									RECORDS[name][GetGuildRosterInfo(i)] = oNote;
-								end
-								if CEPGP_overwritelog then
-									CEPGP_print("Record overwritten [" .. name .. "]");
-									CEPGP_overwritelog = false;
-								else
-									CEPGP_print("Record saved [" .. name .. "]");
-								end
-								SetGuildRosterShowOffline(false);
-								HideUIPanel(CEPGP_save_guild_logs);
-							else
-								RECORDS[name] = {};
-								for i = 1, GetNumGuildMembers(), 1 do
-									local _, _, _, _, _, _, _, oNote = GetGuildRosterInfo(i);
-									RECORDS[name][GetGuildRosterInfo(i)] = oNote;
-								end
-								if CEPGP_overwritelog and name == CEPGP_recordholder then
-									CEPGP_print("Record overwritten [" .. name .. "]");
-									CEPGP_overwritelog = false;
-								else
-									CEPGP_print("Record saved [" .. name .. "]");
-								end
-								HideUIPanel(CEPGP_save_guild_logs);
+							RECORDS[name] = {};
+							SortGuildRoster(name);
+							for i = 1, GetNumGuildMembers(), 1 do
+								local _, _, _, _, _, _, _, oNote = GetGuildRosterInfo(i);
+								RECORDS[name][GetGuildRosterInfo(i)] = oNote;
 							end
+							if CEPGP_overwritelog then
+								CEPGP_print("Record overwritten [" .. name .. "]");
+								CEPGP_overwritelog = false;
+							else
+								CEPGP_print("Record saved [" .. name .. "]");
+							end
+							HideUIPanel(CEPGP_save_guild_logs);
 						else
 							CEPGP_print("Record [" .. name .. "] already exists. Click confirm again to overwrite");
 							CEPGP_recordholder = name;
@@ -4744,34 +4726,16 @@
 						local name = UIDropDownMenu_GetSelectedName(CEPGP_restoreDropdown);
 						CEPGP_updateGuild();
 						if RECORDS[name] ~= nil and CEPGP_confirmrestore then
-							if GetGuildRosterShowOffline() == nil then
-								SetGuildRosterShowOffline(true);
-								for i = 1, GetNumGuildMembers(), 1 do
-									if RECORDS[name][GetGuildRosterInfo(i)] == nil then
-										GuildRosterSetOfficerNote(i, "0,"..BASEGP);
-									else
-										GuildRosterSetOfficerNote(i, RECORDS[name][GetGuildRosterInfo(i)]);
-									end
+							for i = 1, GetNumGuildMembers(), 1 do
+								if RECORDS[name][GetGuildRosterInfo(i)] == nil then
+									GuildRosterSetOfficerNote(i, "0,"..BASEGP);
+								else
+									GuildRosterSetOfficerNote(i, RECORDS[name][GetGuildRosterInfo(i)]);
 								end
-								SetGuildRosterShowOffline(false);
-								CEPGP_print("Guild EPGP standings have been restored from record [" .. name .. "]");
-								CEPGP_confirmrestore = false;
-								HideUIPanel(CEPGP_restore_guild_logs);
-							else
-								for i = 1, GetNumGuildMembers(), 1 do
-									if RECORDS[name][GetGuildRosterInfo(i)] == nil then
-										GuildRosterSetOfficerNote(i, "0,"..BASEGP);
-									else
-										GuildRosterSetOfficerNote(i, RECORDS[name][GetGuildRosterInfo(i)]);
-									end
-								end
-								CEPGP_print("Guild EPGP standings have been restored from record [" .. name .. "]");
-								TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "EPGP standings restored from log [" .. name .. "]"};
-								CEPGP_ShareTraffic("Guild", UnitName("player"), "EPGP standings restored from log [" .. name .. "]");
-								CEPGP_UpdateTrafficScrollBar();
-								CEPGP_confirmrestore = false;
-								HideUIPanel(CEPGP_restore_guild_logs);
 							end
+							CEPGP_print("Guild EPGP standings have been restored from record [" .. name .. "]");
+							CEPGP_confirmrestore = false;
+							HideUIPanel(CEPGP_restore_guild_logs);
 						elseif RECORDS[name] ~= nil then
 							CEPGP_print("Are you sure you would like to restore guild EPGP standings from record [" .. name .. "]?");
 							CEPGP_print("This action CANNOT be undone. Press confirm again to restore.");
