@@ -6,7 +6,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			if CEPGP_responses[i] == arg2 then
 				duplicate = true;
 				if CEPGP_debugMode then
-					CEPGP_print("Duplicate entry. " .. arg2 .. " not registered (!need)");
+					CEPGP_print("Duplicate entry. " .. arg2 .. " not registered (" .. CEPGP_keyword .. ")");
 				end
 			end
 		end
@@ -16,7 +16,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			end
 			table.insert(CEPGP_responses, arg2);
 			if CEPGP_debugMode then
-				CEPGP_print(arg2 .. " registered (!need)");
+				CEPGP_print(arg2 .. " registered (" .. CEPGP_keyword .. ")");
 			end
 			local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
 			if not slot then

@@ -1699,11 +1699,7 @@
 							</OnEnterPressed>
 							<OnEditFocusLost>
 								local value;
-								if self:GetText() then
-									value = self:GetText();
-								else
-									value = "!need";
-								end
+								value = self:GetText();
 								if CEPGP_keyword == value then
 									return;
 								else
