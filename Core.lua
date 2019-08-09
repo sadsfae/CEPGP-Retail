@@ -84,7 +84,7 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 			if string.find(arg2, "-") then
 				arg2 = string.sub(arg2, 0, string.find(arg2, "-")-1);
 			end
-			CEPGP_handleComms(event, arg1, name);
+			CEPGP_handleComms(event, arg1, arg2);
 	
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, action = CombatLogGetCurrentEventInfo();
