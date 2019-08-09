@@ -42,6 +42,7 @@ CEPGP_THEKAL_PARAMS = {};
 CHANNEL = nil;
 MOD = nil;
 COEF = nil;
+MOD_COEF = nil;
 BASEGP = nil;
 STANDBYEP = false;
 STANDBYOFFLINE = false;

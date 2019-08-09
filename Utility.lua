@@ -14,6 +14,9 @@ function CEPGP_initialise()
 	if COEF == nil then
 		COEF = 0.483;
 	end
+	if MOD_COEF == nil then
+		MOD_COEF = 1;
+	end
 	if BASEGP == nil then
 		BASEGP = 1;
 	end
@@ -184,7 +187,7 @@ function CEPGP_calcGP(link, quantity, id)
 	slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 	slot = SLOTWEIGHTS[slot];
 	if ilvl and rarity and slot then
-		return (math.floor((COEF * (2^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity);
+		return (math.floor((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity);
 	else
 		return 0;
 	end
@@ -913,6 +916,7 @@ function CEPGP_button_options_OnClick()
 	CEPGP_mode = "options";
 	CEPGP_options_mod_edit:SetText(tostring(MOD));
 	CEPGP_options_coef_edit:SetText(tostring(COEF));
+	CEPGP_options_coef_2_edit:SetText(tostring(MOD_COEF));
 	CEPGP_options_gp_base_edit:SetText(tostring(BASEGP));
 	CEPGP_options_keyword_edit:SetText(tostring(CEPGP_keyword));
 	if STANDBYEP then
