@@ -670,7 +670,10 @@ function CEPGP_getEPGP(offNote, index, name)
 		end
 	end
 	local EP, GP = nil;
-	if offNote == "" then return 0, 1; end
+	if offNote == "" then --Click here to set an officer note qualifies as blank
+		GuildRosterSetOfficerNote(index, "0," .. BASEGP);
+		return 0, 1;
+	end
 	EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 	GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
 	return EP, GP;
