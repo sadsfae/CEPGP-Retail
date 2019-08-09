@@ -160,6 +160,7 @@ function SlashCmdList.CEPGP(msg, editbox)
 	elseif msg == "show" then
 		CEPGP_populateFrame();
 		ShowUIPanel(CEPGP_frame);
+		CEPGP_toggleFrame("");
 		CEPGP_updateGuild();
 	
 	elseif msg == "version" then
