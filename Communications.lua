@@ -167,7 +167,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		CEPGP_SendAddonMsg(sender.."-impresponse!CHANNEL~"..CHANNEL, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!MOD~"..MOD, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!COEF~"..COEF, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!COEF2~"..COEF2, lane);
+		CEPGP_SendAddonMsg(sender.."-impresponse!MOD_COEF~"..COEF2, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!BASEGP~"..BASEGP, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!WHISPERMSG~"..CEPGP_standby_whisper_msg, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!KEYWORD~"..CEPGP_keyword, lane);
@@ -252,8 +252,8 @@ function CEPGP_IncAddonMsg(message, sender)
 				MOD = tonumber(val);
 			elseif option == "COEF" then
 				COEF = tonumber(val);
-			elseif option == "COEF2" then
-				COEF2 = tonumber(val);
+			elseif option == "MOD_COEF" then
+				MOD_COEF = tonumber(val);
 			elseif option == "BASEGP" then
 				BASEGP = tonumber(val);
 			elseif option == "STANDBYBYRANK" then
