@@ -1,4 +1,17 @@
 function CEPGP_ListButton_OnClick(obj)
+	if strfind(obj, "CEPGP_guild_reset") then
+		CEPGP_context_popup_desc:SetPoint("TOP", CEPGP_context_popup_title, "BOTTOM", 0, -5);
+	else
+		CEPGP_context_popup_desc:SetPoint("TOP", CEPGP_context_popup_title, "BOTTOM", 0, -15);
+	end
+	if strfind(obj, "CEPGP_standby_ep_list_add") then
+		_G["CEPGP_context_reason"]:Hide();
+		_G["CEPGP_context_popup_reason"]:Hide();
+	else
+		_G["CEPGP_context_reason"]:Show();
+		_G["CEPGP_context_popup_reason"]:Show();
+	end
+	
 	if strfind(obj, "Delete") then
 		local name = _G["CEPGP_overrideButton" .. _G[obj]:GetParent():GetID() .. "item"]:GetText();
 		OVERRIDE_INDEX[name] = nil;
@@ -41,9 +54,9 @@ function CEPGP_ListButton_OnClick(obj)
 																PlaySound(799);
 																HideUIPanel(CEPGP_context_popup);
 																if CEPGP_context_popup_EP_check:GetChecked() then
-																	CEPGP_addEP(name, tonumber(CEPGP_context_amount:GetText()));
+																	CEPGP_addEP(name, tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 																else
-																	CEPGP_addGP(name, tonumber(CEPGP_context_amount:GetText()));
+																	CEPGP_addGP(name, tonumber(CEPGP_context_amount:GetText()), false, _, CEPGP_context_reason:GetText());
 																end
 															end
 														end);
@@ -67,7 +80,7 @@ function CEPGP_ListButton_OnClick(obj)
 															else
 																PlaySound(799);
 																HideUIPanel(CEPGP_context_popup);
-																CEPGP_addGuildEP(tonumber(CEPGP_context_amount:GetText()));
+																CEPGP_addGuildEP(tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 															end
 														end);
 	
@@ -82,7 +95,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
 		CEPGP_context_popup_title:SetText("Decay Guild EPGP");
-		CEPGP_context_popup_desc:SetText("Decays EPGP standings by a percentage\nValid Range: 0-100");
+		CEPGP_context_popup_desc:SetText("Decays EPGP standings by a percentage");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then
@@ -90,7 +103,7 @@ function CEPGP_ListButton_OnClick(obj)
 															else
 																PlaySound(799);
 																HideUIPanel(CEPGP_context_popup);
-																CEPGP_decay(tonumber(CEPGP_context_amount:GetText()));
+																CEPGP_decay(tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 															end
 														end);
 		
@@ -109,7 +122,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															PlaySound(799);
 															HideUIPanel(CEPGP_context_popup);
-															CEPGP_resetAll();
+															CEPGP_resetAll(CEPGP_context_reason:GetText());
 														end)
 		
 		--[[ Raid Menu ]]--
@@ -138,9 +151,9 @@ function CEPGP_ListButton_OnClick(obj)
 																PlaySound(799);
 																HideUIPanel(CEPGP_context_popup);
 																if CEPGP_context_popup_EP_check:GetChecked() then
-																	CEPGP_addEP(name, tonumber(CEPGP_context_amount:GetText()));
+																	CEPGP_addEP(name, tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 																else
-																	CEPGP_addGP(name, tonumber(CEPGP_context_amount:GetText()));
+																	CEPGP_addGP(name, tonumber(CEPGP_context_amount:GetText()), _, _, CEPGP_context_reason:GetText());
 																end
 															end
 														end);
@@ -164,7 +177,7 @@ function CEPGP_ListButton_OnClick(obj)
 															else
 																PlaySound(799);
 																HideUIPanel(CEPGP_context_popup);
-																CEPGP_AddRaidEP(tonumber(CEPGP_context_amount:GetText()));
+																CEPGP_AddRaidEP(tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 															end
 														end);
 	elseif strfind(obj, "CEPGP_standby_ep_list_add") then

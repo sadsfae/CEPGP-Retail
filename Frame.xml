@@ -4399,9 +4399,18 @@
 				</FontString>
 				<FontString name="CEPGP_context_popup_desc" inherits="GameFontNormal" text="Add Guild EP">
 					<Anchors>
+						<Anchor point="TOP" relativeTo="CEPGP_context_popup_title" relativePoint="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="-15"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="CEPGP_context_popup_reason" inherits="GameFontNormal" text="Reason (Optional)">
+					<Anchors>
 						<Anchor point="BOTTOM" relativeTo="CEPGP_context_popup_title">
 							<Offset>
-								<AbsDimension x="0" y="-45"/>
+								<AbsDimension x="0" y="-70"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -4458,9 +4467,9 @@
 					<AbsDimension x="105" y="20" />
 				</Size>
 				<Anchors>
-					<Anchor point="CENTER">
+					<Anchor point="TOP" relativeTo="CEPGP_context_popup_desc" relativePoint="BOTTOM">
 						<Offset>
-							<AbsDimension x="0" y="-15" />
+							<AbsDimension x="0" y="-5" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -4468,6 +4477,26 @@
 					<OnLoad>
 						self:SetAutoFocus(false);
 						self:SetText("0");
+					</OnLoad>
+					<OnEnterPressed>
+						self:ClearFocus();
+					</OnEnterPressed>
+				</Scripts>
+			</EditBox>
+			<EditBox name="CEPGP_context_reason" inherits="InputBoxTemplate">
+				<Size>
+					<AbsDimension x="210" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetAutoFocus(false);
 					</OnLoad>
 					<OnEnterPressed>
 						self:ClearFocus();
