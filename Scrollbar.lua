@@ -545,3 +545,87 @@ function CEPGP_UpdateStandbyScrollBar()
 		end
 	end
 end
+
+function CEPGP_UpdateAttendanceScrollBar()
+	local x, y;
+	local yoffset;
+	local t;
+	local tSize;
+	local name;
+	local class;
+	local rank;
+	local colour;
+	local total;
+	local week;
+	local fn;
+	local month;
+	local twoMon;
+	local ThreeMon;
+	local avg; --average attendance
+	t = {};
+	tSize = CEPGP_ntgetn(CEPGP_roster);
+	for x = 1, tSize do
+		name = CEPGP_indexToName(x);
+		index, class, rank = CEPGP_getGuildInfo(name);
+		total, week, fn, month, twoMon, ThreeMon = CEPGP_calcAttendance(name);
+		t[x] = {
+			[1] = name,
+			[2] = class,
+			[3] = rank,
+			[4] = total,
+			[5] = week,
+			[6] = fn,
+			[7] = month,
+			[8] = twoMon,
+			[9] = ThreeMon
+		}
+	end
+	t = CEPGP_tSort(t, 1)
+	FauxScrollFrame_Update(AttendanceScrollFrame, tSize, 18, 240);
+	for y = 1, 18, 1 do
+		yoffset = y + FauxScrollFrame_GetOffset(AttendanceScrollFrame);
+		if (yoffset <= tSize) then
+			if not CEPGP_tContains(t, yoffset, true) then
+				_G["AttendanceButton" .. y]:Hide();
+			else
+				name = t[yoffset][1];
+				class = t[yoffset][2];
+				rank = t[yoffset][3];
+				total = t[yoffset][4];
+				week = t[yoffset][5];
+				fn = t[yoffset][6];
+				month = t[yoffset][7];
+				twoMon = t[yoffset][8];
+				threeMon = t[yoffset][9];
+				avg = total/CEPGP_ntgetn(CEPGP_raid_logs);
+				avg = math.floor(avg*100)/100;
+				if class then
+					colour = RAID_CLASS_COLORS[string.upper(class)];
+				else
+					colour = RAID_CLASS_COLORS["WARRIOR"];
+				end
+				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
+				_G["AttendanceButton" .. y .. "Info"]:SetText(name);
+				_G["AttendanceButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["AttendanceButton" .. y .. "Rank"]:SetText(rank);
+				_G["AttendanceButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+				_G["AttendanceButton" .. y .. "Total"]:SetText(total .. " (" .. avg*100 .. "%)");
+				_G["AttendanceButton" .. y .. "Total"]:SetTextColor(1-avg,avg/1,0);
+				_G["AttendanceButton" .. y .. "Int7"]:SetText(week);
+				_G["AttendanceButton" .. y .. "Int7"]:SetTextColor(1,1,1);
+				_G["AttendanceButton" .. y .. "Int14"]:SetText(fn);
+				_G["AttendanceButton" .. y .. "Int14"]:SetTextColor(1,1,1);
+				_G["AttendanceButton" .. y .. "Int30"]:SetText(month);
+				_G["AttendanceButton" .. y .. "Int30"]:SetTextColor(1,1,1);
+				_G["AttendanceButton" .. y .. "Int60"]:SetText(twoMon);
+				_G["AttendanceButton" .. y .. "Int60"]:SetTextColor(1,1,1);
+				_G["AttendanceButton" .. y .. "Int90"]:SetText(threeMon);
+				_G["AttendanceButton" .. y .. "Int90"]:SetTextColor(1,1,1);
+				
+				_G["AttendanceButton" .. y]:Show();
+			end
+		else
+			_G["AttendanceButton" .. y]:Hide();
+		end
+	end
+end

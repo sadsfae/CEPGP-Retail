@@ -140,7 +140,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="CEPGP_frame">
 						<Offset>
-							<AbsDimension x="-10" y="-35" />
+							<AbsDimension x="-10" y="-32.5" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1705,6 +1705,24 @@
 								PlaySound(799);
 								CEPGP_SendAddonMsg("?forceSync", "GUILD");
 								CEPGP_print("Forced synchronisation with guild members");
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_button_options_attendance" inherits="GameMenuButtonTemplate" text="Raid Attendance">
+						<Size>
+							<AbsDimension x="125" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="distributing">
+								<Offset>
+									<AbsDimension x="0" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_attendance:Show();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -6055,6 +6073,473 @@
 				CEPGP_notice_text:SetText("Thank you for choosing to use Classic EPGP!\nI hope that you enjoy using this addon and I hope that it helps your guild\nhow ever you end up using it.\n\nJust one thing you should know - this addon needs to have\nfull control over your officer notes to maintain EPGP records.\nMeaning, as this addon attempts to maintain your records, it will overwrite\nany existing officer notes. Similarly, if you want your guild members to\nbe able to see their EP and GP values, they need to be able to see\nofficer notes too. Essentially, the addon can only see what you can see.\n\nself addon is designed and really does work best if your\nyour whole guild (or at least your raid team) has it installed.\nself will provide you with functions like loot council support\nand being able to see what items your raid members are wearing\nwhen you're distributing items.\n\nI hope you enjoy using the addon and if you have any feature requests or\nfind a bug, please submit a ticket on the addon GitHub page:\ngithub.com/Alumian/CEPGP-Retail");
 				CEPGP_notice_frame:SetWidth(CEPGP_notice_text:GetStringWidth()+25);
 			</OnLoad>
+			<OnMouseDown>
+				self:StartMoving();
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing();
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="CEPGP_attendance" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
+		<size>
+			<AbsDimension x="600" y="400" />
+		</size>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="CEPGP_attendance_title" inherits="GameFontNormal" text="Raid Attendance">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-2" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="CEPGP_attendance_close" inherits="UIPanelCloseButton">
+				<Size>
+					<AbsDimension x="30" y="30" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-6" y="-6" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						CEPGP_attendance:Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_record" inherits="GameMenuButtonTemplate" text="Record Snapshot">
+				<Size>
+					<AbsDimension x="125" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-12" y="12"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						CEPGP_recordAttendance();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_name" inherits="CEPGPHeaderButton" text="Name">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="5" y="-40" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_rank" inherits="CEPGPHeaderButton" text="Rank">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_name" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="40" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_number" inherits="CEPGPHeaderButton" text="">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_rank" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="75" y="5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetText("Raids\nAttended");
+					</OnLoad>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_total" inherits="CEPGPHeaderButton" text="Total Snapshots Recorded:" justifyH="LEFT">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="72.5" y="-10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						local total = CEPGP_ntgetn(CEPGP_raid_logs);
+						self:SetText("Total Snapshots Recorded: " .. total);
+					</OnShow>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_interval_7" inherits="CEPGPHeaderButton" text="7">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_number" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="25" y="-5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_interval_14" inherits="CEPGPHeaderButton" text="14">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_interval_7" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="10" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_interval_30" inherits="CEPGPHeaderButton" text="30">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_interval_14" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="10" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_interval_60" inherits="CEPGPHeaderButton" text="60">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_interval_30" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="10" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_interval_90" inherits="CEPGPHeaderButton" text="90">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_interval_60" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="10" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(1, "Guild");
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_header_interval_days" inherits="CEPGPHeaderButton" text="Days">
+				<Size>
+					<AbsDimension x="50" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="CEPGP_attendance_header_interval_30" relativePoint="TOP">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Frame name="CEPGP_attendance_scrollframe">
+				<Size>
+					<AbsDimension x="590" y="315"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="CEPGP_attendance" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-20" y="-10"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<ScrollFrame name="AttendanceScrollFrame" inherits="FauxScrollFrameTemplate">
+						<Size>
+							<AbsDimension x="555" y="315"/>
+						</Size>
+						<Anchors>
+							<Anchor point="RIGHT">
+								<Offset>
+									<AbsDimension x="-7" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnVerticalScroll>
+								FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateAttendanceScrollBar); 
+							</OnVerticalScroll>
+							<OnShow>
+								CEPGP_UpdateAttendanceScrollBar();
+							</OnShow>
+						</Scripts>
+					</ScrollFrame>
+					<Button name="AttendanceButton1" inherits="AttendanceButtonTemplate" id="1" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="32.5" y="-10"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton2" inherits="AttendanceButtonTemplate" id="2" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton1" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton3" inherits="AttendanceButtonTemplate" id="3" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton2" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton4" inherits="AttendanceButtonTemplate" id="4" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton3" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton5" inherits="AttendanceButtonTemplate" id="5" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton4" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton6" inherits="AttendanceButtonTemplate" id="6" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton5" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton7" inherits="AttendanceButtonTemplate" id="7" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton6" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton8" inherits="AttendanceButtonTemplate" id="8" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton7" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton9" inherits="AttendanceButtonTemplate" id="9" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton8" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton10" inherits="AttendanceButtonTemplate" id="10" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton9" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton11" inherits="AttendanceButtonTemplate" id="11" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton10" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton12" inherits="AttendanceButtonTemplate" id="12" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton11" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton13" inherits="AttendanceButtonTemplate" id="13" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton12" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton14" inherits="AttendanceButtonTemplate" id="14" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton13" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton15" inherits="AttendanceButtonTemplate" id="15" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton14" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton16" inherits="AttendanceButtonTemplate" id="16" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton15" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton17" inherits="AttendanceButtonTemplate" id="17" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton16" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="AttendanceButton18" inherits="AttendanceButtonTemplate" id="18" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AttendanceButton17" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Scripts>
+					<OnLoad>
+						self:SetBackdropColor(0.1, 0.1, 0.1);
+					</OnLoad>
+				</Scripts>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<Color r="0" g="0" b="0" />
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Scripts>
 			<OnMouseDown>
 				self:StartMoving();
 			</OnMouseDown>

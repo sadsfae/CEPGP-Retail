@@ -63,6 +63,7 @@ EPVALS = {};
 RECORDS = {};
 OVERRIDE_INDEX = {};
 TRAFFIC = {};
+CEPGP_raid_logs = {};
 
 
 

@@ -1110,3 +1110,55 @@ function CEPGP_getPlayerClass(name, index)
 		end
 	end
 end
+
+function CEPGP_recordAttendance()
+	if not UnitInRaid("player") and not CEPGP_debugMode then
+		CEPGP_print("You are not in a raid group", true);
+		return;
+	end
+	CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)+1] = {
+		[1] = time()
+	};
+	for i = 1, GetNumGroupMembers(), 1 do
+		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][i+1] = GetRaidRosterInfo(i);
+	end
+	CEPGP_print("Snapshot recorded: " .. date("%y/%m/%d") .. " " .. date("%H:%S"));
+	_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. CEPGP_ntgetn(CEPGP_raid_logs));
+	CEPGP_UpdateAttendanceScrollBar();
+end
+
+function CEPGP_calcAttendance(name)
+	local count = 0;
+	local cWeek = 0; --count week
+	local cFN = 0; --count fornight
+	local cMonth = 0; --count month
+	local cTwoMonth = 0; --count 2 months
+	local cThreeMonth = 0; --count 3 months
+	--print(date("%d/%m/%Y", "10/08/2019"));
+	for _, v in pairs(CEPGP_raid_logs) do
+		for i = 2, CEPGP_ntgetn(v), 1 do
+			local diff = difftime(time(),v[1]);
+			diff = math.floor((((diff/60))/60)/24); --Difference in days
+			if v[i] == name then
+				count = count + 1;
+				if diff >= 7 then
+					cWeek = cWeek + 1;
+					if diff >= 14 then
+						cFN = cFN + 1;
+						if diff >= 30 then
+							cMonth = cMonth + 1;
+							if diff >= 60 then
+								cTwoMonth = cTwoMonth + 1;
+								if diff >= 90 then
+									cThreeMonth = cThreeMonth + 1;
+								end
+							end
+						end
+					end
+				end
+				break;
+			end
+		end
+	end
+	return count, cWeek, cFN, cMonth, cTwoMonth, cThreeMonth;
+end
