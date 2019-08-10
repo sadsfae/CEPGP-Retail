@@ -1121,7 +1121,7 @@ function CEPGP_recordAttendance()
 	for i = 1, GetNumGroupMembers(), 1 do
 		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][i+1] = GetRaidRosterInfo(i);
 	end
-	CEPGP_print("Snapshot recorded: " .. date("%y/%m/%d") .. " " .. date("%H:%S"));
+	CEPGP_print("Snapshot recorded");
 	_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. CEPGP_ntgetn(CEPGP_raid_logs));
 	CEPGP_UpdateAttendanceScrollBar();
 end
