@@ -77,7 +77,9 @@ function CEPGP_initialise()
 			CEPGP_raidRoster[name] = name;
 		end 
 	end
-	
+	if CEPGP_force_sync_rank == nil then
+		CEPGP_force_sync_rank = 1;
+	end
 	tinsert(UISpecialFrames, "CEPGP_frame");
 	tinsert(UISpecialFrames, "CEPGP_context_popup");
 	tinsert(UISpecialFrames, "CEPGP_save_guild_logs");
@@ -444,14 +446,9 @@ function CEPGP_rosterUpdate(event)
 		if UnitInRaid("player") then
 			ShowUIPanel(CEPGP_button_raid);
 		else --[[ Hides the raid and loot distribution buttons if the player is not in a raid group ]]--
-			HideUIPanel(CEPGP_raid);
-			HideUIPanel(CEPGP_loot);
-			HideUIPanel(CEPGP_button_raid);
-			HideUIPanel(CEPGP_button_loot_dist);
-			HideUIPanel(CEPGP_distribute_popup);
-			HideUIPanel(CEPGP_context_popup);
 			CEPGP_mode = "guild";
-			ShowUIPanel(CEPGP_guild);
+			CEPGP_toggleFrame("CEPGP_guild");
+			
 		end
 		CEPGP_vInfo = {};
 		CEPGP_UpdateVersionScrollBar();
@@ -581,7 +578,7 @@ end
 
 function CEPGP_getGuildInfo(name)
 	if CEPGP_tContains(CEPGP_roster, name, true) then
-		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6];  -- index, Rank, RankIndex, Class, OfficerNote, PR
+		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6];  -- index, class, Rank, RankIndex, Class, OfficerNote, PR
 	else
 		return nil;
 	end
@@ -958,6 +955,17 @@ function CEPGP_button_options_OnClick()
 			_G["CEPGP_options_" .. k .. "_weight"]:SetText(tonumber(SLOTWEIGHTS[k]));
 		end
 	end
+	local rName = GuildControlGetRankName(CEPGP_force_sync_rank); --rank name
+	UIDropDownMenu_SetSelectedName(CEPGP_sync_rank, rName);
+	if ALLOW_FORCED_SYNC then
+		CEPGP_options_allow_forced_sync_check:SetChecked(true);
+		_G["CEPGP_sync_rank"]:Show();
+		_G["CEPGP_button_options_force_sync"]:Show();
+	else
+		CEPGP_options_allow_forced_sync_check:SetChecked(false);
+		_G["CEPGP_sync_rank"]:Hide();
+		_G["CEPGP_button_options_force_sync"]:Hide();
+	end
 	CEPGP_populateFrame();
 end
 
@@ -965,7 +973,6 @@ function CEPGP_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level
 	if ( not frame ) then
 		frame = self;
 	end
-
 	frame.menuList = menuList;
 
 	if ( frame:GetName() ~= UIDROPDOWNMENU_OPEN_MENU ) then

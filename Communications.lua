@@ -133,7 +133,8 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		
 		--Raid assists receiving !need responses in the format of !need,playername`itemID (of item being distributed)
-	elseif strfind(message, "!need") and sender ~= UnitName("player") then-- and IsRaidOfficer()  then
+	elseif strfind(message, "!need," .. UnitName("player")) and sender ~= UnitName("player") then-- and IsRaidOfficer()  then
+		print(message);
 		local arg2 = string.sub(message, strfind(message, ",")+1, strfind(message, "`")-1); --!need,sendername`itemID
 		table.insert(CEPGP_responses, arg2);
 		local slot = nil;
@@ -156,6 +157,12 @@ function CEPGP_IncAddonMsg(message, sender)
 	elseif strfind(message, "!info"..UnitName("player")) then
 		CEPGP_print(string.sub(message, 5+string.len(UnitName("player"))+1));
 		
+	elseif message == "?forceSync" and ALLOW_FORCED_SYNC and sender ~= UnitName("player") then
+		local _, _, _, rIndex = CEPGP_getGuildInfo(sender); --rank index
+		if rIndex + 1 <= CEPGP_force_sync_rank then --Index obtained by GetGuildRosterInfo starts at 0 whereas GuildControlGetRankName starts at 1 for some reason
+			CEPGP_print(sender .. " is synchronising your settings with theirs");
+			CEPGP_SendAddonMsg(sender.."-import", "GUILD");
+		end
 		
 	elseif message == UnitName("player").."-import" then
 		local lane;
@@ -167,7 +174,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		CEPGP_SendAddonMsg(sender.."-impresponse!CHANNEL~"..CHANNEL, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!MOD~"..MOD, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!COEF~"..COEF, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!MOD_COEF~"..COEF2, lane);
+		CEPGP_SendAddonMsg(sender.."-impresponse!MOD_COEF~"..MOD_COEF, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!BASEGP~"..BASEGP, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!WHISPERMSG~"..CEPGP_standby_whisper_msg, lane);
 		CEPGP_SendAddonMsg(sender.."-impresponse!KEYWORD~"..CEPGP_keyword, lane);
@@ -292,11 +299,11 @@ function CEPGP_IncAddonMsg(message, sender)
 			elseif option == "COMPLETE" then
 				CEPGP_UpdateOverrideScrollBar();
 				CEPGP_print("Import complete");
-				CEPGP_button_options:OnClick();
+				CEPGP_button_options_OnClick();
 			end
 		end
 		
-		CEPGP_button_options:OnClick();
+		CEPGP_button_options_OnClick();
 		
 	
 	elseif strfind(message, "CEPGP_TRAFFIC") then

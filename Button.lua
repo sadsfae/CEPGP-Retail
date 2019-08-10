@@ -252,6 +252,26 @@ function CEPGP_initRestoreDropdown(frame, level, menuList)
 	end
 end
 
+function CEPGP_syncRankDropdown(frame, level, menuList)
+	for i = 1, 10, 1 do
+		if GuildControlGetRankName(i) ~= "" then
+			local info = {text = GuildControlGetRankName(i), value = i, func = CEPGP_syncRankChange}; --Value is used as the guild rank index as ranks can have identical names
+			local entry = UIDropDownMenu_AddButton(info);
+		end
+	end
+	UIDropDownMenu_SetSelectedName(CEPGP_sync_rank, GuildControlGetRankName(CEPGP_force_sync_rank));
+	UIDropDownMenu_SetSelectedValue(CEPGP_sync_rank, CEPGP_force_sync_rank);
+end
+
+function CEPGP_syncRankChange(self, arg1, arg2, checked)
+	if (not checked) then
+		UIDropDownMenu_SetSelectedName(CEPGP_sync_rank, self:GetText());
+		UIDropDownMenu_SetSelectedValue(CEPGP_sync_rank, self.value);
+		CEPGP_force_sync_rank = self.value;
+		CEPGP_print("Updated forced synchronisation rank");
+	end
+end
+
 function CEPGP_restoreDropdownOnClick(self, arg1, arg2, checked)
 	if (not checked) then
 		UIDropDownMenu_SetSelectedName(CEPGP_restoreDropdown, self:GetText());
