@@ -70,6 +70,9 @@ function CEPGP_handleComms(event, arg1, arg2)
 				gRoster[i] = {};
 				name , _, _, _, class, _, _, oNote = GetGuildRosterInfo(i);
 				EP, GP = CEPGP_getEPGP(oNote);
+				if string.find(name, "-") then
+					name = string.sub(name, 0, string.find(name, "-")-1);
+				end
 				gRoster[i][1] = name;
 				gRoster[i][2] = math.floor((EP/GP)*100)/100;
 				gRoster[i][3] = class;
@@ -77,7 +80,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			if string.lower(arg1) == "!infoguild" then
 				if CEPGP_critReverse then
 					gRoster = CEPGP_tSort(gRoster, 2);
-					for i = 1, table.getn(gRoster) do
+					for i = 1, CEPGP_ntgetn(gRoster) do
 						if gRoster[i][1] == arg2 then
 							if not CEPGP_vInfo[arg2] then
 								SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
@@ -105,6 +108,9 @@ function CEPGP_handleComms(event, arg1, arg2)
 				if string.lower(arg1) == "!infoclass" then
 					for i = 1, GetNumGroupMembers() do
 						local name = GetRaidRosterInfo(i);
+						if string.find(name, "-") then
+							name = string.sub(name, 0, string.find(name, "-")-1);
+						end
 						for x = 1, table.getn(gRoster) do
 							if gRoster[x][1] == name and gRoster[x][3] == unitClass then
 								rRoster[count] = {};
@@ -119,6 +125,9 @@ function CEPGP_handleComms(event, arg1, arg2)
 				else --Raid
 					for i = 1, GetNumGroupMembers() do
 						local name = GetRaidRosterInfo(i);
+						if string.find(name, "-") then
+							name = string.sub(name, 0, string.find(name, "-")-1);
+						end
 						for x = 1, CEPGP_ntgetn(gRoster) do
 							if gRoster[x][1] == name then
 								rRoster[count] = {};
