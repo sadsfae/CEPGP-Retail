@@ -134,7 +134,6 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		--Raid assists receiving !need responses in the format of !need,playername`itemID (of item being distributed)
 	elseif strfind(message, "!need," .. UnitName("player")) and sender ~= UnitName("player") then-- and IsRaidOfficer()  then
-		print(message);
 		local arg2 = string.sub(message, strfind(message, ",")+1, strfind(message, "`")-1); --!need,sendername`itemID
 		table.insert(CEPGP_responses, arg2);
 		local slot = nil;
