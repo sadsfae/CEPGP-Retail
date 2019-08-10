@@ -12,7 +12,7 @@ function CEPGP_initialise()
 		MOD = 1;
 	end
 	if COEF == nil then
-		COEF = 0.483;
+		COEF = 4.83;
 	end
 	if MOD_COEF == nil then
 		MOD_COEF = 1;
