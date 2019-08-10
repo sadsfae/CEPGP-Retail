@@ -1134,7 +1134,6 @@ function CEPGP_calcAttendance(name)
 	local cMonth = 0; --count month
 	local cTwoMonth = 0; --count 2 months
 	local cThreeMonth = 0; --count 3 months
-	--print(date("%d/%m/%Y", "10/08/2019"));
 	for _, v in pairs(CEPGP_raid_logs) do
 		for i = 2, CEPGP_ntgetn(v), 1 do
 			local diff = difftime(time(),v[1]);

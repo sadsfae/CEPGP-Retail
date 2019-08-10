@@ -219,7 +219,7 @@ end
 --[[ LOOT COUNCIL FUNCTIONS ]]--
 
 function CEPGP_RaidAssistLootClosed()
-	if IsRaidOfficer() then
+	if UnitIsGroupAssistant() then
 		HideUIPanel(CEPGP_distribute_popup);
 		HideUIPanel(CEPGP_distribute);
 		HideUIPanel(CEPGP_loot_CEPGP_distributing);
