@@ -1135,20 +1135,20 @@ function CEPGP_calcAttendance(name)
 	local cThreeMonth = 0; --count 3 months
 	for _, v in pairs(CEPGP_raid_logs) do
 		for i = 2, CEPGP_ntgetn(v), 1 do
-			local diff = difftime(time(),v[1]);
-			diff = math.floor((((diff/60))/60)/24); --Difference in days
+			local diff = time() - v[1];
+			diff = diff/60/60/24;
 			if v[i] == name then
 				count = count + 1;
-				if diff >= 7 then
-					cWeek = cWeek + 1;
-					if diff >= 14 then
-						cFN = cFN + 1;
-						if diff >= 30 then
+				if diff <= 90 then
+					cThreeMonth = cThreeMonth + 1;
+					if diff <= 60 then
+						cTwoMonth = cTwoMonth + 1;
+						if diff <= 30 then
 							cMonth = cMonth + 1;
-							if diff >= 60 then
-								cTwoMonth = cTwoMonth + 1;
-								if diff >= 90 then
-									cThreeMonth = cThreeMonth + 1;
+							if diff <= 14 then
+								cFN = cFN + 1;
+								if diff <= 7 then
+									cWeek = cWeek + 1;
 								end
 							end
 						end
