@@ -1390,7 +1390,7 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="CEPGP_options_formula" inherits="GameFontNormal" text="x(         ^((ilvl/26)+(rarity-4)) x slot) x">
+						<FontString name="CEPGP_options_formula" inherits="GameFontNormal" text="x(               ^((ilvl/26)+(rarity-4)) x slot) x">
 							<Color r="1" g="1" b="1"/>
 							<Anchors>
 								<Anchor point="TOPLEFT">
@@ -1800,7 +1800,7 @@
 					</EditBox>
 					<EditBox name="CEPGP_options_coef_2_edit" inherits="InputBoxTemplate">
 						<Size>
-							<AbsDimension x="20" y="20" />
+							<AbsDimension x="40" y="20" />
 						</Size>
 						<Anchors>
 							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_coef_edit">
