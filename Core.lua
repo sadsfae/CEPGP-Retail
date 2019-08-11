@@ -37,6 +37,7 @@ CEPGP_vSearch = "GUILD";
 CEPGP_groupVersion = {};
 CEPGP_RAZORGORE_EGG_COUNT = 0;
 CEPGP_THEKAL_PARAMS = {};
+CEPGP_snapshot = nil;
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;

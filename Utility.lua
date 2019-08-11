@@ -1133,13 +1133,16 @@ function CEPGP_calcAttendance(name)
 	local cMonth = 0; --count month
 	local cTwoMonth = 0; --count 2 months
 	local cThreeMonth = 0; --count 3 months
-	for _, v in pairs(CEPGP_raid_logs) do
+	for k, v in pairs(CEPGP_raid_logs) do
+		if CEPGP_snapshot and k ~= CEPGP_snapshot then
+			break;
+		end
 		for i = 2, CEPGP_ntgetn(v), 1 do
 			local diff = time() - v[1];
 			diff = diff/60/60/24;
 			if v[i] == name then
 				count = count + 1;
-				if diff <= 90 then
+				if diff <= 90 and not CEPGP_snapshot then -- no point in collecting interval data if a snapshot was requested
 					cThreeMonth = cThreeMonth + 1;
 					if diff <= 60 then
 						cTwoMonth = cTwoMonth + 1;

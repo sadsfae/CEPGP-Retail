@@ -563,10 +563,21 @@ function CEPGP_UpdateAttendanceScrollBar()
 	local ThreeMon;
 	local avg; --average attendance
 	t = {};
-	tSize = CEPGP_ntgetn(CEPGP_roster);
+	if snapshot then
+		tSize = CEPGP_ntgetn(CEPGP_raid_logs[CEPGP_snapshot]);
+	else
+		tSize = CEPGP_ntgetn(CEPGP_roster);
+	end
 	for x = 1, tSize do
-		name = CEPGP_indexToName(x);
+		if CEPGP_snapshot then
+			name = CEPGP_raid_logs[CEPGP_snapshot][x+1];
+		else
+			name = CEPGP_indexToName(x);
+		end
 		index, class, rank = CEPGP_getGuildInfo(name);
+		if not index then
+			rank = "Non-Guild Member"
+		end
 		total, week, fn, month, twoMon, ThreeMon = CEPGP_calcAttendance(name);
 		t[x] = {
 			[1] = name,
@@ -623,6 +634,22 @@ function CEPGP_UpdateAttendanceScrollBar()
 				_G["AttendanceButton" .. y .. "Int90"]:SetTextColor(1,1,1);
 				
 				_G["AttendanceButton" .. y]:Show();
+				
+				if CEPGP_snapshot then
+					_G["AttendanceButton" .. y .. "Total"]:Hide();
+					_G["AttendanceButton" .. y .. "Int7"]:Hide();
+					_G["AttendanceButton" .. y .. "Int14"]:Hide();
+					_G["AttendanceButton" .. y .. "Int30"]:Hide();
+					_G["AttendanceButton" .. y .. "Int60"]:Hide();
+					_G["AttendanceButton" .. y .. "Int90"]:Hide();
+				else
+					_G["AttendanceButton" .. y .. "Total"]:Show();
+					_G["AttendanceButton" .. y .. "Int7"]:Show();
+					_G["AttendanceButton" .. y .. "Int14"]:Show();
+					_G["AttendanceButton" .. y .. "Int30"]:Show();
+					_G["AttendanceButton" .. y .. "Int60"]:Show();
+					_G["AttendanceButton" .. y .. "Int90"]:Show();
+				end
 			end
 		else
 			_G["AttendanceButton" .. y]:Hide();

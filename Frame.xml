@@ -6084,7 +6084,7 @@
 	
 	<Frame name="CEPGP_attendance" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
 		<size>
-			<AbsDimension x="600" y="400" />
+			<AbsDimension x="650" y="425" />
 		</size>
 		<Anchors>
 			<Anchor point="CENTER" />
@@ -6153,6 +6153,44 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+			<Button name="CEPGP_attendance_dropdown" inherits="UIDropDownMenuTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="-5" y="5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						CEPGP_UIDropDownMenu_Initialize(self, CEPGP_attendanceDropdown);
+						UIDropDownMenu_SetWidth(self, 140);
+					</OnShow>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_record_view" inherits="GameMenuButtonTemplate" text="Filter by Snapshot">
+				<Size>
+					<AbsDimension x="130" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_attendance_dropdown">
+						<Offset>
+							<AbsDimension x="-12" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						if UIDropDownMenu_GetSelectedValue(CEPGP_attendance_dropdown) == 0 then
+							CEPGP_snapshot = nil;
+						else
+							CEPGP_snapshot = UIDropDownMenu_GetSelectedValue(CEPGP_attendance_dropdown);
+						end
+						CEPGP_UpdateAttendanceScrollBar();
+					</OnClick>
+				</Scripts>
+			</Button>
 			<Button name="CEPGP_attendance_header_name" inherits="CEPGPHeaderButton" text="Name">
 				<Size>
 					<AbsDimension x="50" y="20" />
@@ -6160,7 +6198,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="5" y="-40" />
+							<AbsDimension x="5" y="-55" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -6177,7 +6215,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_name" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="40" y="0" />
+							<AbsDimension x="50" y="0" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -6194,7 +6232,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="CEPGP_attendance_header_rank" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="75" y="5" />
+							<AbsDimension x="85" y="5" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -6327,7 +6365,7 @@
 			</Button>
 			<Frame name="CEPGP_attendance_scrollframe">
 				<Size>
-					<AbsDimension x="590" y="315"/>
+					<AbsDimension x="640" y="315"/>
 				</Size>
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="CEPGP_attendance" relativePoint="LEFT">

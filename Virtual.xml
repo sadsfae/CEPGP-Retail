@@ -642,7 +642,7 @@
 					<Anchors>
 						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="232.5" y="0"/>
+								<AbsDimension x="252.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -651,7 +651,7 @@
 					<Anchors>
 						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="307.5" y="0"/>
+								<AbsDimension x="327.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -660,7 +660,7 @@
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="372.5" y="0"/>
+								<AbsDimension x="392.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -669,7 +669,7 @@
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="432.5" y="0"/>
+								<AbsDimension x="452.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -678,7 +678,7 @@
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="492.5" y="0"/>
+								<AbsDimension x="512.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -687,7 +687,7 @@
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="552.5" y="0"/>
+								<AbsDimension x="572.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>

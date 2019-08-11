@@ -263,6 +263,22 @@ function CEPGP_syncRankDropdown(frame, level, menuList)
 	UIDropDownMenu_SetSelectedValue(CEPGP_sync_rank, CEPGP_force_sync_rank);
 end
 
+function CEPGP_attendanceDropdown(frame, level, menuList)
+	local info = {text = "All Records", value = 0, func = CEPGP_attendanceChange};
+		local entry = UIDropDownMenu_AddButton(info);
+	for i = 1, CEPGP_ntgetn(CEPGP_raid_logs) do
+		local info = {text = date("%d/%m/%Y %H:%M", CEPGP_raid_logs[i][1]), value = i, func = CEPGP_attendanceChange};
+		local entry = UIDropDownMenu_AddButton(info);
+	end
+end
+
+function CEPGP_attendanceChange(self, arg1, arg2, checked)
+	if (not checked) then
+		UIDropDownMenu_SetSelectedName(CEPGP_attendance_dropdown, self:GetText());
+		UIDropDownMenu_SetSelectedValue(CEPGP_attendance_dropdown, self.value);
+	end
+end
+
 function CEPGP_syncRankChange(self, arg1, arg2, checked)
 	if (not checked) then
 		UIDropDownMenu_SetSelectedName(CEPGP_sync_rank, self:GetText());
