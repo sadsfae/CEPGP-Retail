@@ -102,8 +102,12 @@ function CEPGP_calcGP(link, quantity, id)
 	local name, rarity, ilvl, itemType, subType, slot;
 	if id then
 		name, link, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(id);
+	elseif link then
+		name, _, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(link);
+	else
+		return 0;
 	end
-	
+	if not name then return 0; end
 	if not ilvl then ilvl = 0; end
 	for k, v in pairs(OVERRIDE_INDEX) do
 		if string.lower(name) == string.lower(k) then
@@ -123,7 +127,7 @@ function CEPGP_calcGP(link, quantity, id)
 		end
 		return 0;
 	end]]
-	if slot == "" then
+	if slot == "" or slot == nil then
 		--Tier 3 slots
 		if strfind(name, "desecrated") and rarity == 4 then
 			if (name == "desecratedshoulderpads" or name == "desecratedspaulders" or name == "desecratedpauldrons") then slot = "INVTYPE_SHOULDER";

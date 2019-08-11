@@ -31,11 +31,13 @@ function CEPGP_LootFrame_Update()
 			end
 		end
 		for i = 1, CEPGP_ntgetn(itemList) do
-			if (itemList[i][3] > 2 or CEPGP_inOverride(itemList[i][2])) and (UnitInRaid("player") or CEPGP_debugMode) then
-				CEPGP_frame:Show();
-				CEPGP_mode = "loot";
-				CEPGP_toggleFrame("CEPGP_loot");
-				break;
+			if itemList[i][1] ~= nil then
+				if (itemList[i][3] > 2 or CEPGP_inOverride(itemList[i][2])) and (UnitInRaid("player") or CEPGP_debugMode) then
+					CEPGP_frame:Show();
+					CEPGP_mode = "loot";
+					CEPGP_toggleFrame("CEPGP_loot");
+					break;
+				end
 			end
 		end
 		CEPGP_populateFrame(_, itemList, numSlots);
