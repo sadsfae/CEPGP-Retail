@@ -34,6 +34,7 @@ CEPGP_standbyRoster = {};
 CEPGP_raidRoster = {};
 CEPGP_vInfo = {};
 CEPGP_vSearch = "GUILD";
+CEPGP_ElvUI = nil;
 CEPGP_groupVersion = {};
 CEPGP_RAZORGORE_EGG_COUNT = 0;
 CEPGP_THEKAL_PARAMS = {};
