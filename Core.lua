@@ -321,7 +321,7 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 		else -- EP was manually given, could be either positive or negative, and a message was written
 			if tonumber(amount) <= 0 then
 				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Subtract Raid EP +" .. amount .. " (" .. msg .. ")"};
-				CEPGP_ShareTraffic("Raid", UnitName("player"), "Subtract Raid EP +" .. amount .. " (" .. msg .. ")");
+				CEPGP_ShareTraffic("Raid", UnitName("player"), "Subtract Raid EP " .. amount .. " (" .. msg .. ")");
 				SendChatMessage(amount .. " EP taken from all raid members (" .. msg .. ")", "RAID", CEPGP_LANGUAGE);
 			else
 				print("Message: " .. msg);
