@@ -1163,3 +1163,32 @@ function CEPGP_calcAttendance(name)
 	end
 	return count, cWeek, cFN, cMonth, cTwoMonth, cThreeMonth;
 end
+
+function CEPGP_calcAttIntervals()
+	if CEPGP_snapshot then return; end
+	local week = 0;
+	local fn = 0;
+	local mon = 0;
+	local twoMon = 0;
+	local threeMon = 0;
+	for _, v in pairs(CEPGP_raid_logs) do
+		local diff = time() - v[1];
+		diff = diff/60/60/24;
+		if diff <= 90 then
+			threeMon = threeMon + 1;
+			if diff <= 60 then
+				twoMon = twoMon + 1;
+				if diff <= 30 then
+					mon = mon + 1;
+					if diff <= 14 then
+						fn = fn + 1;
+						if diff <= 7 then
+							week = week + 1;
+						end
+					end
+				end
+			end
+		end
+	end
+	return week, fn, mon, twoMon, threeMon;
+end

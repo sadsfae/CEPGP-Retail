@@ -620,18 +620,6 @@ function CEPGP_UpdateAttendanceScrollBar()
 				_G["AttendanceButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
 				_G["AttendanceButton" .. y .. "Rank"]:SetText(rank);
 				_G["AttendanceButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["AttendanceButton" .. y .. "Total"]:SetText(total .. " (" .. avg*100 .. "%)");
-				_G["AttendanceButton" .. y .. "Total"]:SetTextColor(1-avg,avg/1,0);
-				_G["AttendanceButton" .. y .. "Int7"]:SetText(week);
-				_G["AttendanceButton" .. y .. "Int7"]:SetTextColor(1,1,1);
-				_G["AttendanceButton" .. y .. "Int14"]:SetText(fn);
-				_G["AttendanceButton" .. y .. "Int14"]:SetTextColor(1,1,1);
-				_G["AttendanceButton" .. y .. "Int30"]:SetText(month);
-				_G["AttendanceButton" .. y .. "Int30"]:SetTextColor(1,1,1);
-				_G["AttendanceButton" .. y .. "Int60"]:SetText(twoMon);
-				_G["AttendanceButton" .. y .. "Int60"]:SetTextColor(1,1,1);
-				_G["AttendanceButton" .. y .. "Int90"]:SetText(threeMon);
-				_G["AttendanceButton" .. y .. "Int90"]:SetTextColor(1,1,1);
 				
 				_G["AttendanceButton" .. y]:Show();
 				
@@ -643,6 +631,19 @@ function CEPGP_UpdateAttendanceScrollBar()
 					_G["AttendanceButton" .. y .. "Int60"]:Hide();
 					_G["AttendanceButton" .. y .. "Int90"]:Hide();
 				else
+					local totals = {CEPGP_calcAttIntervals()};
+					_G["AttendanceButton" .. y .. "Total"]:SetText(total .. " (" .. avg*100 .. "%)");
+					_G["AttendanceButton" .. y .. "Total"]:SetTextColor(1-avg,avg/1,0);
+					_G["AttendanceButton" .. y .. "Int7"]:SetText(week .. "/" .. totals[1]);
+					_G["AttendanceButton" .. y .. "Int7"]:SetTextColor(1-(week/totals[1]), (week/totals[1])/1, 0);
+					_G["AttendanceButton" .. y .. "Int14"]:SetText(fn .. "/" .. totals[2]);
+					_G["AttendanceButton" .. y .. "Int14"]:SetTextColor(1-(week/totals[2]), (week/totals[2])/1, 0);
+					_G["AttendanceButton" .. y .. "Int30"]:SetText(month .. "/" .. totals[3]);
+					_G["AttendanceButton" .. y .. "Int30"]:SetTextColor(1-(week/totals[3]), (week/totals[3])/1, 0);
+					_G["AttendanceButton" .. y .. "Int60"]:SetText(twoMon .. "/" .. totals[4]);
+					_G["AttendanceButton" .. y .. "Int60"]:SetTextColor(1-(week/totals[4]), (week/totals[4])/1, 0);
+					_G["AttendanceButton" .. y .. "Int90"]:SetText(threeMon .. "/" .. totals[5]);
+					_G["AttendanceButton" .. y .. "Int90"]:SetTextColor(1-(week/totals[5]), (week/totals[5])/1, 0);
 					_G["AttendanceButton" .. y .. "Total"]:Show();
 					_G["AttendanceButton" .. y .. "Int7"]:Show();
 					_G["AttendanceButton" .. y .. "Int14"]:Show();

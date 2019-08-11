@@ -6114,6 +6114,15 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="CEPGP_attendance_desc" inherits="GameFontNormal" text="Snapshot Summary">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-25" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -6184,8 +6193,10 @@
 						PlaySound(799);
 						if UIDropDownMenu_GetSelectedValue(CEPGP_attendance_dropdown) == 0 then
 							CEPGP_snapshot = nil;
+							CEPGP_attendance_desc:SetText("Snapshot Summary");
 						else
 							CEPGP_snapshot = UIDropDownMenu_GetSelectedValue(CEPGP_attendance_dropdown);
+							CEPGP_attendance_desc:SetText("Viewing Snapshot: " .. date("%A %d %B, %Y, %H:%M", CEPGP_raid_logs[CEPGP_snapshot][1]));
 						end
 						CEPGP_UpdateAttendanceScrollBar();
 					</OnClick>

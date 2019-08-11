@@ -633,7 +633,7 @@
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="92.5" y="0"/>
+								<AbsDimension x="100" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -658,36 +658,36 @@
 				</FontString>
 				<FontString name="$parentInt14" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="392.5" y="0"/>
+								<AbsDimension x="387.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentInt30" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="452.5" y="0"/>
+								<AbsDimension x="447.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentInt60" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="512.5" y="0"/>
+								<AbsDimension x="510" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentInt90" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="572.5" y="0"/>
+								<AbsDimension x="567.5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
