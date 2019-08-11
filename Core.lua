@@ -1,6 +1,6 @@
 --[[ Globals ]]--
 CEPGP = CreateFrame("Frame");
-CEPGP_VERSION = "1.11.1";
+CEPGP_VERSION = "1.11.2";
 SLASH_CEPGP1 = "/CEPGP";
 SLASH_CEPGP2 = "/cep";
 CEPGP_VERSION_NOTIFIED = false;
