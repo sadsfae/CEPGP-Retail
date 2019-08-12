@@ -1196,3 +1196,43 @@ function CEPGP_calcAttIntervals()
 	end
 	return week, fn, mon, twoMon, threeMon;
 end
+
+function CEPGP_callItem(id)
+	if not id then return; end
+	id = tonumber(id); -- Must be in a numerical format
+	local name, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
+	local iString;
+	if not link then
+		local item = Item:CreateFromItemID(id);
+		item:ContinueOnItemLoad(function()
+				_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
+				iString = CEPGP_getItemString(link);
+				_G["CEPGP_respond"]:Show();
+				_G["CEPGP_respond_texture"]:SetTexture(tex);
+				_G["CEPGP_respond_texture_frame"]:SetScript('OnEnter', function()
+																		GameTooltip:SetOwner(_G["CEPGP_respond_texture_frame"], "ANCHOR_TOPLEFT")
+																		GameTooltip:SetHyperlink(iString);
+																		GameTooltip:Show();
+																	end);
+				_G["CEPGP_respond_texture_frame"]:SetScript('OnLeave', function()
+																		GameTooltip:Hide();
+																	end);
+				_G["CEPGP_respond_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name); end);
+				_G["CEPGP_respond_item_name"]:SetText(link);
+			end);
+	else
+		iString = CEPGP_getItemString(link);
+		_G["CEPGP_respond"]:Show();
+		_G["CEPGP_respond_texture"]:SetTexture(tex);
+		_G["CEPGP_respond_texture_frame"]:SetScript('OnEnter', function()
+																GameTooltip:SetOwner(_G["CEPGP_respond_texture_frame"], "ANCHOR_TOPLEFT")
+																GameTooltip:SetHyperlink(iString);
+																GameTooltip:Show();
+															end);
+		_G["CEPGP_respond_texture_frame"]:SetScript('OnLeave', function()
+																GameTooltip:Hide();
+															end);
+		_G["CEPGP_respond_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name); end);
+		_G["CEPGP_respond_item_name"]:SetText(link);
+	end
+end

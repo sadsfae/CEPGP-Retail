@@ -94,7 +94,20 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_lootSlot = slotNum;
 		CEPGP_responses = {};
 		CEPGP_UpdateLootScrollBar();
+		CEPGP_callItem(id);
+		_G["CEPGP_respond_texture"]:SetTexture(tex);
+		_G["CEPGP_respond_texture_frame"]:SetScript('OnEnter', function()
+																GameTooltip:SetOwner(_G["CEPGP_respond_texture_frame"], "ANCHOR_TOPLEFT")
+																GameTooltip:SetHyperlink(iString);
+																GameTooltip:Show();
+															end);
+		_G["CEPGP_respond_texture_frame"]:SetScript('OnLeave', function()
+																GameTooltip:Hide();
+															end);
+		_G["CEPGP_respond_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name); end);
+		_G["CEPGP_respond_item_name"]:SetText(link);
 		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"), "RAID");
+		CEPGP_SendAddonMsg("CallItem?"..id, "RAID");
 		local rank = 0;
 		for i = 1, GetNumGroupMembers() do
 			if UnitName("player") == GetRaidRosterInfo(i) then

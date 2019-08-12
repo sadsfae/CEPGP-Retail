@@ -304,6 +304,12 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		CEPGP_button_options_OnClick();
 		
+	elseif strfind(message, "CallItem") then
+		local id = string.sub(message, 10);
+		CEPGP_callItem(id);
+		
+	elseif strfind(message, "MainSpec") then
+		CEPGP_handleComms("CHAT_MSG_WHISPER", CEPGP_keyword, sender);
 	
 	elseif strfind(message, "CEPGP_TRAFFIC") then
 		if string.find(sender, "-") then
