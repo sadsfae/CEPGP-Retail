@@ -108,7 +108,7 @@ function CEPGP_IncAddonMsg(message, sender)
 			local v1, v2, v3 = CEPGP_strSplit(ver2..",", ",");
 			local nv1, nv2, nv3 = CEPGP_strSplit(s2, ",");
 			local s5 = (nv1.."."..nv2.."."..nv3)
-			outMessage = "Your addon is out of date. Version " .. s5 .. " is now available for download at https://github.com/Alumian/CEPGP"
+			outMessage = "Your addon is out of date. Version " .. s5 .. " is now available for download at https://github.com/Alumian/CEPGP-Retail"
 			if not CEPGP_VERSION_NOTIFIED then
 				CEPGP_VERSION_NOTIFIED = true;
 				if v1 > v1 then

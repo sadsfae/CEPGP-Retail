@@ -118,7 +118,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
 		CEPGP_context_popup_title:SetText("Reset Guild EPGP");
-		CEPGP_context_popup_desc:SetText("Resets the Guild EPGP standings\n|c00FF0000Are you sure obj is what you want to do?\nobj cannot be reversed!\nNote: obj will report to Guild chat|r");
+		CEPGP_context_popup_desc:SetText("Resets the Guild EPGP standings\n|c00FF0000Are you sure that is what you want to do?\nthis cannot be reversed!\nNote: this will report to Guild chat|r");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															PlaySound(799);
 															HideUIPanel(CEPGP_context_popup);
@@ -219,7 +219,7 @@ end
 
 function CEPGP_distribute_popup_give()
 	for i = 1, 40 do
-		if GetMasterLootCandidate(i) == CEPGP_distPlayer then
+		if GetMasterLootCandidate(CEPGP_lootSlot, i) == CEPGP_distPlayer then
 			GiveMasterLoot(CEPGP_lootSlot, i);
 			return;
 		end

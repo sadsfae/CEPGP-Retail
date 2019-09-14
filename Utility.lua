@@ -969,6 +969,15 @@ function CEPGP_button_options_OnClick()
 		_G["CEPGP_sync_rank"]:Hide();
 		_G["CEPGP_button_options_force_sync"]:Hide();
 	end
+	if CEPGP_loot_GUI then
+		_G["CEPGP_options_response_gui_checkbox"]:SetChecked(true);
+		_G["CEPGP_options_keyword"]:Hide();
+		_G["CEPGP_options_keyword_edit"]:Hide();
+	else
+		_G["CEPGP_options_response_gui_checkbox"]:SetChecked(false);
+		_G["CEPGP_options_keyword"]:Show();
+		_G["CEPGP_options_keyword_edit"]:Show();
+	end
 	CEPGP_populateFrame();
 end
 

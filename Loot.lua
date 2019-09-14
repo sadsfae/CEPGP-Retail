@@ -90,11 +90,11 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_distItemLink = link;
 		CEPGP_DistID = id;
 		CEPGP_distSlot = slot;
+		CEPGP_distSlotID = slotNum;
 		gp = _G[CEPGP_mode..'itemGP'..x]:GetText();
 		CEPGP_lootSlot = slotNum;
 		CEPGP_responses = {};
-		CEPGP_UpdateLootScrollBar();
-		CEPGP_callItem(id);
+		CEPGP_UpdateLootScrollBar();		
 		_G["CEPGP_respond_texture"]:SetTexture(tex);
 		_G["CEPGP_respond_texture_frame"]:SetScript('OnEnter', function()
 																GameTooltip:SetOwner(_G["CEPGP_respond_texture_frame"], "ANCHOR_TOPLEFT")
@@ -106,35 +106,39 @@ function CEPGP_announce(link, x, slotNum, quantity)
 															end);
 		_G["CEPGP_respond_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name); end);
 		_G["CEPGP_respond_item_name"]:SetText(link);
-		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"), "RAID");
-		CEPGP_SendAddonMsg("CallItem?"..id, "RAID");
 		local rank = 0;
 		for i = 1, GetNumGroupMembers() do
 			if UnitName("player") == GetRaidRosterInfo(i) then
 				_, rank = GetRaidRosterInfo(i);
 			end
 		end
-		SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
-		if rank > 0 then
-			if quantity > 1 then
-				SendChatMessage("NOW DISTRIBUTING: x" .. quantity .. " " .. link, "RAID_WARNING", CEPGP_LANGUAGE);
-			else
-				SendChatMessage("NOW DISTRIBUTING: " .. link, "RAID_WARNING", CEPGP_LANGUAGE);
-			end
+		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"), "RAID");
+		if CEPGP_loot_GUI then
+			CEPGP_callItem(id);
+			CEPGP_SendAddonMsg("CallItem?"..id, "RAID");
 		else
-			if quantity > 1 then
-				SendChatMessage("NOW DISTRIBUTING: x" .. quantity .. " " .. link, "RAID", CEPGP_LANGUAGE);
+			SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
+			if rank > 0 then
+				if quantity > 1 then
+					SendChatMessage("NOW DISTRIBUTING: x" .. quantity .. " " .. link, "RAID_WARNING", CEPGP_LANGUAGE);
+				else
+					SendChatMessage("NOW DISTRIBUTING: " .. link, "RAID_WARNING", CEPGP_LANGUAGE);
+				end
 			else
-				SendChatMessage("NOW DISTRIBUTING: " .. link, "RAID", CEPGP_LANGUAGE);
+				if quantity > 1 then
+					SendChatMessage("NOW DISTRIBUTING: x" .. quantity .. " " .. link, "RAID", CEPGP_LANGUAGE);
+				else
+					SendChatMessage("NOW DISTRIBUTING: " .. link, "RAID", CEPGP_LANGUAGE);
+				end
 			end
+			if quantity > 1 then
+				SendChatMessage("GP Value: " .. gp .. " (~" .. math.floor(gp/quantity) .. "GP per unit)", RAID, CEPGP_LANGUAGE);
+			else
+				SendChatMessage("GP Value: " .. gp, RAID, CEPGP_LANGUAGE);
+			end
+			SendChatMessage("Whisper me " .. CEPGP_keyword .. " for mainspec only", RAID, CEPGP_LANGUAGE);
+			SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
 		end
-		if quantity > 1 then
-			SendChatMessage("GP Value: " .. gp .. " (~" .. math.floor(gp/quantity) .. "GP per unit)", RAID, CEPGP_LANGUAGE);
-		else
-			SendChatMessage("GP Value: " .. gp, RAID, CEPGP_LANGUAGE);
-		end
-		SendChatMessage("Whisper me " .. CEPGP_keyword .. " for mainspec only", RAID, CEPGP_LANGUAGE);
-		SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
 		CEPGP_distribute:Show();
 		CEPGP_loot:Hide();
 		_G["CEPGP_distribute_item_name"]:SetText(link);

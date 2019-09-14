@@ -471,6 +471,7 @@ function CEPGP_UpdateTrafficScrollBar()
 			_G["trafficButton" .. y .. "GPAfter"]:SetText(GPA);
 			_G["trafficButton" .. y .. "GPAfter"]:SetTextColor(1, 1, 1);
 			_G["trafficButton" .. y]:Show();
+			 name, issuer, action, EPB, EPA, GPB, GPA, item = nil;
 		else
 			_G["trafficButton" .. y]:Hide();
 		end

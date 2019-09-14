@@ -13,6 +13,7 @@ CEPGP_lootSlot = nil;
 CEPGP_target = nil;
 CEPGP_DistID = nil;
 CEPGP_distSlot = nil;
+CEPGP_distSlotID = nil;
 CEPGP_distItemLink = nil;
 CEPGP_debugMode = false;
 CEPGP_critReverse = false; --Criteria reverse
@@ -56,6 +57,7 @@ CEPGP_keyword = nil;
 CEPGP_standby_byrank = true;
 CEPGP_standby_manual = false;
 CEPGP_notice = false;
+CEPGP_loot_GUI = false;
 STANDBYPERCENT = nil;
 STANDBYRANKS = {};
 SLOTWEIGHTS = {};
@@ -693,7 +695,7 @@ function CEPGP_resetAll(msg)
 	if msg ~= "" then
 		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Cleared EPGP standings (" .. msg .. ")"};
 		CEPGP_ShareTraffic("Guild", UnitName("player"), "Cleared EPGP standings (" .. msg .. ")");
-		SendChatMessage("All EPGP standings have been cleared! " .. msg .. ")", "GUILD", CEPGP_LANGUAGE);
+		SendChatMessage("All EPGP standings have been cleared! (" .. msg .. ")", "GUILD", CEPGP_LANGUAGE);
 	else
 		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Cleared EPGP standings"};
 		CEPGP_ShareTraffic("Guild", UnitName("player"), "Cleared EPGP standings");
