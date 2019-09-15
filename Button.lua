@@ -227,9 +227,9 @@ function CEPGP_distribute_popup_give()
 	CEPGP_print(CEPGP_distPlayer .. " is not on the candidate list for loot", true);
 end
 
-function CEPGP_distribute_popup_OnEvent(event)
+function CEPGP_distribute_popup_OnEvent(event, msg, name)
 	if event == "CHAT_MSG_LOOT" then
-		CEPGP_distPlayer = string.sub(arg1, 0, string.find(arg1, " ")-1);
+		CEPGP_distPlayer = name;
 		if CEPGP_distPlayer == "You" then
 			CEPGP_distPlayer = UnitName("player");
 		end

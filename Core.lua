@@ -519,7 +519,8 @@ function CEPGP_addGP(player, amount, item, itemLink, msg)
 					[4] = EP,
 					[5] = EP,
 					[6] = GPB,
-					[7] = GP
+					[7] = GP,
+					[8] = itemLink
 				};
 			else
 				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
@@ -529,7 +530,8 @@ function CEPGP_addGP(player, amount, item, itemLink, msg)
 					[4] = EP,
 					[5] = EP,
 					[6] = GPB,
-					[7] = GP
+					[7] = GP,
+					[8] = itemLink
 				};
 			end
 			if itemLink then
@@ -550,7 +552,7 @@ function CEPGP_addGP(player, amount, item, itemLink, msg)
 		end
 		CEPGP_UpdateTrafficScrollBar();
 	else
-		CEPGP_print(player .. " not found in guild CEPGP_roster - no GP given");
+		CEPGP_print(player .. " not found in guild roster - no GP given");
 		CEPGP_print("If this was a mistake, you can manually award them GP via the CEPGP guild menu");
 	end
 end

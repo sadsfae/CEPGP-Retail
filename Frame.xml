@@ -4479,16 +4479,17 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterEvent("UI_ERROR_MESSAGE");
+				self:RegisterEvent("CHAT_MSG_LOOT");
 				self:RegisterForDrag("LeftButton");
 			</OnLoad>
 			<OnShow>
-				self:RegisterEvent("CHAT_MSG_LOOT");
 			</OnShow>
 			<OnEvent>
-				CEPGP_distribute_popup_OnEvent(event);
+				local msg = select(1, ...);
+				local name = select(5, ...);
+				CEPGP_distribute_popup_OnEvent(event, msg, name);
 			</OnEvent>
 			<OnHide>
-				self:UnregisterEvent("CHAT_MSG_LOOT");
 				CEPGP_distribute_popup_title:SetText("");
 				CEPGP_distPlayer = "";
 			</OnHide>
