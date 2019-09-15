@@ -49,7 +49,7 @@ function CEPGP_UpdateLootScrollBar()
 		rank = nil;
 	end
 	t = CEPGP_tSort(t, CEPGP_criteria)
-	FauxScrollFrame_Update(DistributeScrollFrame, tSize, 18, 120);
+	FauxScrollFrame_Update(DistributeScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		yoffset = y + FauxScrollFrame_GetOffset(DistributeScrollFrame);
 		if (yoffset <= tSize) then
@@ -163,7 +163,7 @@ function CEPGP_UpdateGuildScrollBar()
 		}
 	end
 	t = CEPGP_tSort(t, CEPGP_criteria)
-	FauxScrollFrame_Update(GuildScrollFrame, tSize, 18, 240);
+	FauxScrollFrame_Update(GuildScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		
 		yoffset = y + FauxScrollFrame_GetOffset(GuildScrollFrame);
@@ -249,7 +249,7 @@ function CEPGP_UpdateRaidScrollBar()
 		}
 	end
 	t = CEPGP_tSort(t, CEPGP_criteria)
-	FauxScrollFrame_Update(RaidScrollFrame, tSize, 18, 240);
+	FauxScrollFrame_Update(RaidScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		yoffset = y + FauxScrollFrame_GetOffset(RaidScrollFrame);
 		if (yoffset <= tSize) then
@@ -336,7 +336,7 @@ function CEPGP_UpdateVersionScrollBar()
 			}
 		end
 	end
-	FauxScrollFrame_Update(VersionScrollFrame, tSize, 18, 240);
+	FauxScrollFrame_Update(VersionScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		yoffset = y + FauxScrollFrame_GetOffset(VersionScrollFrame);
 		if (yoffset <= tSize) then
@@ -400,7 +400,7 @@ function CEPGP_UpdateOverrideScrollBar()
 		};
 		count = count + 1;
 	end
-	FauxScrollFrame_Update(CEPGP_overrideScrollFrame, tSize, 18, 240);
+	FauxScrollFrame_Update(CEPGP_overrideScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		yoffset = y + FauxScrollFrame_GetOffset(CEPGP_overrideScrollFrame);
 		if (yoffset <= tSize) then
@@ -430,7 +430,7 @@ function CEPGP_UpdateTrafficScrollBar()
 	local yoffset;
 	local tSize;
 	tSize = CEPGP_ntgetn(TRAFFIC);
-	FauxScrollFrame_Update(trafficScrollFrame, tSize, 18, 240);
+	FauxScrollFrame_Update(trafficScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		yoffset = y + FauxScrollFrame_GetOffset(trafficScrollFrame);
 		if (yoffset <= tSize) then
@@ -514,7 +514,7 @@ function CEPGP_UpdateStandbyScrollBar()
 		}
 	end
 	t = CEPGP_tSort(t, CEPGP_criteria)
-	FauxScrollFrame_Update(CEPGP_StandbyScrollFrame, tSize, 18, 240);
+	FauxScrollFrame_Update(CEPGP_StandbyScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		yoffset = y + FauxScrollFrame_GetOffset(CEPGP_StandbyScrollFrame);
 		if (yoffset <= tSize) then
@@ -600,7 +600,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 		}
 	end
 	t = CEPGP_tSort(t, 1)
-	FauxScrollFrame_Update(AttendanceScrollFrame, tSize, 18, 240);
+	FauxScrollFrame_Update(AttendanceScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
 		yoffset = y + FauxScrollFrame_GetOffset(AttendanceScrollFrame);
 		if (yoffset <= tSize) then

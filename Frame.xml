@@ -220,7 +220,7 @@
 								</Anchors>
 								<Scripts>
 									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateGuildScrollBar); 
+										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateGuildScrollBar); 
 									</OnVerticalScroll>
 									<OnShow>
 										CEPGP_UpdateGuildScrollBar();
@@ -622,7 +622,7 @@
 								</Anchors>
 								<Scripts>
 									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateRaidScrollBar); 
+										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateRaidScrollBar); 
 									</OnVerticalScroll>
 									<OnShow>
 										CEPGP_UpdateRaidScrollBar();
@@ -1068,7 +1068,7 @@
 								</Anchors>
 								<Scripts>
 									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 120, CEPGP_UpdateLootScrollBar); 
+										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateLootScrollBar); 
 									</OnVerticalScroll>
 									<OnShow>
 										CEPGP_UpdateLootScrollBar();
@@ -3679,7 +3679,7 @@
 								</Anchors>
 								<Scripts>
 									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateStandbyScrollBar); 
+										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateStandbyScrollBar); 
 									</OnVerticalScroll>
 									<OnShow>
 										CEPGP_UpdateStandbyScrollBar();
@@ -4067,7 +4067,7 @@
 						</Anchors>
 						<Scripts>
 							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateVersionScrollBar); 
+								FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateVersionScrollBar); 
 							</OnVerticalScroll>
 							<OnShow>
 								CEPGP_UpdateVersionScrollBar();
@@ -5381,7 +5381,7 @@
 						</Anchors>
 						<Scripts>
 							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateOverrideScrollBar); 
+								FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateOverrideScrollBar); 
 							</OnVerticalScroll>
 							<OnShow>
 								CEPGP_UpdateOverrideScrollBar();
@@ -5745,7 +5745,7 @@
 						</Anchors>
 						<Scripts>
 							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateTrafficScrollBar); 
+								FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateTrafficScrollBar); 
 							</OnVerticalScroll>
 						</Scripts>
 					</ScrollFrame>
@@ -6462,7 +6462,7 @@
 						</Anchors>
 						<Scripts>
 							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(self, offset, 240, CEPGP_UpdateAttendanceScrollBar); 
+								FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateAttendanceScrollBar); 
 							</OnVerticalScroll>
 							<OnShow>
 								CEPGP_UpdateAttendanceScrollBar();
