@@ -58,21 +58,31 @@ function CEPGP_IncAddonMsg(message, sender)
 			CEPGP_UpdateLootScrollBar();
 		else
 			local name, iString = GetItemInfo(itemID);
+			if not name then
+				local item = Item:CreateFromItemID(tonumber(itemID));
+				item:ContinueOnItemLoad(function()
+					local name, link = GetItemInfo(itemID)
+					iString = CEPGP_getItemString(link);
+					CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
+					CEPGP_UpdateLootScrollBar();
+				end);
+			else
+				CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
+			end
 			if itemID2 then
 				local name2, iString2 = GetItemInfo(itemID2);
-				if name == nil then
-					if name2 == nil then
-					else
+				if not name2 then
+					local item = Item:CreateFromItemID(tonumber(itemID2));
+					item:ContinueOnItemLoad(function()
+						local name2, link2 = GetItemInfo(itemID2)
+						iString2 = CEPGP_getItemString(link2);
 						CEPGP_itemsTable[sender] = {iString2 .. "[" .. name2 .. "]"};
-					end
+						CEPGP_UpdateLootScrollBar();
+					end);
 				else
-					CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]", iString2 .. "[" .. name2 .. "]"};
+					CEPGP_itemsTable[sender] = {iString2 .. "[" .. name2 .. "]"};
 				end
 			else
-				if name == nil then
-				else
-					CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
-				end
 			end
 			CEPGP_UpdateLootScrollBar();
 		end

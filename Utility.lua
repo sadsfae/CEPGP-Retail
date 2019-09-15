@@ -324,7 +324,7 @@ function CEPGP_populateFrame(CEPGP_criteria, items, lootNum)
 				subframe.itemGP:SetText(gp);
 				subframe.itemGP:SetTextColor(colour.r, colour.g, colour.b);
 				subframe.itemGP:SetWidth(35);
-				subframe.itemGP:SetScript('OnEnterPressed', function() self:ClearFocus() end);
+				subframe.itemGP:SetScript('OnEnterPressed', function() _G[CEPGP_mode..'itemGP'..i]:ClearFocus() end);
 				subframe.itemGP:SetAutoFocus(false);
 				subframe.itemGP:Show();
 			end

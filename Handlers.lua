@@ -20,33 +20,62 @@ function CEPGP_handleComms(event, arg1, arg2)
 			end
 			local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
 			if not slot then
-				CEPGP_print("Unable to retrieve item information from the server. You will not see what the recipients are currently using", true);
-			end
-			--	Sends an addon message to the person who whispered !need to me
-			--	See Communications.lua:2 to continue this chain
-			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot, "RAID");
-			local EP, GP = nil;
-			local inGuild = false;
-			if CEPGP_tContains(CEPGP_roster, arg2, true) then
-				EP, GP = CEPGP_getEPGP(CEPGP_roster[arg2][5]);
-				class = CEPGP_roster[arg2][2];
-				inGuild = true;
-			end
-			if CEPGP_distributing then
-				if inGuild then
-					SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
-				else
-					local total = GetNumGroupMembers();
-					for i = 1, total do
-						if arg2 == GetRaidRosterInfo(i) then
-							_, _, _, _, class = GetRaidRosterInfo(i);
+				local item = Item:CreateFromItemID(CEPGP_DistID);
+				item:ContinueOnItemLoad(function()
+					local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID)
+					CEPGP_print(slot);
+					CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot, "RAID");
+					local EP, GP = nil;
+					local inGuild = false;
+					if CEPGP_tContains(CEPGP_roster, arg2, true) then
+						EP, GP = CEPGP_getEPGP(CEPGP_roster[arg2][5]);
+						class = CEPGP_roster[arg2][2];
+						inGuild = true;
+					end
+					if CEPGP_distributing then
+						if inGuild then
+							SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
+						else
+							local total = GetNumGroupMembers();
+							for i = 1, total do
+								if arg2 == GetRaidRosterInfo(i) then
+									_, _, _, _, class = GetRaidRosterInfo(i);
+								end
+							end
+							SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
 						end
 					end
-					SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
+					if not CEPGP_vInfo[arg2] then
+						CEPGP_UpdateLootScrollBar();
+					end
+				end);
+			else
+				--	Sends an addon message to the person who whispered !need to me
+				--	See Communications.lua:2 to continue this chain
+				CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot, "RAID");
+				local EP, GP = nil;
+				local inGuild = false;
+				if CEPGP_tContains(CEPGP_roster, arg2, true) then
+					EP, GP = CEPGP_getEPGP(CEPGP_roster[arg2][5]);
+					class = CEPGP_roster[arg2][2];
+					inGuild = true;
 				end
-			end
-			if not CEPGP_vInfo[arg2] then
-				CEPGP_UpdateLootScrollBar();
+				if CEPGP_distributing then
+					if inGuild then
+						SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
+					else
+						local total = GetNumGroupMembers();
+						for i = 1, total do
+							if arg2 == GetRaidRosterInfo(i) then
+								_, _, _, _, class = GetRaidRosterInfo(i);
+							end
+						end
+						SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
+					end
+				end
+				if not CEPGP_vInfo[arg2] then
+					CEPGP_UpdateLootScrollBar();
+				end
 			end
 		end
 	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info" then
