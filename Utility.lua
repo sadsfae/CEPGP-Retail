@@ -1206,7 +1206,7 @@ function CEPGP_calcAttIntervals()
 	return week, fn, mon, twoMon, threeMon;
 end
 
-function CEPGP_callItem(id)
+function CEPGP_callItem(id, gp)
 	if not id then return; end
 	id = tonumber(id); -- Must be in a numerical format
 	local name, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
@@ -1228,6 +1228,7 @@ function CEPGP_callItem(id)
 																	end);
 				_G["CEPGP_respond_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name); end);
 				_G["CEPGP_respond_item_name"]:SetText(link);
+				_G["CEPGP_respond_gp_value"]:SetText(gp);
 			end);
 	else
 		iString = CEPGP_getItemString(link);
@@ -1243,5 +1244,6 @@ function CEPGP_callItem(id)
 															end);
 		_G["CEPGP_respond_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString, name); end);
 		_G["CEPGP_respond_item_name"]:SetText(link);
+		_G["CEPGP_respond_gp_value"]:SetText(gp);
 	end
 end

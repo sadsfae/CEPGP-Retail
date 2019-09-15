@@ -148,6 +148,8 @@ function CEPGP_IncAddonMsg(message, sender)
 			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-nil~nil", "RAID");
 		end
 		
+	elseif strfind(message, "?LootClosed") then
+		_G["CEPGP_respond"]:Hide();		
 		
 	elseif strfind(message, "STANDBYEP"..UnitName("player")) then
 		CEPGP_print(string.sub(message, strfind(message, ",")+1));
@@ -305,8 +307,9 @@ function CEPGP_IncAddonMsg(message, sender)
 		CEPGP_button_options_OnClick();
 		
 	elseif strfind(message, "CallItem") then
-		local id = string.sub(message, 10);
-		CEPGP_callItem(id);
+		local id = string.sub(message, 10, strfind(message, "?gp=")-1);
+		local gp = string.sub(message, strfind(message, "?gp=")+4);
+		CEPGP_callItem(id, gp);
 		
 	elseif strfind(message, "MainSpec") then
 		CEPGP_handleComms("CHAT_MSG_WHISPER", CEPGP_keyword, sender);

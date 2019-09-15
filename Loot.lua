@@ -115,7 +115,7 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"), "RAID");
 		if CEPGP_loot_GUI then
 			CEPGP_callItem(id);
-			CEPGP_SendAddonMsg("CallItem?"..id, "RAID");
+			CEPGP_SendAddonMsg("CallItem?"..id .. "?gp=" .. gp, "RAID");
 		else
 			SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
 			if rank > 0 then

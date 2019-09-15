@@ -6702,7 +6702,7 @@
 					<Anchors>
 						<Anchor point="LEFT">
 							<Offset>
-								<AbsDimension x="32" y="5" />
+								<AbsDimension x="16" y="5" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -6722,6 +6722,26 @@
 						<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_respond_texture">
 							<Offset>
 								<AbsDimension x="10" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="CEPGP_respond_gp" inherits="GameFontNormal" text="GP">
+					<Color r="1" g="1" b="1"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-30" y="-40" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="CEPGP_respond_gp_value" inherits="GameFontNormal">
+					<Color r="1" g="1" b="1"/>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="CEPGP_respond_gp">
+							<Offset>
+								<AbsDimension x="0" y="-12.5" />
 							</Offset>
 						</Anchor>
 					</Anchors>
