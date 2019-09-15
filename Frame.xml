@@ -2019,6 +2019,13 @@
 									CEPGP_print("Disabled forced synchronisation");
 								end
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Allows the selected rank or higher to force your addon to use the same configuration as theirs.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</CheckButton>
 					<Button name="CEPGP_sync_rank" inherits="UIDropDownMenuTemplate">
@@ -2060,6 +2067,13 @@
 									CEPGP_options_standby_ep_options:Hide();
 								end
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Loot Master Feature\nAward a percentage of automatic EP gains (for example, from boss kills)\nto players on the standby list.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</CheckButton>
 					<Frame name="CEPGP_options_standby_ep_options">
@@ -2295,6 +2309,13 @@
 											STANDBYOFFLINE = false;
 										end
 									</OnClick>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+										GameTooltip:SetText("Award standby EP to offline players on the standby list.");
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide();
+									</OnLeave>
 								</Scripts>
 							</CheckButton>
 							<CheckButton name="CEPGP_options_standby_ep_accept_whispers_check" inherits="UIOptionsCheckButtonTemplate">
@@ -2326,6 +2347,13 @@
 											CEPGP_standby_accept_whispers = false;
 										end
 									</OnClick>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+										GameTooltip:SetText("Allow players to whisper you a certain message to be automatically\nadded to the standby list");
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide();
+									</OnLeave>
 								</Scripts>
 							</CheckButton>
 							<EditBox name="CEPGP_options_standby_ep_message_val" inherits="InputBoxTemplate">
@@ -2393,6 +2421,13 @@
 											self:SetChecked(true);
 										end
 									</OnClick>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+										GameTooltip:SetText("Award standby EP to all players in the selected ranks.");
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide();
+									</OnLeave>
 								</Scripts>
 							</CheckButton>
 							<CheckButton name="CEPGP_options_standby_ep_manual_check" inherits="UIOptionsCheckButtonTemplate">
@@ -2426,6 +2461,13 @@
 											self:SetChecked(true);
 										end
 									</OnClick>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+										GameTooltip:SetText("Add players to the standby EP list manually.");
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide();
+									</OnLeave>
 								</Scripts>
 							</CheckButton>
 							<CheckButton name="CEPGP_options_standby_ep_check_rank_1" id="1" inherits="StandbyEPRankCheckBox" />
