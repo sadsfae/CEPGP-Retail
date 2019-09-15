@@ -130,6 +130,7 @@ function CEPGP_UpdateLootScrollBar()
 			_G["LootDistButton" .. y]:Hide();
 		end
 	end
+	y, yoffset, t, tSize, name, class, rank, EP, GP, offNote, colour = nil;
 end
 
 function CEPGP_UpdateGuildScrollBar()
@@ -200,6 +201,7 @@ function CEPGP_UpdateGuildScrollBar()
 			_G["GuildButton" .. y]:Hide();
 		end
 	end
+	x, y, yoffset, t, tSize, name, class, rank, EP, GP, offNote, colour = nil;
 end
 
 function CEPGP_UpdateRaidScrollBar()
@@ -286,6 +288,7 @@ function CEPGP_UpdateRaidScrollBar()
 			_G["RaidButton" .. y]:Hide();
 		end
 	end
+	x, y, yoffset, t, tSize, name, class, rank, EP, GP, offNote, colour = nil;
 end
 
 function CEPGP_UpdateVersionScrollBar()
@@ -367,6 +370,7 @@ function CEPGP_UpdateVersionScrollBar()
 			_G["versionButton" .. y]:Hide();
 		end
 	end
+	x, y, yoffset, t, tSize, name, colour, version, online = nil;
 end
 
 function CEPGP_UpdateOverrideScrollBar()
@@ -416,6 +420,7 @@ function CEPGP_UpdateOverrideScrollBar()
 			_G["CEPGP_overrideButton" .. y]:Hide();
 		end
 	end
+	x, y, yoffset, t, tSize, item, gp, colour, quality = nil;
 end
 
 function CEPGP_UpdateTrafficScrollBar()
@@ -471,11 +476,12 @@ function CEPGP_UpdateTrafficScrollBar()
 			_G["trafficButton" .. y .. "GPAfter"]:SetText(GPA);
 			_G["trafficButton" .. y .. "GPAfter"]:SetTextColor(1, 1, 1);
 			_G["trafficButton" .. y]:Show();
-			 name, issuer, action, EPB, EPA, GPB, GPA, item = nil;
+			name, issuer, action, EPB, EPA, GPB, GPA, item = nil;
 		else
 			_G["trafficButton" .. y]:Hide();
 		end
 	end
+	yoffset, tSize = nil;
 end
 
 function CEPGP_UpdateStandbyScrollBar()
@@ -545,6 +551,7 @@ function CEPGP_UpdateStandbyScrollBar()
 			_G["CEPGP_StandbyButton" .. y]:Hide();
 		end
 	end
+	x, y, yoffset, t, tSize, name, class, rank, EP, GP, offNote, colour = nil;
 end
 
 function CEPGP_UpdateAttendanceScrollBar()
@@ -657,4 +664,5 @@ function CEPGP_UpdateAttendanceScrollBar()
 			_G["AttendanceButton" .. y]:Hide();
 		end
 	end
+	x, y, yoffset, t, tSize, name, class, rank, colour, total, week, fn, month, twoMon, ThreeMon, avg = nil;
 end
