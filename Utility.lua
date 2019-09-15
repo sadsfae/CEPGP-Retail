@@ -192,6 +192,7 @@ function CEPGP_calcGP(link, quantity, id)
 	end
 	slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 	slot = SLOTWEIGHTS[slot];
+	name, quality, itemType, subType = nil;
 	if ilvl and rarity and slot then
 		return (math.floor((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity);
 	else
@@ -227,12 +228,12 @@ function CEPGP_populateFrame(CEPGP_criteria, items, lootNum)
 			total = 0;
 		else
 			local i = 1;
-			local nils = 0;
 			for index,value in pairs(items) do 
 				tempItems[i] = value;
 				i = i + 1;
 				count = count + 1;
 			end
+			i = nil;
 		end
 		total = count;
 	end
@@ -329,6 +330,7 @@ function CEPGP_populateFrame(CEPGP_criteria, items, lootNum)
 				subframe.itemGP:Show();
 			end
 		end
+		texture, name, colour, link, iString, slot, quantity, gp, tempItems = nil;
 	end
 end
 
@@ -422,6 +424,7 @@ function CEPGP_rosterUpdate(event)
 				[6] = PR
 				};
 			end
+			name, rank, rankIndex, class, officerNote, EP, GP, PR = nil;
 		end
 		if CEPGP_mode == "guild" then
 			CEPGP_UpdateGuildScrollBar();
@@ -446,6 +449,7 @@ function CEPGP_rosterUpdate(event)
 				CEPGP_UpdateStandbyScrollBar();
 			end
 			CEPGP_raidRoster[name] = name;
+			name = nil;
 		end
 		if UnitInRaid("player") then
 			ShowUIPanel(CEPGP_button_raid);
@@ -1064,6 +1068,15 @@ function CEPGP_getDebugInfo()
 	else
 		info = info .. "Standby EP Manual Delegation: False<br /><br />";
 	end
+	
+	if CEPGP_loot_GUI then
+		info = info .. "GUI for Loot: True<br /><br />";
+	else
+		info = info .. "GUI for Loot: False<br /><br />";
+	end
+	
+	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br /><br />";
+		
 	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />";
 
 	info = info .. "<details><summary>Auto EP</summary><br />";
