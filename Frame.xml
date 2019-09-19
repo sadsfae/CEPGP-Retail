@@ -166,7 +166,7 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="CEPGP_button_guild_export" inherits="GameMenuButtonTemplate" text="Export Standings">
+					<!--<Button name="CEPGP_button_guild_export" inherits="GameMenuButtonTemplate" text="Export Standings">
 						<Size>
 							<AbsDimension x="125" y="21" />
 						</Size>
@@ -179,7 +179,7 @@
 								CEPGP_export:Show();
 							</OnClick>
 						</Scripts>
-					</Button>
+					</Button>-->
 					<Button name="CEPGP_button_guild_restore" inherits="GameMenuButtonTemplate" text="Restore Standings">
 						<Size>
 							<AbsDimension x="125" y="21" />
@@ -6948,30 +6948,44 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<EditBox name="CEPGP_export_dump" inherits="InputBoxTemplate">
+			<ScrollFrame name="CEPGP_export_scrollframe" inherits="FauxScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="350" y="150" />
+					<AbsDimension x="340" y="175"/>
 				</Size>
 				<Anchors>
-					<Anchor point="CENTER">
+					<Anchor point="RIGHT" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="0" y="-10" />
+							<AbsDimension x="-35" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Frames>
+					<EditBox name="CEPGP_export_dump" autofocus="false" multiline="true" inherits="InputBoxTemplate">
+						<Anchors>
+							<Anchor point="CENTER" />
+						</Anchors>
+						<FontString inherits="GameFontNormal"/>
+						<Scripts>
+							<OnLoad>
+								self:SetSize(CEPGP_export_scrollframe:GetSize());
+								self:SetPoint("TOPLEFT", 10, -10);
+								self:SetPoint("BOTTOMRIGHT", -10, 10);
+							</OnLoad>
+						</Scripts>
+					</EditBox>
+				</Frames>
 				<Scripts>
 					<OnLoad>
-						self:SetAutoFocus(false);
-						self:SetHeight(200);
+						self:SetScrollChild(CEPGP_export_dump);
 					</OnLoad>
-					<OnEnterPressed>
-						self:ClearFocus();
-					</OnEnterPressed>
+					<OnVerticalScroll>
+						--FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateGuildScrollBar); 
+					</OnVerticalScroll>
 					<OnShow>
-						
+						--CEPGP_UpdateGuildScrollBar();
 					</OnShow>
 				</Scripts>
-			</EditBox>
+			</ScrollFrame>
 		</Frames>
 	</Frame>
 </Ui>
