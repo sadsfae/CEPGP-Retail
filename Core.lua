@@ -354,6 +354,7 @@ function CEPGP_addGuildEP(amount, msg)
 		CEPGP_print("Please enter a valid number", 1);
 		return;
 	end
+	_G["CEPGP_frame"]:UnregisterEvent("GUILD_ROSTER_UPDATE");
 	local total = CEPGP_ntgetn(CEPGP_roster);
 	local EP, GP = nil;
 	amount = math.floor(amount);
@@ -377,6 +378,7 @@ function CEPGP_addGuildEP(amount, msg)
 			end
 		end
 	end
+	_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
 	CEPGP_SendAddonMsg("update", "GUILD");
 	if tonumber(amount) <= 0 then
 		amount = string.sub(amount, 2, string.len(amount));
@@ -697,11 +699,13 @@ end
 
 function CEPGP_resetAll(msg)
 	local total = CEPGP_ntgetn(CEPGP_roster);
+	_G["CEPGP_frame"]:UnregisterEvent("GUILD_ROSTER_UPDATE");
 	if total > 0 then
 		for i = 1, total, 1 do
 			GuildRosterSetOfficerNote(i, "0,"..BASEGP);
 		end
 	end
+	_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
 	CEPGP_SendAddonMsg("update", "GUILD");
 	if msg ~= "" and msg ~= nil then
 		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Cleared EPGP standings (" .. msg .. ")"};

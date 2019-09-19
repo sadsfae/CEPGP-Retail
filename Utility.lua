@@ -393,6 +393,7 @@ end
 
 function CEPGP_rosterUpdate(event)
 	if event == "GUILD_ROSTER_UPDATE" then
+		_G["CEPGP_frame"]:UnregisterEvent("GUILD_ROSTER_UPDATE");
 		CEPGP_roster = {};
 		if CanEditOfficerNote() then
 			ShowUIPanel(CEPGP_guild_add_EP);
@@ -432,6 +433,7 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_UpdateRaidScrollBar();
 		end
 		CEPGP_UpdateStandbyScrollBar();
+		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		CEPGP_vInfo = {};
 		CEPGP_SendAddonMsg("version-check", "RAID");

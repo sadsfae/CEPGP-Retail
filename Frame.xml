@@ -154,7 +154,7 @@
 				<Frames>
 					<Button name="CEPGP_button_guild_dump" inherits="GameMenuButtonTemplate" text="Save Standings">
 						<Size>
-							<AbsDimension x="125" y="21" />
+							<AbsDimension x="125" y="22" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_button_guild" />
@@ -162,7 +162,21 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);
-								CEPGP_save_guild_logs:Show();
+								CEPGP_save_guild_logs:Show()
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_button_guild_export" inherits="GameMenuButtonTemplate" text="Export Standings">
+						<Size>
+							<AbsDimension x="125" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="distributing" />
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_export:Show();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -6858,5 +6872,106 @@
 				self:StopMovingOrSizing();
 			</OnMouseUp>
 		</Scripts>
+	</Frame>
+
+	<Frame name="CEPGP_export" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
+		<Size>
+			<AbsDimension x="400" y="250" />
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<Color r="0" g="0" b="0" />
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="CEPGP_export_title" inherits="GameFontNormal" text="Export EPGP">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="CEPGP_export_desc" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-30"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="CEPGP_export_close" inherits="UIPanelCloseButton">
+				<Size>
+					<AbsDimension x="40" y="40" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-3" y="-3" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						CEPGP_export:Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<EditBox name="CEPGP_export_dump" inherits="InputBoxTemplate">
+				<Size>
+					<AbsDimension x="350" y="150" />
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="-10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetAutoFocus(false);
+						self:SetHeight(200);
+					</OnLoad>
+					<OnEnterPressed>
+						self:ClearFocus();
+					</OnEnterPressed>
+					<OnShow>
+						
+					</OnShow>
+				</Scripts>
+			</EditBox>
+		</Frames>
 	</Frame>
 </Ui>
