@@ -91,9 +91,31 @@ function CEPGP_IncAddonMsg(message, sender)
 	elseif strfind(message, UnitName("player").."versioncheck") then
 		
 		if CEPGP_vSearch == "GUILD" then
-			CEPGP_groupVersion[sender] = string.sub(message, strfind(message, " ")+1);
+			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
+				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
+					if CEPGP_groupVersion[i][1] == sender then
+						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
+					end
+				end
+			else
+				CEPGP_groupVersion[CEPGP_ntgetn(CEPGP_groupVersion)+1] = {
+					[1] = sender,
+					[2] = string.sub(message, strfind(message, " ")+1)
+				};
+			end
 		else
-			CEPGP_groupVersion[sender] = string.sub(message, strfind(message, " ")+1);
+			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
+				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
+					if CEPGP_groupVersion[i][1] == sender then
+						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
+					end
+				end
+			else				
+				CEPGP_groupVersion[CEPGP_ntgetn(CEPGP_groupVersion)+1] = {
+					[1] = sender,
+					[2] = string.sub(message, strfind(message, " ")+1)
+				};
+			end
 			CEPGP_vInfo[sender] = string.sub(message, strfind(message, " ")+1);
 		end
 		CEPGP_UpdateVersionScrollBar();
@@ -170,6 +192,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 	elseif message == "?forceSync" and ALLOW_FORCED_SYNC and sender ~= UnitName("player") then
 		local _, _, _, rIndex = CEPGP_getGuildInfo(sender); --rank index
+		if not rIndex then return; end
 		if rIndex + 1 <= CEPGP_force_sync_rank then --Index obtained by GetGuildRosterInfo starts at 0 whereas GuildControlGetRankName starts at 1 for some reason
 			CEPGP_print(sender .. " is synchronising your settings with theirs");
 			CEPGP_SendAddonMsg(sender.."-import", "GUILD");

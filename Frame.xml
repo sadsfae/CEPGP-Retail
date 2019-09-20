@@ -4311,6 +4311,13 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Scripts>
+					<OnClick>
+						CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
+						CEPGP_setCriteria(1);
+						CEPGP_UpdateVersionScrollBar();
+					</OnClick>
+				</Scripts>
 			</Button>
 			<Button name="CEPGP_version_version" inherits="CEPGPHeaderButton" text="Version">
 				<Size>
@@ -4356,7 +4363,7 @@
 				<Scripts>
 					<OnClick>
 						PlaySound(799);
-						CEPGP_vInfi = {};
+						CEPGP_vInfo = {};
 						CEPGP_groupVersion = {};
 						CEPGP_vSearch = "RAID";
 						CEPGP_SendAddonMsg("version-check", "RAID");

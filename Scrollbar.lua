@@ -323,6 +323,7 @@ function CEPGP_UpdateVersionScrollBar()
 				[3] = online
 			}
 		end
+		t = CEPGP_tSort(t, 1);
 	else
 		for x = 1, tSize do
 			name, _, group, _, class, _, _, online = GetRaidRosterInfo(x);
@@ -335,6 +336,7 @@ function CEPGP_UpdateVersionScrollBar()
 				[3] = online
 			}
 		end
+		t = CEPGP_tSort(t, 1);
 	end
 	FauxScrollFrame_Update(VersionScrollFrame, tSize, 18, 15);
 	for y = 1, 18, 1 do
@@ -347,12 +349,15 @@ function CEPGP_UpdateVersionScrollBar()
 				name = t2[1];
 				class = t2[2];
 				online = t2[3];
-				if CEPGP_groupVersion[name] then
-					version = CEPGP_groupVersion[name];
-				elseif online == 1 then
-					version = "Addon not running";
-				else
-					version = "Offline";
+				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
+					if CEPGP_groupVersion[i][1] == name then
+						version = CEPGP_groupVersion[i][2];
+						break;
+					elseif online == 1 then
+						version = "Addon not running";
+					else
+						version = "Offline";
+					end
 				end
 				if class then
 					colour = RAID_CLASS_COLORS[string.upper(class)];
