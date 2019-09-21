@@ -1,7 +1,11 @@
 --This function gets run twice. Once by the loot master when someone whispers !need
 --and again by raid assists when the loot master's addon notifies theirs of the !need response
 function CEPGP_IncAddonMsg(message, sender)
-	if strfind(message, "CEPGP_distributing") and strfind(message, UnitName("player")) then-- and strfind(message, GetRealmName()) then
+
+	if strfind(message, "CEPGP_setDistID?") then
+		CEPGP_DistID = string.sub(message, strfind(message, "?")+1);
+
+	elseif strfind(message, "CEPGP_distributing") and strfind(message, UnitName("player")) then-- and strfind(message, GetRealmName()) then
 		--Recipient should see this
 		local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
 		if not slot then
@@ -200,7 +204,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 	elseif message == UnitName("player").."-import" then
 		local lane;
-		if CEPGP_raidRoster[sender] then
+		if CEPGP_tContains(CEPGP_raidRoster, sender) then
 			lane = "RAID";
 		elseif CEPGP_roster[sender] then
 			lane = "GUILD";

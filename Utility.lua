@@ -74,7 +74,7 @@ function CEPGP_initialise()
 	if UnitInRaid("player") then
 		for i = 1, GetNumGroupMembers() do
 			name = GetRaidRosterInfo(i);
-			CEPGP_raidRoster[name] = name;
+			CEPGP_raidRoster[i] = name;
 		end 
 	end
 	if CEPGP_force_sync_rank == nil then
@@ -450,7 +450,7 @@ function CEPGP_rosterUpdate(event)
 				end
 				CEPGP_UpdateStandbyScrollBar();
 			end
-			CEPGP_raidRoster[name] = name;
+			CEPGP_raidRoster[i] = name;
 			name = nil;
 		end
 		if UnitInRaid("player") then

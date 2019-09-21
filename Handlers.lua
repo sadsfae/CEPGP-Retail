@@ -399,7 +399,7 @@ function CEPGP_handleLoot(event, arg1, arg2)
 				CEPGP_distributing = false;
 				if CEPGP_distGP then
 					SendChatMessage("Awarded " .. _G["CEPGP_distribute_item_name"]:GetText() .. " to ".. CEPGP_distPlayer .. " for " .. CEPGP_distribute_GP_value:GetText() .. " GP", CHANNEL, CEPGP_LANGUAGE);
-					CEPGP_addGP(CEPGP_distPlayer, CEPGP_distribute_GP_value:GetText(), true, CEPGP_distItemLink);
+					CEPGP_addGP(CEPGP_distPlayer, CEPGP_distribute_GP_value:GetText(), CEPGP_DistID, CEPGP_distItemLink);
 				else
 					SendChatMessage("Awarded " .. _G["CEPGP_distribute_item_name"]:GetText() .. " to ".. CEPGP_distPlayer .. " for free", CHANNEL, CEPGP_LANGUAGE);
 				end

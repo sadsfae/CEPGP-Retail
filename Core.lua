@@ -79,10 +79,10 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 		CEPGP_rosterUpdate(event);
 		
 	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == CEPGP_standby_whisper_msg and CEPGP_standby_manual and CEPGP_standby_accept_whispers then
-		if not CEPGP_tContains(CEPGP_standbyRoster, arg2)
-		and not CEPGP_tContains(CEPGP_raidRoster, arg2, true)
-		and CEPGP_tContains(CEPGP_roster, arg2, true) then
-			CEPGP_addToStandby(arg2);
+		if not CEPGP_tContains(CEPGP_standbyRoster, arg5)
+		and not CEPGP_tContains(CEPGP_raidRoster, arg5, true)
+		and CEPGP_tContains(CEPGP_roster, arg5, true) then
+			CEPGP_addToStandby(arg5);
 		end
 			
 	elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == string.lower(CEPGP_keyword) and CEPGP_distributing) or
@@ -431,7 +431,7 @@ function CEPGP_addStandbyEP(player, amount, boss)
 	CEPGP_SendAddonMsg("STANDBYEP"..player..",You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
 end
 
-function CEPGP_addGP(player, amount, item, itemLink, msg)
+function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 	if amount == nil then
 		CEPGP_print("Please enter a valid number", 1);
 		return;
@@ -457,7 +457,7 @@ function CEPGP_addGP(player, amount, item, itemLink, msg)
 		end
 		GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 		CEPGP_SendAddonMsg("update", "GUILD");
-		if not item then
+		if not itemID then
 			if tonumber(amount) <= 0 then
 				amount = string.sub(amount, 2, string.len(amount));
 				if msg ~= "" and msg ~= nil then
@@ -539,9 +539,9 @@ function CEPGP_addGP(player, amount, item, itemLink, msg)
 			if itemLink then
 				if msg ~= "" and msg ~= nil then
 					TRAFFIC[CEPGP_ntgetn(TRAFFIC)][8] = itemLink;
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP, itemLink);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP, itemID);
 				else
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount, EP, EP, GPB, GP, itemLink);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount, EP, EP, GPB, GP, itemID);
 				end
 			else
 				if msg ~= "" and msg ~= nil then

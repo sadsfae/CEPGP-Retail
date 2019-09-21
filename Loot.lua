@@ -89,6 +89,7 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_itemsTable = {};
 		CEPGP_distItemLink = link;
 		CEPGP_DistID = id;
+		CEPGP_SendAddonMsg("CEPGP_setDistID?" .. id, "RAID");
 		CEPGP_distSlot = slot;
 		CEPGP_distSlotID = slotNum;
 		gp = _G[CEPGP_mode..'itemGP'..x]:GetText();
