@@ -90,15 +90,16 @@ function CEPGP_IncAddonMsg(message, sender)
 			end
 			CEPGP_UpdateLootScrollBar();
 		end
+	end
 		
 		
-	elseif strfind(message, UnitName("player").."versioncheck") then
-		
+	if strfind(message, UnitName("player").."versioncheck") then
 		if CEPGP_vSearch == "GUILD" then
 			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
 				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
 					if CEPGP_groupVersion[i][1] == sender then
 						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
+						break;
 					end
 				end
 			else
@@ -112,6 +113,7 @@ function CEPGP_IncAddonMsg(message, sender)
 				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
 					if CEPGP_groupVersion[i][1] == sender then
 						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
+						break;
 					end
 				end
 			else				
@@ -122,7 +124,8 @@ function CEPGP_IncAddonMsg(message, sender)
 			end
 			CEPGP_vInfo[sender] = string.sub(message, strfind(message, " ")+1);
 		end
-		CEPGP_UpdateVersionScrollBar();
+	CEPGP_UpdateVersionScrollBar();
+	CEPGP_checkVersion(message);
 		
 		
 	elseif message == "version-check" then
@@ -133,32 +136,10 @@ function CEPGP_IncAddonMsg(message, sender)
 		else
 			CEPGP_SendAddonMsg(sender .. "versioncheck " .. CEPGP_VERSION);
 		end
+	end
 		
 		
-	elseif strfind(message, "version") then
-		local s1, s2, s3, s4 = CEPGP_strSplit(message, "-");
-		if s1 == "update" then
-			CEPGP_updateGuild();
-		elseif s1 == "version" then
-			local ver2 = string.gsub(CEPGP_VERSION, "%.", ",");
-			local v1, v2, v3 = CEPGP_strSplit(ver2..",", ",");
-			local nv1, nv2, nv3 = CEPGP_strSplit(s2, ",");
-			local s5 = (nv1.."."..nv2.."."..nv3)
-			outMessage = "Your addon is out of date. Version " .. s5 .. " is now available for download at https://github.com/Alumian/CEPGP-Retail"
-			if not CEPGP_VERSION_NOTIFIED then
-				CEPGP_VERSION_NOTIFIED = true;
-				if v1 > v1 then
-					CEPGP_print(outMessage);
-				elseif nv1 == v1 and nv2 > v2 then
-					CEPGP_print(outMessage);
-				elseif nv1 == v1 and nv2 == v2 and nv3 > v3 then
-					CEPGP_print(outMessage);
-				end
-			end
-		end
-		
-		
-	elseif strfind(message, "RaidAssistLoot") and (sender ~= UnitName("player") and sender ~= UnitName("player"))	then
+	if strfind(message, "RaidAssistLoot") and (sender ~= UnitName("player") and sender ~= UnitName("player"))	then
 		if strfind(message, "RaidAssistLootDist") then
 			local link = string.sub(message, 19, strfind(message, ",")-1);
 			local gp = string.sub(message, strfind(message, ",")+1, strfind(message, "\\")-1);

@@ -88,10 +88,7 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 	elseif (event == "CHAT_MSG_WHISPER" and string.lower(arg1) == string.lower(CEPGP_keyword) and CEPGP_distributing) or
 		(event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info") or
 		(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
-			if string.find(arg2, "-") then
-				arg2 = string.sub(arg2, 0, string.find(arg2, "-")-1);
-			end
-			CEPGP_handleComms(event, arg1, arg2);
+			CEPGP_handleComms(event, arg1, arg5);
 	
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, action = CombatLogGetCurrentEventInfo();

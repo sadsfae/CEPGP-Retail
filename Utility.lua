@@ -1263,3 +1263,31 @@ function CEPGP_callItem(id, gp)
 		_G["CEPGP_respond_gp_value"]:SetText(gp);
 	end
 end
+
+function CEPGP_checkVersion(message)
+	local build = string.sub(message, string.find(message, " " )+1); --The whole message, but bits get taken off to form the major, minor and build
+	local major = string.sub(build, 0, string.find(build, "%.")-1);
+	build = string.sub(build, string.len(major)+2);
+	local minor = string.sub(build, 0, string.find(build, "%.")-1);
+	build = string.sub(build, string.find(build, "%.")+1, string.len(minor)+2);
+	
+	--Current build information
+	local curBuild = CEPGP_VERSION;
+	local curMajor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
+	curBuild = string.sub(curBuild, string.len(major)+2);
+	local curMinor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
+	curBuild = string.sub(curBuild, string.find(curBuild, "%.")+1, string.len(minor)+2);
+	outMessage = "Your addon is out of date. Version " .. major .. "." .. minor .. "." .. build .. " is now available for download at https://github.com/Alumian/CEPGP-Retail"
+	if not CEPGP_VERSION_NOTIFIED then
+		if major > curMajor then 
+			CEPGP_print(outMessage);
+			CEPGP_VERSION_NOTIFIED = true;
+		elseif major == curMajor and minor > curMinor then
+			CEPGP_print(outMessage);
+			CEPGP_VERSION_NOTIFIED = true;
+		elseif major == curMajor and minor == curMinor and build > curBuild then
+			CEPGP_print(outMessage);
+			CEPGP_VERSION_NOTIFIED = true;
+		end
+	end
+end
