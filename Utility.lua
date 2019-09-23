@@ -410,6 +410,7 @@ function CEPGP_rosterUpdate(event)
 		end
 		for i = 1, GetNumGuildMembers() do
 			local name, rank, rankIndex, _, class, _, _, officerNote = GetGuildRosterInfo(i);
+			
 			if string.find(name, "-") then
 				name = string.sub(name, 0, string.find(name, "-")-1);
 			end

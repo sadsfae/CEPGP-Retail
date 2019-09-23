@@ -226,7 +226,7 @@ function CEPGP_handleCombat(name, except)
 			_, isLead = GetRaidRosterInfo(i);
 		end
 	end
-	if (((GetLootMethod() == "master" and CEPGP_isML() == 0) or (GetLootMethod() == "group" and isLead == 2)) and CEPGP_ntgetn(CEPGP_roster) > 0) or CEPGP_debugMode then
+	--if (((GetLootMethod() == "master" and CEPGP_isML() == 0) or (GetLootMethod() == "group" and isLead == 2)) and CEPGP_ntgetn(CEPGP_roster) > 0) or CEPGP_debugMode then
 		local success = CEPGP_getCombatModule(name);
 		if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
 			name = "High Priest Thekal";
@@ -247,14 +247,17 @@ function CEPGP_handleCombat(name, except)
 					CEPGP_ShareTraffic("Guild", UnitName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule);
 					CEPGP_UpdateTrafficScrollBar();
 					if CEPGP_standby_byrank then
-						for k, v in pairs(CEPGP_roster) do -- The following module handles standby EP
+						for k, _ in pairs(CEPGP_roster) do -- The following module handles standby EP
 							if not CEPGP_tContains(CEPGP_raidRoster, k, true) then -- If the player in question is NOT in the raid group, then proceed
-								local pName, rank, _, _, _, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[k][1]);
-								if online == 1 or STANDBYOFFLINE then
+								local player, rank, _, _, _, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[k][1]);
+								if string.find(player, "-") then
+									player = string.sub(player, 0, string.find(player, "-")-1);
+								end
+								if online or STANDBYOFFLINE then
 									for i = 1, table.getn(STANDBYRANKS) do
 										if STANDBYRANKS[i][1] == rank then
 											if STANDBYRANKS[i][2] == true then
-												CEPGP_addStandbyEP(pName, EP*(STANDBYPERCENT/100), CEPGP_combatModule);
+												CEPGP_addStandbyEP(player, EP*(STANDBYPERCENT/100), CEPGP_combatModule);
 											end
 										end
 									end
@@ -268,7 +271,7 @@ function CEPGP_handleCombat(name, except)
 					end
 				end
 			end
-		end
+		--end
 		CEPGP_UpdateStandbyScrollBar();
 	end
 end
@@ -394,7 +397,7 @@ function CEPGP_handleLoot(event, arg1, arg2)
 		if CEPGP_isML() == 0 then
 			CEPGP_SendAddonMsg("RaidAssistLootClosed", "RAID");
 		end
-		if CEPGP_distributing and arg1 == CEPGP_lootSlot then
+		if CEPGP_distributing and arg1 == CEPGP_lootSlot then --Confirms that an item is currently being distributed and that the item taken is the one in question
 			if CEPGP_distPlayer ~= "" then
 				CEPGP_distributing = false;
 				if CEPGP_distGP then

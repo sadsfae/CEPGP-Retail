@@ -410,10 +410,9 @@ function CEPGP_addStandbyEP(player, amount, boss)
 		CEPGP_print("Please enter a valid number", 1);
 		return;
 	end
-	local EP, GP = nil;
 	amount = (math.floor(amount*100))/100;
 	local name = CEPGP_getGuildInfo(player);
-	EP,GP = CEPGP_getEPGP(CEPGP_roster[player][5]);
+	local EP,GP = CEPGP_getEPGP(CEPGP_roster[player][5]);
 	EP = tonumber(EP) + amount;
 	GP = tonumber(GP);
 	if GP < BASEGP then

@@ -1973,7 +1973,7 @@
 												GuildRosterSetOfficerNote(i, EP .. "," .. BASEGP);
 											end
 										end
-										if name then
+										--[[if name then
 											CEPGP_roster[name] = {
 											[1] = i,
 											[2] = class,
@@ -1981,7 +1981,7 @@
 											[4] = rankIndex,
 											[5] = officerNote
 											};
-										end
+										end]]
 									end
 								end
 							</OnEditFocusLost>
