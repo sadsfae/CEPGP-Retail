@@ -200,7 +200,7 @@ function CEPGP_calcGP(link, quantity, id)
 	end
 end
 
-function CEPGP_populateFrame(CEPGP_criteria, items, lootNum)
+function CEPGP_populateFrame(CEPGP_criteria, items)
 	local sorting = nil;
 	local subframe = nil;
 	if CEPGP_criteria == "name" or CEPGP_criteria == "rank" then
@@ -228,7 +228,7 @@ function CEPGP_populateFrame(CEPGP_criteria, items, lootNum)
 			total = 0;
 		else
 			local i = 1;
-			for index,value in pairs(items) do 
+			for _,value in pairs(items) do 
 				tempItems[i] = value;
 				i = i + 1;
 				count = count + 1;

@@ -1,84 +1,40 @@
 function CEPGP_LootFrame_Update()
-	if CEPGP_ElvUI then
-		local items = GetNumLootItems()
-		local itemList = {};
-		local count = 0;
-		local numSlots = 0;
-		if items > 0 then
-			numSlots = numSlots + 1;
-			for i = 1, items do
-				if GetLootSlotLink(i) ~= nil then
-					local texture, item, quantity, _, quality = GetLootSlotInfo(i)
-					local itemLink = GetLootSlotLink(i)
-					local color = ITEM_QUALITY_COLORS[quality]
-					local itemString = string.sub(itemLink, string.find(itemLink, "item[%-?%d:]+"));
-					if tostring(GetLootSlotLink(i)) ~= "nil" or CEPGP_inOverride(item) then
-						itemList[i-count] = {
-							[1] = texture,
-							[2] = item,
-							[3] = quality,
-							[4] = itemLink,
-							[5] = itemString,
-							[6] = i,
-							[7] = quantity
-						};
-					else
-					count = count + 1;
-					end
+	local items = {};
+	local count = 0;
+	local numLootItems = LootFrame.numLootItems;
+	local texture, item, quantity, quality;
+	for index = 1, numLootItems do
+		local slot = index;
+		if ( slot <= numLootItems ) then	
+			if (LootSlotHasItem(slot)) then
+				texture, item, quantity, _, quality = GetLootSlotInfo(slot);
+				if tostring(GetLootSlotLink(slot)) ~= "nil" or CEPGP_inOverride(item) then
+					items[index-count] = {};
+					items[index-count][1] = texture;
+					items[index-count][2] = item;
+					items[index-count][3] = quality;
+					items[index-count][4] = GetLootSlotLink(slot);
+					local link = GetLootSlotLink(index);
+					local itemString = string.find(link, "item[%-?%d:]+");
+					itemString = strsub(link, itemString, string.len(link)-string.len(item)-6);
+					items[index-count][5] = itemString;
+					items[index-count][6] = slot;
+					items[index-count][7] = quantity;
 				else
 					count = count + 1;
 				end
 			end
 		end
-		for i = 1, CEPGP_ntgetn(itemList) do
-			if itemList[i][1] ~= nil then
-				if (itemList[i][3] > 2 or CEPGP_inOverride(itemList[i][2])) and (UnitInRaid("player") or CEPGP_debugMode) then
-					CEPGP_frame:Show();
-					CEPGP_mode = "loot";
-					CEPGP_toggleFrame("CEPGP_loot");
-					break;
-				end
-			end
-		end
-		CEPGP_populateFrame(_, itemList, numSlots);
-	else
-		local items = {};
-		local count = 0;
-		local numLootItems = LootFrame.numLootItems;
-		local texture, item, quantity, quality;
-		for index = 1, numLootItems do
-			local slot = index;
-			if ( slot <= numLootItems ) then	
-				if (LootSlotHasItem(slot)) then
-					texture, item, quantity, _, quality = GetLootSlotInfo(slot);
-					if tostring(GetLootSlotLink(slot)) ~= "nil" or CEPGP_inOverride(item) then
-						items[index-count] = {};
-						items[index-count][1] = texture;
-						items[index-count][2] = item;
-						items[index-count][3] = quality;
-						items[index-count][4] = GetLootSlotLink(slot);
-						local link = GetLootSlotLink(index);
-						local itemString = string.find(link, "item[%-?%d:]+");
-						itemString = strsub(link, itemString, string.len(link)-string.len(item)-6);
-						items[index-count][5] = itemString;
-						items[index-count][6] = slot;
-						items[index-count][7] = quantity;
-					else
-						count = count + 1;
-					end
-				end
-			end
-		end
-		for k, v in pairs(items) do -- k = loot slot number, v is the table result
-			if (UnitInRaid("player") or CEPGP_debugMode) and (v[3] > 2 or CEPGP_inOverride(item)) then --or itemsIndex[v[2]]) then
-				CEPGP_frame:Show();
-				CEPGP_mode = "loot";
-				CEPGP_toggleFrame("CEPGP_loot");
-				break;
-			end
-		end
-		CEPGP_populateFrame(_, items, numLootItems);
 	end
+	for k, v in pairs(items) do -- k = loot slot number, v is the table result
+		if (UnitInRaid("player") or CEPGP_debugMode) and (v[3] > 2 or CEPGP_inOverride(item)) then
+			CEPGP_frame:Show();
+			CEPGP_mode = "loot";
+			CEPGP_toggleFrame("CEPGP_loot");
+			break;
+		end
+	end
+	CEPGP_populateFrame(_, items, numLootItems);
 end
 
 function CEPGP_announce(link, x, slotNum, quantity)
