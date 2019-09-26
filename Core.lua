@@ -313,7 +313,6 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 		end
 	end
 	if msg ~= "" and msg ~= nil or encounter then
-		CEPGP_SendAddonMsg("update", "GUILD");
 		if encounter then -- a boss was killed
 			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Add Raid EP +" .. amount .. " - " .. encounter};
 			CEPGP_ShareTraffic("Raid", UnitName("player"), "Add Raid EP +" .. amount .. " - " .. encounter);
@@ -331,7 +330,6 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 			end
 		end
 	else -- no message was written
-		CEPGP_SendAddonMsg("update", "GUILD");
 		if tonumber(amount) <= 0 then
 			amount = string.sub(amount, 2, string.len(amount));
 			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Subtract Raid EP -" .. amount};
@@ -376,7 +374,6 @@ function CEPGP_addGuildEP(amount, msg)
 		end
 	end
 	_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
-	CEPGP_SendAddonMsg("update", "GUILD");
 	if tonumber(amount) <= 0 then
 		amount = string.sub(amount, 2, string.len(amount));
 		if msg ~= "" and msg ~= nil then
@@ -423,7 +420,6 @@ function CEPGP_addStandbyEP(player, amount, boss)
 	else
 		GuildRosterSetOfficerNote(CEPGP_roster[player][1], EP .. "," .. GP);
 	end
-	CEPGP_SendAddonMsg("update", "GUILD");
 	CEPGP_SendAddonMsg("STANDBYEP"..player..",You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
 end
 
@@ -452,7 +448,6 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 			EP = 0;
 		end
 		GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-		CEPGP_SendAddonMsg("update", "GUILD");
 		if not itemID then
 			if tonumber(amount) <= 0 then
 				amount = string.sub(amount, 2, string.len(amount));
@@ -580,7 +575,6 @@ function CEPGP_addEP(player, amount, msg)
 			EP = 0;
 		end
 		GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-		CEPGP_SendAddonMsg("update", "GUILD");
 		if tonumber(amount) <= 0 then
 			if msg ~= "" and msg ~= nil then
 				amount = string.sub(amount, 2, string.len(amount));
@@ -667,7 +661,6 @@ function CEPGP_decay(amount, msg)
 			GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 		--end
 	end
-	CEPGP_SendAddonMsg("update", "GUILD");
 	if tonumber(amount) <= 0 then
 		amount = string.sub(amount, 2, string.len(amount));
 		if msg ~= "" and msg ~= nil then
@@ -702,7 +695,6 @@ function CEPGP_resetAll(msg)
 		end
 	end
 	_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
-	CEPGP_SendAddonMsg("update", "GUILD");
 	if msg ~= "" and msg ~= nil then
 		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Cleared EPGP standings (" .. msg .. ")"};
 		CEPGP_ShareTraffic("Guild", UnitName("player"), "Cleared EPGP standings (" .. msg .. ")");
