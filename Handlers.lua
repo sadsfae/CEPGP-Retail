@@ -218,7 +218,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 end
 
 function CEPGP_handleCombat(name, except)
-	if name == "The Prophet Skeram" and not except then return; end
+	if name == "The Prophet Skeram" or name == "Majordomo Executus" and not except then return; end
 	local EP;
 	local isLead;
 	for i = 1, GetNumGroupMembers() do
