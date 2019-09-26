@@ -1112,6 +1112,11 @@ function CEPGP_getDebugInfo()
 		info = info .. "<details><summary>" .. k .. "</summary>" .. SLOTWEIGHTS[k] .. "</details><br />";
 	end
 	info = info .. "</details><br />";
+	info = info .. "<details><summary>Addons List</summary><br />";
+	for i = 1, GetNumAddOns() do
+		info = info .. "" .. GetAddOnInfo(i) .. "<br />";
+	end
+	info = info .. "</details>";
 	info = info .. "</details>";
 	return info;
 end

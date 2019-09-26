@@ -355,7 +355,9 @@ end
 
 function CEPGP_handleLoot(event, arg1, arg2)
 	if event == "LOOT_CLOSED" then
-		CEPGP_SendAddonMsg("?LootClosed", "RAID");
+		if CEPGP_isML() == 0 then
+			CEPGP_SendAddonMsg("?LootClosed", "RAID");
+		end
 		CEPGP_distributing = false;
 		CEPGP_distItemLink = nil;
 		_G["distributing"]:Hide();
