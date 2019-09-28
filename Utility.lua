@@ -96,6 +96,10 @@ function CEPGP_initialise()
 	if not CEPGP_notice then
 		CEPGP_notice_frame:Show();
 	end
+	
+	if IsInRaid("player") and CEPGP_isML() == 0 then
+		_G["CEPGP_confirmation"]:Show();
+	end
 end
 
 function CEPGP_calcGP(link, quantity, id)	
@@ -435,6 +439,9 @@ function CEPGP_rosterUpdate(event)
 		end
 		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
 	elseif event == "GROUP_ROSTER_UPDATE" then
+		if IsInRaid("player") and CEPGP_isML() == 0 then
+			_G["CEPGP_confirmation"]:Show();
+		end
 		CEPGP_raidRoster = {};
 		_G["CEPGP_frame"]:UnregisterEvent("GROUP_ROSTER_UPDATE");
 		for i = 1, GetNumGroupMembers() do

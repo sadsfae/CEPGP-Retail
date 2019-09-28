@@ -27,7 +27,7 @@ function CEPGP_LootFrame_Update()
 		end
 	end
 	for k, v in pairs(items) do -- k = loot slot number, v is the table result
-		if (UnitInRaid("player") or CEPGP_debugMode) and (v[3] > 2 or CEPGP_inOverride(item)) then
+		if (UnitInRaid("player") or CEPGP_debugMode) and (v[3] > 1 or CEPGP_inOverride(item)) then
 			CEPGP_frame:Show();
 			CEPGP_mode = "loot";
 			CEPGP_toggleFrame("CEPGP_loot");

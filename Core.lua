@@ -40,6 +40,7 @@ CEPGP_groupVersion = {};
 CEPGP_RAZORGORE_EGG_COUNT = 0;
 CEPGP_THEKAL_PARAMS = {};
 CEPGP_snapshot = nil;
+CEPGP_use = false;
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;
@@ -73,10 +74,16 @@ CEPGP_raid_logs = {};
 
 --[[ EVENT AND COMMAND HANDLER ]]--
 function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+	
 	if event == "ADDON_LOADED" and arg1 == "CEPGP" then --arg1 = addon name
 		CEPGP_initialise();
 	elseif event == "GUILD_ROSTER_UPDATE" or event == "GROUP_ROSTER_UPDATE" then
 		CEPGP_rosterUpdate(event);
+		
+	elseif event == "PARTY_LOOT_METHOD_CHANGED" then
+		if GetLootMethod() == "master" and IsInRaid("player") then
+			_G["CEPGP_confirmation"]:Show();
+		end
 		
 	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == CEPGP_standby_whisper_msg and CEPGP_standby_manual and CEPGP_standby_accept_whispers then
 		if not CEPGP_tContains(CEPGP_standbyRoster, arg5)
@@ -90,54 +97,6 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 		(event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass")) then
 			CEPGP_handleComms(event, arg1, arg5);
 	
-	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, action = CombatLogGetCurrentEventInfo();
-		local name;
-		if action == "UNIT_DIED" then
-			_, _, _, _, _, _, _, _, name = CombatLogGetCurrentEventInfo();
-			if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
-				CEPGP_handleCombat(name);
-				return;
-			end
-			if name == "Flamewaker Elite" or name == "Flamewaker Healer" then
-				CEPGP_handleCombat(name, true);
-			end
-			if bossNameIndex[name] then
-				CEPGP_handleCombat(name);
-			end
-		elseif action == "SPELL_CAST_SUCCESS" then
-			local spellID, spellName;
-			_, _, _, _, name, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo();
-			if name == "Razorgore the Untamed" and spellID == 19873 then --Razorgore casts destroy egg
-				CEPGP_kills = CEPGP_kills + 1;
-			end
-		end
-		
-	elseif event == "CHAT_MSG_MONSTER_EMOTE" then
-		if arg1 == "%s is resurrected by a nearby ally!" then
-			if arg2 == "Zealot Lor'Khan" then
-				CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] = false;
-			elseif arg2 == "Zealot Zath" then
-				CEPGP_THEKAL_PARAMS["ZATH_DEAD"] = false;
-			elseif arg2 == "High Priest Thekal" and not (CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] or CEPGP_THEKAL_PARAMS["ZATH_DEAD"]) then
-				CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] = false;
-			end
-		end
-		
-		--[[elseif arg1 == "%s casts Destroy Egg" then --Razorgore the Untamed
-			CEPGP_kills = CEPGP_kills + 1;
-		end]] --Still useful if classic release relies on emotes or combat log for this event
-		
-	elseif event == "CHAT_MSG_MONSTER_YELL" then
-		if arg2 == "The Prophet Skeram" then
-			if arg1 == "You only delay... the inevetable." then
-				CEPGP_handleCombat(arg2, true);
-			end
-		end
-		
-	elseif (event == "LOOT_OPENED" or event == "LOOT_CLOSED" or event == "LOOT_SLOT_CLEARED") then
-		CEPGP_handleLoot(event, arg1, arg2);
-		
 	elseif (event == "CHAT_MSG_ADDON") then
 		if (arg1 == "CEPGP")then
 			if string.find(arg4, "-") then
@@ -145,12 +104,59 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 			end
 			CEPGP_IncAddonMsg(arg2, arg4);
 		end
-	elseif event == "PLAYER_REGEN_DISABLED" then -- Player has started combat
-		if CEPGP_debugMode then
-			CEPGP_print("Combat started");
+	
+	elseif CEPGP_use then --EPGP and loot distribution related 
+		if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+			local _, action = CombatLogGetCurrentEventInfo();
+			local name;
+			if action == "UNIT_DIED" then
+				_, _, _, _, _, _, _, _, name = CombatLogGetCurrentEventInfo();
+				if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
+					CEPGP_handleCombat(name);
+					return;
+				end
+				if name == "Flamewaker Elite" or name == "Flamewaker Healer" then
+					CEPGP_handleCombat(name, true);
+				end
+				if bossNameIndex[name] then
+					CEPGP_handleCombat(name);
+				end
+			elseif action == "SPELL_CAST_SUCCESS" then
+				local spellID, spellName;
+				_, _, _, _, name, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo();
+				if name == "Razorgore the Untamed" and spellID == 19873 then --Razorgore casts destroy egg
+					CEPGP_kills = CEPGP_kills + 1;
+				end
+			end
+			
+		elseif event == "CHAT_MSG_MONSTER_EMOTE" then
+			if arg1 == "%s is resurrected by a nearby ally!" then
+				if arg2 == "Zealot Lor'Khan" then
+					CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] = false;
+				elseif arg2 == "Zealot Zath" then
+					CEPGP_THEKAL_PARAMS["ZATH_DEAD"] = false;
+				elseif arg2 == "High Priest Thekal" and not (CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] or CEPGP_THEKAL_PARAMS["ZATH_DEAD"]) then
+					CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] = false;
+				end
+			end
+			
+		elseif event == "CHAT_MSG_MONSTER_YELL" then
+			if arg2 == "The Prophet Skeram" then
+				if arg1 == "You only delay... the inevetable." then
+					CEPGP_handleCombat(arg2, true);
+				end
+			end
+			
+		elseif (event == "LOOT_OPENED" or event == "LOOT_CLOSED" or event == "LOOT_SLOT_CLEARED") then
+			CEPGP_handleLoot(event, arg1, arg2);
+		
+		elseif event == "PLAYER_REGEN_DISABLED" then -- Player has started combat
+			if CEPGP_debugMode then
+				CEPGP_print("Combat started");
+			end
+			CEPGP_kills = 0;
+			CEPGP_THEKAL_PARAMS = {["ZATH_DEAD"] = false, ["LOR'KHAN_DEAD"] = false, ["THEKAL_DEAD"] = false};
 		end
-		CEPGP_kills = 0;
-		CEPGP_THEKAL_PARAMS = {["ZATH_DEAD"] = false, ["LOR'KHAN_DEAD"] = false, ["THEKAL_DEAD"] = false};
 	end
 end
 

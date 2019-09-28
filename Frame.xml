@@ -4089,6 +4089,7 @@
 				self:RegisterEvent("CHAT_MSG_MONSTER_YELL");
 				self:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
 				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+				self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
 			</OnLoad>
 			<OnMouseDown>
 				self:StartMoving();
@@ -7061,5 +7062,84 @@
 				</Scripts>
 			</ScrollFrame>
 		</Frames>
+	</Frame>
+
+	<Frame name="CEPGP_confirmation" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
+		<Size>
+			<AbsDimension x="300" y="100" />
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<Color r="0" g="0" b="0" />
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="CEPGP_confirmation_desc" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-30"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="CEPGP_confirmation_yes" inherits="GameMenuButtonTemplate" text="Yes">
+				<Size>
+					<AbsDimension x="100" y="31" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="7.5" y="10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						CEPGP_use = true;
+						CEPGP_confirmation:Hide();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_confirmation_no" inherits="GameMenuButtonTemplate" text="No">
+				<Size>
+					<AbsDimension x="100" y="31" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-7.5" y="10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						CEPGP_use = false;
+						CEPGP_confirmation:Hide();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				CEPGP_confirmation_desc:SetText("Would you like to use CEPGP for this raid?");
+			</OnLoad>
+		</Scripts>
 	</Frame>
 </Ui>
