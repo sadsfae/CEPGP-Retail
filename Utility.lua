@@ -1141,10 +1141,10 @@ function CEPGP_getPlayerClass(name, index)
 end
 
 function CEPGP_recordAttendance()
-	--[[if not UnitInRaid("player") and not CEPGP_debugMode then
+	if not UnitInRaid("player") and not CEPGP_debugMode then
 		CEPGP_print("You are not in a raid group", true);
 		return;
-	end]]
+	end
 	CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)+1] = {
 		[1] = time()
 	};
