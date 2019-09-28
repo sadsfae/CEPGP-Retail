@@ -6878,9 +6878,6 @@
 			<OnMouseUp>
 				self:StopMovingOrSizing();
 			</OnMouseUp>
-			<OnHide>
-				print(debugstack(2,3,2));
-			</OnHide>
 		</Scripts>
 	</Frame>
 
