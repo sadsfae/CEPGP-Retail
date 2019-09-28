@@ -6695,10 +6695,10 @@
 						</Anchors>
 					</Button>
 					<Scripts>
-					<OnLoad>
-						self:SetBackdropColor(0.1, 0.1, 0.1);
-					</OnLoad>
-				</Scripts>
+						<OnLoad>
+							self:SetBackdropColor(0.1, 0.1, 0.1);
+						</OnLoad>
+					</Scripts>
 				</Frames>
 			</Frame>
 		</Frames>
