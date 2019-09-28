@@ -1693,6 +1693,13 @@
 								PlaySound(799);
 								ShowUIPanel(CEPGP_settings_import);
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Allows your addon to use the same settings as the select player.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_button_options_CEPGP_override" inherits="GameMenuButtonTemplate" text="Override Settings">
@@ -1711,6 +1718,13 @@
 								PlaySound(799);
 								CEPGP_override:Show();
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Allows you to create permanent overrides for item GP values.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_button_options_force_sync" inherits="GameMenuButtonTemplate" text="Force Synchronise">
@@ -1730,6 +1744,13 @@
 								CEPGP_SendAddonMsg("?forceSync", "GUILD");
 								CEPGP_print("Forced synchronisation with guild members");
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Forces players below your rank that have the 'Allowed Forced Synchronisation From Rank'\nsetting enabled to use the same settings as your addon.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_button_options_attendance" inherits="GameMenuButtonTemplate" text="Raid Attendance">
@@ -1748,6 +1769,13 @@
 								PlaySound(799);
 								CEPGP_attendance:Show();
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Measure the attendance of your raid by creating snapshots.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<EditBox name="CEPGP_options_keyword_edit" inherits="InputBoxTemplate">
