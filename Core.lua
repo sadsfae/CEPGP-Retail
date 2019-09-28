@@ -81,8 +81,10 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 		CEPGP_rosterUpdate(event);
 		
 	elseif event == "PARTY_LOOT_METHOD_CHANGED" then
-		if GetLootMethod() == "master" and IsInRaid("player") then
+		if GetLootMethod() == "master" and IsInRaid("player") and CEPGP_isML() == 0 then
 			_G["CEPGP_confirmation"]:Show();
+		else
+			_G["CEPGP_confirmation"]:Hide();
 		end
 		
 	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == CEPGP_standby_whisper_msg and CEPGP_standby_manual and CEPGP_standby_accept_whispers then
