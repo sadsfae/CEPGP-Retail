@@ -669,5 +669,6 @@ function CEPGP_UpdateAttendanceScrollBar()
 			_G["AttendanceButton" .. y]:Hide();
 		end
 	end
+	_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. CEPGP_ntgetn(CEPGP_raid_logs));
 	x, y, yoffset, t, tSize, name, class, rank, colour, total, week, fn, month, twoMon, ThreeMon, avg = nil;
 end

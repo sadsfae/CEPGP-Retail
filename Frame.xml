@@ -6286,6 +6286,13 @@
 						PlaySound(799);
 						CEPGP_recordAttendance();
 					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:SetText("Records a snapshot of the players currently in your raid group.");
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
 				</Scripts>
 			</Button>
 			<Button name="CEPGP_attendance_dropdown" inherits="UIDropDownMenuTemplate">
@@ -6326,6 +6333,38 @@
 						end
 						CEPGP_UpdateAttendanceScrollBar();
 					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:SetText("Filters the records to show you only the players\nthat were present in the selected snapshot.");
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_attendance_delete" inherits="GameMenuButtonTemplate" text="Delete Snapshot">
+				<Size>
+					<AbsDimension x="125" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_attendance_record_view">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						CEPGP_deleteAttendance();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:SetText("Deletes the snapshot currently selected in the dropdown menu.\nThis may be different from the snapshot you're currently viewing.\n\n|c00FF0000Warning: This action cannot be undone!|r");
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
 				</Scripts>
 			</Button>
 			<Button name="CEPGP_attendance_header_name" inherits="CEPGPHeaderButton" text="Name">

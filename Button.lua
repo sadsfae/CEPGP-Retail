@@ -260,7 +260,7 @@ end
 
 function CEPGP_attendanceDropdown(frame, level, menuList)
 	local info = {text = "All Records", value = 0, func = CEPGP_attendanceChange};
-		local entry = UIDropDownMenu_AddButton(info);
+	local entry = UIDropDownMenu_AddButton(info);
 	for i = 1, CEPGP_ntgetn(CEPGP_raid_logs) do
 		local info = {text = date("%d/%m/%Y %H:%M", CEPGP_raid_logs[i][1]), value = i, func = CEPGP_attendanceChange};
 		local entry = UIDropDownMenu_AddButton(info);

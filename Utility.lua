@@ -433,27 +433,25 @@ function CEPGP_rosterUpdate(event)
 		elseif CEPGP_mode == "raid" then
 			CEPGP_UpdateRaidScrollBar();
 		end
-		CEPGP_UpdateStandbyScrollBar();
 		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
 	elseif event == "GROUP_ROSTER_UPDATE" then
-		CEPGP_vInfo = {};
-		CEPGP_SendAddonMsg("version-check", "RAID");
-		CEPGP_updateGuild();
 		CEPGP_raidRoster = {};
+		_G["CEPGP_frame"]:UnregisterEvent("GROUP_ROSTER_UPDATE");
 		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
 			if not name then break; end
 			if CEPGP_tContains(CEPGP_standbyRoster, name) then
 				for k, v in pairs(CEPGP_standbyRoster) do
 					if v == name then
-						table.remove(CEPGP_standbyRoster, k);
+						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
 					end
 				end
-				CEPGP_UpdateStandbyScrollBar();
+				--CEPGP_UpdateStandbyScrollBar();
 			end
 			CEPGP_raidRoster[i] = name;
 			name = nil;
 		end
+		_G["CEPGP_frame"]:RegisterEvent("GROUP_ROSTER_UPDATE");
 		if UnitInRaid("player") then
 			ShowUIPanel(CEPGP_button_raid);
 		else --[[ Hides the raid and loot distribution buttons if the player is not in a raid group ]]--
@@ -461,8 +459,6 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_toggleFrame("CEPGP_guild");
 			
 		end
-		CEPGP_vInfo = {};
-		CEPGP_UpdateVersionScrollBar();
 		CEPGP_UpdateRaidScrollBar();
 	end
 end
@@ -1145,10 +1141,10 @@ function CEPGP_getPlayerClass(name, index)
 end
 
 function CEPGP_recordAttendance()
-	if not UnitInRaid("player") and not CEPGP_debugMode then
+	--[[if not UnitInRaid("player") and not CEPGP_debugMode then
 		CEPGP_print("You are not in a raid group", true);
 		return;
-	end
+	end]]
 	CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)+1] = {
 		[1] = time()
 	};
@@ -1156,7 +1152,22 @@ function CEPGP_recordAttendance()
 		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][i+1] = GetRaidRosterInfo(i);
 	end
 	CEPGP_print("Snapshot recorded");
-	_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. CEPGP_ntgetn(CEPGP_raid_logs));
+	CEPGP_UpdateAttendanceScrollBar();
+end
+
+function CEPGP_deleteAttendance()
+	local index = UIDropDownMenu_GetSelectedValue(CEPGP_attendance_dropdown);
+	if not index or index == 0 then
+		CEPGP_print("Select a snapshot and try again", true);
+		return;
+	end
+	CEPGP_print("Deleted snapshot: " .. date("%d/%m/%Y %H:%M", CEPGP_raid_logs[index][1]));
+	local size = CEPGP_ntgetn(CEPGP_raid_logs);
+	for i = index, size-1 do
+		CEPGP_raid_logs[index] = CEPGP_raid_logs[index+1];
+	end
+	CEPGP_raid_logs[size] = nil;
+	UIDropDownMenu_SetSelectedValue(CEPGP_attendance_dropdown, 0);
 	CEPGP_UpdateAttendanceScrollBar();
 end
 
