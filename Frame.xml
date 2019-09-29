@@ -166,7 +166,7 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					<!--<Button name="CEPGP_button_guild_export" inherits="GameMenuButtonTemplate" text="Export Standings">
+					<Button name="CEPGP_button_guild_export" inherits="GameMenuButtonTemplate" text="Export Standings">
 						<Size>
 							<AbsDimension x="125" y="21" />
 						</Size>
@@ -179,7 +179,7 @@
 								CEPGP_export:Show();
 							</OnClick>
 						</Scripts>
-					</Button>-->
+					</Button>
 					<Button name="CEPGP_button_guild_restore" inherits="GameMenuButtonTemplate" text="Restore Standings">
 						<Size>
 							<AbsDimension x="125" y="21" />
@@ -6951,7 +6951,7 @@
 
 	<Frame name="CEPGP_export" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
 		<Size>
-			<AbsDimension x="400" y="250" />
+			<AbsDimension x="400" y="275" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" />
@@ -7002,6 +7002,15 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="CEPGP_export_csv_text" inherits="GameFontNormal" text="CSV">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+							<Offset>
+								<AbsDimension x="25" y="40" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -7023,19 +7032,19 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<ScrollFrame name="CEPGP_export_scrollframe" inherits="FauxScrollFrameTemplate">
+			<ScrollFrame name="CEPGP_export_scrollframe" inherits="UIPanelScrollFrameTemplate">
 				<Size>
 					<AbsDimension x="340" y="175"/>
 				</Size>
 				<Anchors>
 					<Anchor point="RIGHT" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-35" y="0"/>
+							<AbsDimension x="-35" y="15"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Frames>
-					<EditBox name="CEPGP_export_dump" autofocus="false" multiline="true" inherits="InputBoxTemplate">
+				<ScrollChild>
+					<EditBox name="CEPGP_export_dump" autofocus="false" multiline="true">
 						<Anchors>
 							<Anchor point="CENTER" />
 						</Anchors>
@@ -7043,24 +7052,70 @@
 						<Scripts>
 							<OnLoad>
 								self:SetSize(CEPGP_export_scrollframe:GetSize());
-								self:SetPoint("TOPLEFT", 10, -10);
-								self:SetPoint("BOTTOMRIGHT", -10, 10);
 							</OnLoad>
+							<OnShow>
+								local temp = {};
+								local dump = "";
+								local size = CEPGP_ntgetn(CEPGP_roster);
+								for k, v in pairs(CEPGP_roster) do
+									temp[CEPGP_ntgetn(temp)+1] = {
+										[1] = k,
+										[2] = v[2],
+										[3] = v[3],
+										[4] = v[4],
+										[5] = v[5],
+										[6] = v[6]
+									};
+								end
+								temp = CEPGP_tSort(temp, 1);
+								for i = 1, size do
+									dump = dump .. temp[i][1] .. "," .. temp[i][2] .. "," .. temp[i][3] .. "," .. temp[i][5] .. "," .. temp[i][6] .. "\n"; --Line 16
+								end
+								self:SetText(dump);
+								self:HighlightText();
+								temp = nil;
+								dump = nil;
+								size = nil;
+							</OnShow>
+							<OnEscapePressed>
+								self:ClearFocus();
+							</OnEscapePressed>
+							<OnEnterPressed>
+								self:ClearFocus();
+							</OnEnterPressed>
 						</Scripts>
 					</EditBox>
-				</Frames>
+				</ScrollChild>
 				<Scripts>
 					<OnLoad>
 						self:SetScrollChild(CEPGP_export_dump);
 					</OnLoad>
-					<OnVerticalScroll>
-						--FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateGuildScrollBar); 
-					</OnVerticalScroll>
-					<OnShow>
-						--CEPGP_UpdateGuildScrollBar();
-					</OnShow>
 				</Scripts>
 			</ScrollFrame>
+			<Button name="CEPGP_export_csv" inherits="GameMenuButtonTemplate" text="Export to CSV">
+				<Size>
+					<AbsDimension x="150" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_export_scrollframe">
+						<Offset>
+							<AbsDimension x="-5" y="-5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CEPGP_formatExport("CSV");
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:SetText("Exports guild EPGP standings in a CSV format.");
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Button>
 		</Frames>
 	</Frame>
 

@@ -1180,6 +1180,34 @@ function CEPGP_deleteAttendance()
 	CEPGP_UpdateAttendanceScrollBar();
 end
 
+function CEPGP_formatExport(form)
+	--form is the export format
+	if form == "CSV" then
+		local temp = {};
+		local text = "";
+		local size = CEPGP_ntgetn(CEPGP_roster);
+		for k, v in pairs(CEPGP_roster) do
+			temp[CEPGP_ntgetn(temp)+1] = {
+				[1] = k,
+				[2] = v[2],
+				[3] = v[3],
+				[4] = v[4],
+				[5] = v[5],
+				[6] = v[6]
+			};
+		end
+		temp = CEPGP_tSort(temp, 1);
+		for i = 1, size do
+			text = text .. temp[i][1] .. "," .. temp[i][2] .. "," .. temp[i][3] .. "," .. temp[i][5] .. "," .. temp[i][6] .. "\n"; --Line 16
+		end
+		_G["CEPGP_export_dump"]:SetText(text);
+		_G["CEPGP_export_dump"]:HighlightText();
+		temp = nil;
+		text = nil;
+		size = nil;
+	end
+end
+
 function CEPGP_calcAttendance(name)
 	local count = 0;
 	local cWeek = 0; --count week
