@@ -292,90 +292,52 @@ function CEPGP_UpdateRaidScrollBar()
 end
 
 function CEPGP_UpdateVersionScrollBar()
-	local x, y;
-	local yoffset;
-	local t;
-	local tSize;
-	local name;
-	local colour;
-	local version;
-	local online;
-	t = {};
-	if CEPGP_vSearch == "GUILD" then
-		tSize = GetNumGuildMembers();
-	else
-		tSize = GetNumGroupMembers();
+	for i = 1, GetNumGuildMembers() do
+		local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
+		_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
+		_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
+		_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
 	end
-	if tSize == 0 then
-		for y = 1, 18, 1 do
-			_G["versionButton" .. y]:Hide();
-		end
-	end
-	if CEPGP_vSearch == "GUILD" then
-		for x = 1, tSize do
-			name, _, _, _, class, _, _, _, online = GetGuildRosterInfo(x);
-			if string.find(name, "-") then
-				name = string.sub(name, 0, string.find(name, "-")-1);
-			end
-			t[x] = {
-				[1] = name,
-				[2] = class,
-				[3] = online
-			}
-		end
-		t = CEPGP_tSort(t, 1);
-	else
-		for x = 1, tSize do
-			name, _, group, _, class, _, _, online = GetRaidRosterInfo(x);
-			if string.find(name, "-") then
-				name = string.sub(name, 0, string.find(name, "-")-1);
-			end
-			t[x] = {
-				[1] = name,
-				[2] = class,
-				[3] = online
-			}
-		end
-		t = CEPGP_tSort(t, 1);
-	end
-	FauxScrollFrame_Update(VersionScrollFrame, tSize, 18, 15);
-	for y = 1, 18, 1 do
-		yoffset = y + FauxScrollFrame_GetOffset(VersionScrollFrame);
-		if (yoffset <= tSize) then
-			if not CEPGP_tContains(t, yoffset, true) then
-				_G["versionButton" .. y]:Hide();
+end
+
+function CEPGP_initVersionScrollBar()
+	for i = 1, GetNumGuildMembers() do
+		if not _G["versionButton" .. i] then
+			local frame = CreateFrame('Button', "versionButton" .. i, _G["CEPGP_version_scrollframe_container"], "versionButtonTemplate"); -- Creates version frames if needed
+			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
+			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
+			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
+			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
+			_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
+			if i > 1 then
+				_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["versionButton" .. i-1], "BOTTOMLEFT", 0, -2);
 			else
-				t2 = t[yoffset];
-				name = t2[1];
-				class = t2[2];
-				online = t2[3];
-				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
-					if CEPGP_groupVersion[i][1] == name then
-						version = CEPGP_groupVersion[i][2];
-						break;
-					elseif online == 1 then
-						version = "Addon not running";
-					else
-						version = "Offline";
-					end
-				end
-				if class then
-					colour = RAID_CLASS_COLORS[string.upper(class)];
-				else
-					colour = RAID_CLASS_COLORS["WARRIOR"];
-				end
-				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
-				_G["versionButton" .. y .. "name"]:SetText(name);
-				_G["versionButton" .. y .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["versionButton" .. y .. "version"]:SetText(version);
-				_G["versionButton" .. y .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["versionButton" .. y]:Show();
+				_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_version_scrollframe_container"], "TOPLEFT", 5, -6);
 			end
-		else
-			_G["versionButton" .. y]:Hide();
 		end
 	end
-	x, y, yoffset, t, tSize, name, colour, version, online = nil;
+	--[[local numGuild = GetNumGuildMembers();
+	local count = 1;
+	local orderedGuild = {};
+	for k, _ in pairs(CEPGP_roster) do
+		orderedGuild[count] = k;
+		count = count + 1;
+	end
+	for i = 1, numGuild do
+		_G["versionButton" .. i] = nil; --Destroys the frames for collection
+	end
+	for i = 1, numGuild do
+		local frame = CreateFrame('Button', "versionButton" .. i, _G["CEPGP_version_scrollframe_container"], "versionButtonTemplate");
+		print(orderedGuild[i]);
+		_G["versionButton" .. i .. "name"]:SetText("abc");
+		_G["versionButton" .. i .. "version"]:SetText("Addon not running");
+		if i >= 1 then
+			_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["versionButton" .. i-1], "BOTTOMLEFT", 0, -2);
+		else
+			_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_version_scrollframe_container"], "TOPLEFT", 5, -6);
+		end
+	end]]
 end
 
 function CEPGP_UpdateOverrideScrollBar()

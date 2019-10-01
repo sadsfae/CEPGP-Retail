@@ -397,6 +397,7 @@ end
 
 function CEPGP_rosterUpdate(event)
 	if event == "GUILD_ROSTER_UPDATE" then
+		local numGuild = GetNumGuildMembers();
 		_G["CEPGP_frame"]:UnregisterEvent("GUILD_ROSTER_UPDATE");
 		CEPGP_roster = {};
 		if CanEditOfficerNote() then
@@ -412,9 +413,8 @@ function CEPGP_rosterUpdate(event)
 			HideUIPanel(CEPGP_raid_add_EP);
 			HideUIPanel(CEPGP_button_guild_restore);
 		end
-		for i = 1, GetNumGuildMembers() do
-			local name, rank, rankIndex, _, class, _, _, officerNote = GetGuildRosterInfo(i);
-			
+		for i = 1, numGuild do
+			local name, rank, rankIndex, _, class, _, _, officerNote, online = GetGuildRosterInfo(i);
 			if string.find(name, "-") then
 				name = string.sub(name, 0, string.find(name, "-")-1);
 			end
@@ -429,6 +429,17 @@ function CEPGP_rosterUpdate(event)
 				[5] = officerNote,
 				[6] = PR
 				};
+				if online then
+					CEPGP_groupVersion[i] = {
+						[1] = name,
+						[2] = "Addon not enabled"
+					};
+				else
+					CEPGP_groupVersion[i] = {
+						[1] = name,
+						[2] = "Offline"
+					};
+				end
 			end
 			name, rank, rankIndex, class, officerNote, EP, GP, PR = nil;
 		end
@@ -438,6 +449,9 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_UpdateRaidScrollBar();
 		end
 		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
+		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
+		--CEPGP_initVersionScrollBar();
+		CEPGP_SendAddonMsg("version-check", "GUILD");
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then
 			if not CEPGP_use then

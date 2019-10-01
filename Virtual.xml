@@ -306,8 +306,9 @@
 		<Size>
 			<AbsDimension x="420" y="15"/>
 		</Size>
-		<Frames>
-		</Frames>
+		<Anchors>
+			<Anchor point="CENTER" relativePoint="TOP" />
+		</Anchors>
 		<Layers>
 			<Layer level="BORDER">
 				<FontString name="$parentname" inherits="GameFontHighlight" justifyH="LEFT">

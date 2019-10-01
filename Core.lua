@@ -178,6 +178,7 @@ function SlashCmdList.CEPGP(msg, editbox)
 	
 	elseif msg == "version" then
 		CEPGP_vInfo = {};
+		CEPGP_initVersionScrollBar();
 		CEPGP_SendAddonMsg("version-check", CEPGP_vSearch);
 		ShowUIPanel(CEPGP_version);
 	

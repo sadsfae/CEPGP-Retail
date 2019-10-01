@@ -94,37 +94,36 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		
 	if strfind(message, UnitName("player").."versioncheck") then
+		local index = CEPGP_ntgetn(CEPGP_groupVersion);
+		if not index then index = 0; end
 		if CEPGP_vSearch == "GUILD" then
-			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
-				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
-					if CEPGP_groupVersion[i][1] == sender then
-						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
-						break;
+			for i=1, index do
+				if CEPGP_groupVersion[i][1] == sender then
+					CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
+					if _G["versionButton" .. i] then
+						_G["versionButton" .. i .. "name"]:SetText(sender);
+						_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
 					end
+					break;
 				end
-			else
-				CEPGP_groupVersion[CEPGP_ntgetn(CEPGP_groupVersion)+1] = {
-					[1] = sender,
-					[2] = string.sub(message, strfind(message, " ")+1)
-				};
 			end
 		else
 			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
-				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
+				for i=1, index do
 					if CEPGP_groupVersion[i][1] == sender then
 						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
 						break;
 					end
 				end
 			else				
-				CEPGP_groupVersion[CEPGP_ntgetn(CEPGP_groupVersion)+1] = {
+				CEPGP_groupVersion[index+1] = {
 					[1] = sender,
 					[2] = string.sub(message, strfind(message, " ")+1)
 				};
 			end
 			CEPGP_vInfo[sender] = string.sub(message, strfind(message, " ")+1);
 		end
-	CEPGP_UpdateVersionScrollBar();
+	--CEPGP_UpdateVersionScrollBar();
 	CEPGP_checkVersion(message);
 		
 		

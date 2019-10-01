@@ -4127,9 +4127,9 @@
 			</EdgeSize>
 		</Backdrop>
 		<Frames>
-			<Frame name="CEPGP_version_scrollframe">
+			<ScrollFrame nme="CEPGP_version_scrollframe" inherits="UIPanelScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="410--" y="300"/>
+					<AbsDimension x="400" y="300"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="CEPGP_version" relativePoint="TOPLEFT">
@@ -4138,196 +4138,14 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Frames>
-					<ScrollFrame name="VersionScrollFrame" inherits="FauxScrollFrameTemplate">
+				<ScrollChild>
+					<Frame name="CEPGP_version_scrollframe_container">
 						<Size>
-							<AbsDimension x="360" y="350"/>
+							<AbsDimension x="400" y="300" />
 						</Size>
-						<Anchors>
-							<Anchor point="RIGHT">
-								<Offset>
-									<AbsDimension x="-7" y="0"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateVersionScrollBar); 
-							</OnVerticalScroll>
-							<OnShow>
-								CEPGP_UpdateVersionScrollBar();
-							</OnShow>
-						</Scripts>
-					</ScrollFrame>
-					<Button name="versionButton1" inherits="versionButtonTemplate" id="1" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="5" y="-6"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton2" inherits="versionButtonTemplate" id="2" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton1" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton3" inherits="versionButtonTemplate" id="3" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton2" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton4" inherits="versionButtonTemplate" id="4" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton3" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton5" inherits="versionButtonTemplate" id="5" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton4" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton6" inherits="versionButtonTemplate" id="6" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton5" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton7" inherits="versionButtonTemplate" id="7" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton6" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton8" inherits="versionButtonTemplate" id="8" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton7" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton9" inherits="versionButtonTemplate" id="9" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton8" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton10" inherits="versionButtonTemplate" id="10" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton9" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton11" inherits="versionButtonTemplate" id="11" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton10" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton12" inherits="versionButtonTemplate" id="12" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton11" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton13" inherits="versionButtonTemplate" id="13" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton12" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton14" inherits="versionButtonTemplate" id="14" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton13" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton15" inherits="versionButtonTemplate" id="15" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton14" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton16" inherits="versionButtonTemplate" id="16" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton15" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton17" inherits="versionButtonTemplate" id="17" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton16" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="versionButton18" inherits="versionButtonTemplate" id="18" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="versionButton17" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Scripts>
-					<OnLoad>
-						self:SetBackdropColor(0.1, 0.1, 0.1);
-					</OnLoad>
-				</Scripts>
-				</Frames>
-			</Frame>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
 			<Button name="CEPGP_version_name" inherits="CEPGPHeaderButton" text="Name">
 				<Size>
 					<AbsDimension x="35" y="20" />
@@ -4336,15 +4154,14 @@
 					<Anchor point="TOPLEFT">
 						<Offset>
 							<AbsDimension x="60" y="-50" />
-							<!--<AbsDimension x="40" y="0" />-->
 						</Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
-						CEPGP_setCriteria(1);
-						CEPGP_UpdateVersionScrollBar();
+						--CEPGP_setCriteria(1);
+						--CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
+						--CEPGP_InitVersionScrollBar();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -4359,6 +4176,13 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Scripts>
+					<OnClick>
+						--CEPGP_setCriteria(2);
+						--CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 2);
+						--CEPGP_InitVersionScrollBar();
+					</OnClick>
+				</Scripts>
 			</Button>
 			<Button name="CEPGP_version_close" inherits="GameMenuButtonTemplate" text="Close">
 				<Size>
@@ -4393,7 +4217,6 @@
 					<OnClick>
 						PlaySound(799);
 						CEPGP_vInfo = {};
-						CEPGP_groupVersion = {};
 						CEPGP_vSearch = "RAID";
 						CEPGP_SendAddonMsg("version-check", "RAID");
 						CEPGP_UpdateVersionScrollBar();
@@ -4411,7 +4234,6 @@
 					<OnClick>
 						PlaySound(799);
 						CEPGP_updateGuild();
-						CEPGP_groupVersion = {};
 						CEPGP_vSearch = "GUILD";
 						CEPGP_SendAddonMsg("version-check", "GUILD");
 						CEPGP_UpdateVersionScrollBar();
