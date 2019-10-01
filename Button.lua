@@ -30,7 +30,6 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_distribute_popup);
 		CEPGP_distribute_popup_title:SetText(_G[_G[obj]:GetName() .. "Info"]:GetText());
 		CEPGP_distPlayer = _G[_G[obj]:GetName() .. "Info"]:GetText();
-		print(CEPGP_distPlayer);
 		CEPGP_distribute_popup:SetID(CEPGP_distribute:GetID()); --CEPGP_distribute:GetID gets the ID of the LOOT SLOT. Not the player.
 	
 		--[[ Guild Menu ]]--
