@@ -449,8 +449,6 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_UpdateRaidScrollBar();
 		end
 		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
-		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
-		--CEPGP_initVersionScrollBar();
 		CEPGP_SendAddonMsg("version-check", "GUILD");
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then

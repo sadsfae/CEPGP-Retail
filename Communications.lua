@@ -108,18 +108,11 @@ function CEPGP_IncAddonMsg(message, sender)
 				end
 			end
 		else
-			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
-				for i=1, index do
-					if CEPGP_groupVersion[i][1] == sender then
-						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
-						break;
-					end
+			for i=1, index do
+				if CEPGP_groupVersion[i][1] == sender then
+					CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
+					break;
 				end
-			else				
-				CEPGP_groupVersion[index+1] = {
-					[1] = sender,
-					[2] = string.sub(message, strfind(message, " ")+1)
-				};
 			end
 			CEPGP_vInfo[sender] = string.sub(message, strfind(message, " ")+1);
 		end
