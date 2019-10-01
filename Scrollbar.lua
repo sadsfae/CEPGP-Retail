@@ -295,20 +295,44 @@ function CEPGP_UpdateVersionScrollBar()
 	if CEPGP_vSearch == "GUILD" then
 		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
 		for i = 1, GetNumGuildMembers() do
-			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
+			if not _G["versionButton" .. i] then
+				local frame = CreateFrame('Button', "versionButton" .. i, _G["CEPGP_version_scrollframe_container"], "versionButtonTemplate"); -- Creates version frames if needed
+				if i > 1 then
+					_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["versionButton" .. i-1], "BOTTOMLEFT", 0, -2);
+				else
+					_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_version_scrollframe_container"], "TOPLEFT", 5, -6);
+				end
+			end
+			_G["versionButton" .. i]:Show();
+			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];	
 			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
 			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
 			_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
 		end
 	else
-		--[[for i = 1, GetNumGroupMembers() do
-			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_raidRoster[i][2])];
-			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
+		for i = 1, GetNumGuildMembers() do
+			if _G["versionButton" .. i] then
+				_G["versionButton" .. i]:Hide();
+			end
+		end
+		for i = 1, GetNumGroupMembers() do
+			_G["versionButton" .. i]:Show();
+			local name, class, version;
+			name = GetRaidRosterInfo(i);
+			for x = 1, CEPGP_ntgetn(CEPGP_groupVersion) do
+				if CEPGP_groupVersion[x][1] == name then
+					version = CEPGP_groupVersion[x][2];
+					class = CEPGP_groupVersion[x][3];
+					break;
+				end
+			end
+			local colour = RAID_CLASS_COLORS[string.upper(class)];
+			_G["versionButton" .. i .. "name"]:SetText(name);
 			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
-			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
+			_G["versionButton" .. i .. "version"]:SetText(version);
 			_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
-		end]]
+		end
 	end
 end
 

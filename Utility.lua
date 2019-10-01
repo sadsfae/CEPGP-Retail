@@ -432,12 +432,14 @@ function CEPGP_rosterUpdate(event)
 				if online then
 					CEPGP_groupVersion[i] = {
 						[1] = name,
-						[2] = "Addon not enabled"
+						[2] = "Addon not enabled",
+						[3] = class
 					};
 				else
 					CEPGP_groupVersion[i] = {
 						[1] = name,
-						[2] = "Offline"
+						[2] = "Offline",
+						[3] = class
 					};
 				end
 			end
