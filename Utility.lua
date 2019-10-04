@@ -1324,23 +1324,24 @@ function CEPGP_checkVersion(message)
 	local major = string.sub(build, 0, string.find(build, "%.")-1);
 	build = string.sub(build, string.len(major)+2);
 	local minor = string.sub(build, 0, string.find(build, "%.")-1);
-	build = string.sub(build, string.find(build, "%.")+1, string.len(minor)+2);
+	build = string.sub(build, string.find(build, "%.")+1);
 	
 	--Current build information
 	local curBuild = CEPGP_VERSION;
 	local curMajor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
 	curBuild = string.sub(curBuild, string.len(major)+2);
 	local curMinor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
-	curBuild = string.sub(curBuild, string.find(curBuild, "%.")+1, string.len(minor)+2);
+	curBuild = string.sub(curBuild, string.find(curBuild, "%.")+1);
+	
 	outMessage = "Your addon is out of date. Version " .. major .. "." .. minor .. "." .. build .. " is now available for download at https://github.com/Alumian/CEPGP-Retail"
 	if not CEPGP_VERSION_NOTIFIED then
-		if major > curMajor then 
+		if tonumber(major) > tonumber(curMajor) then 
 			CEPGP_print(outMessage);
 			CEPGP_VERSION_NOTIFIED = true;
-		elseif major == curMajor and minor > curMinor then
+		elseif tonumber(major) == tonumber(curMajor) and tonumber(minor) > tonumber(curMinor) then
 			CEPGP_print(outMessage);
 			CEPGP_VERSION_NOTIFIED = true;
-		elseif major == curMajor and minor == curMinor and build > curBuild then
+		elseif tonumber(major) == tonumber(curMajor) and tonumber(minor) == tonumber(curMinor) and tonumber(build) > tonumber(curBuild) then
 			CEPGP_print(outMessage);
 			CEPGP_VERSION_NOTIFIED = true;
 		end
