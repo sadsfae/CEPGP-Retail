@@ -1,97 +1,85 @@
 --This function gets run twice. Once by the loot master when someone whispers !need
 --and again by raid assists when the loot master's addon notifies theirs of the !need response
 function CEPGP_IncAddonMsg(message, sender)
-
+	local args = CEPGP_split(message);
 	if strfind(message, "CEPGP_setDistID?") then
 		CEPGP_DistID = string.sub(message, strfind(message, "?")+1);
-
-	elseif strfind(message, "CEPGP_distributing") and strfind(message, UnitName("player")) then-- and strfind(message, GetRealmName()) then
+	
+	elseif args[2] == "distslot" and string.find(message, UnitName("player")) then
 		--Recipient should see this
-		local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
-		if not slot then
-			slot = string.sub(message, strfind(message, "~")+1);
-		end
-		if CEPGP_DistID then
-			if slot then --string.len(slot) > 0 and slot ~= nil then
-				local slotName = string.sub(slot, 9);
-				local slotid, slotid2 = CEPGP_SlotNameToID(slotName);
-				local currentItem;
-				if slotid then
-					currentItem = GetInventoryItemLink("player", slotid);
-				end
-				local currentItem2;
-				if slotid2 then
-					currentItem2 = GetInventoryItemLink("player", slotid2);
-				end
-				local itemID;
-				local itemID2;
-				if currentItem then
-					itemID = CEPGP_getItemID(CEPGP_getItemString(currentItem));
-					itemID2 = CEPGP_getItemID(CEPGP_getItemString(currentItem2));
-				else
-					itemID = "noitem";
-				end
-				if itemID2 then
-					CEPGP_SendAddonMsg(sender.."-receiving-"..itemID.." "..itemID2);
-				else
-					CEPGP_SendAddonMsg(sender.."-receiving-"..itemID);
-				end
-			elseif slot == "" then
-				CEPGP_SendAddonMsg(sender.."-receiving-noslot");
-			elseif itemID == "noitem" then
-				CEPGP_SendAddonMsg(sender.."-receiving-noitem");
+		print(message);
+		local slot = args[3];
+		if slot then --string.len(slot) > 0 and slot ~= nil then
+			local slotName = string.sub(slot, 9);
+			local slotid, slotid2 = CEPGP_SlotNameToID(slotName);
+			local currentItem;
+			if slotid then
+				currentItem = GetInventoryItemLink("player", slotid);
 			end
-		end
-		
-		
-	elseif strfind(message, "receiving") and strfind(message, UnitName("player")) then--and strfind(message, GetRealmName()) then
-		--Loot master sees this
-		local itemID;
-		local itemID2;
-		if strfind(message, " ") then
-			itemID = string.sub(message, strfind(message, "receiving")+10, strfind(message, " "));
-			itemID2 = string.sub(message, strfind(message, " ")+1);
-		else
-			itemID = string.sub(message, strfind(message, "receiving")+10);
-		end
-		if itemID == "noitem" then
-			CEPGP_itemsTable[sender] = {};
-			CEPGP_UpdateLootScrollBar();
-		elseif itemID == "noslot" then
-			CEPGP_itemsTable[sender] = {};
-			CEPGP_UpdateLootScrollBar();
-		else
-			local name, iString = GetItemInfo(itemID);
-			if not name then
-				local item = Item:CreateFromItemID(tonumber(itemID));
-				item:ContinueOnItemLoad(function()
-					local name, link = GetItemInfo(itemID)
-					iString = CEPGP_getItemString(link);
-					CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
-					CEPGP_UpdateLootScrollBar();
-				end);
+			local currentItem2;
+			if slotid2 then
+				currentItem2 = GetInventoryItemLink("player", slotid2);
+			end
+			local itemID;
+			local itemID2;
+			if currentItem then
+				itemID = CEPGP_getItemID(CEPGP_getItemString(currentItem));
+				itemID2 = CEPGP_getItemID(CEPGP_getItemString(currentItem2));
 			else
-				CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
+				itemID = "noitem";
 			end
 			if itemID2 then
-				local name2, iString2 = GetItemInfo(itemID2);
-				if not name2 then
-					local item = Item:CreateFromItemID(tonumber(itemID2));
+				CEPGP_SendAddonMsg(sender..";receiving;"..itemID..";"..itemID2);
+			else
+				CEPGP_SendAddonMsg(sender..";receiving;"..itemID);
+			end
+		elseif slot == "" then
+			CEPGP_SendAddonMsg(sender..";receiving;noslot");
+		elseif itemID == "noitem" then
+			CEPGP_SendAddonMsg(sender..";receiving;noitem");
+		end
+		
+		
+	elseif args[2] == "receiving" then--and strfind(message, UnitName("player")) then--and strfind(message, GetRealmName()) then
+		--if CEPGP_isML() ~= 0 then
+				table.insert(CEPGP_responses, sender);
+			--end
+			local itemID = args[3];
+			local itemID2 = args[4];
+			if itemID == "noitem" or itemID == "noslot" then
+				CEPGP_itemsTable[sender] = {};
+				CEPGP_UpdateLootScrollBar();
+			else
+				local name, iString = GetItemInfo(itemID);
+				if not name then
+					local item = Item:CreateFromItemID(tonumber(itemID));
 					item:ContinueOnItemLoad(function()
-						local name2, link2 = GetItemInfo(itemID2)
-						iString2 = CEPGP_getItemString(link2);
-						CEPGP_itemsTable[sender] = {iString2 .. "[" .. name2 .. "]"};
+						local name, link = GetItemInfo(itemID)
+						iString = CEPGP_getItemString(link);
+						CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
 						CEPGP_UpdateLootScrollBar();
 					end);
 				else
-					CEPGP_itemsTable[sender] = {iString2 .. "[" .. name2 .. "]"};
+					CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
 				end
-			else
+				if itemID2 then
+					local name, iString = GetItemInfo(itemID2);
+					if not name then
+						local item = Item:CreateFromItemID(tonumber(itemID2));
+						item:ContinueOnItemLoad(function()
+							local name, link = GetItemInfo(itemID2)
+							iString = CEPGP_getItemString(link);
+							CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
+							CEPGP_UpdateLootScrollBar();
+						end);
+					else
+						CEPGP_itemsTable[sender] = {iString2 .. "[" .. name2 .. "]"};
+					end
+				else
+				end
+				CEPGP_UpdateLootScrollBar();
 			end
-			CEPGP_UpdateLootScrollBar();
-		end
-	end
-		
+		end		
 		
 	if strfind(message, UnitName("player").."versioncheck") then
 		local index = CEPGP_ntgetn(CEPGP_groupVersion);
@@ -116,7 +104,6 @@ function CEPGP_IncAddonMsg(message, sender)
 			end
 			CEPGP_vInfo[sender] = string.sub(message, strfind(message, " ")+1);
 		end
-	--CEPGP_UpdateVersionScrollBar();
 	CEPGP_checkVersion(message);
 		
 		
@@ -144,7 +131,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		--Raid assists receiving !need responses in the format of !need,playername`itemID (of item being distributed)
 	elseif strfind(message, "!need," .. UnitName("player")) and sender ~= UnitName("player") then-- and IsRaidOfficer()  then
 		local arg2 = string.sub(message, strfind(message, ",")+1, strfind(message, "`")-1); --!need,sendername`itemID
-		table.insert(CEPGP_responses, arg2);
+		--table.insert(CEPGP_responses, arg2);
 		local slot = nil;
 		CEPGP_DistID = string.sub(message, 7+string.len(UnitName("player"))+1, string.len(message));
 		if CEPGP_DistID then

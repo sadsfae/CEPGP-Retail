@@ -14,7 +14,6 @@ function CEPGP_handleComms(event, arg1, arg2)
 			if CEPGP_isML() == 0 then --If you are the master looter
 				CEPGP_SendAddonMsg("!need,"..arg2.."`"..CEPGP_DistID, "RAID"); --!need,playername`itemID (of the item being distributed) is sent for sharing with raid assist
 			end
-			table.insert(CEPGP_responses, arg2);
 			if CEPGP_debugMode then
 				CEPGP_print(arg2 .. " registered (" .. CEPGP_keyword .. ")");
 			end
@@ -23,8 +22,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 				local item = Item:CreateFromItemID(CEPGP_DistID);
 				item:ContinueOnItemLoad(function()
 					local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID)
-					CEPGP_print(slot);
-					CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot, "RAID");
+					CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 					local EP, GP = nil;
 					local inGuild = false;
 					if CEPGP_tContains(CEPGP_roster, arg2, true) then
@@ -52,7 +50,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			else
 				--	Sends an addon message to the person who whispered !need to me
 				--	See Communications.lua:2 to continue this chain
-				CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..CEPGP_distSlot, "RAID");
+				CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 				local EP, GP = nil;
 				local inGuild = false;
 				if CEPGP_tContains(CEPGP_roster, arg2, true) then

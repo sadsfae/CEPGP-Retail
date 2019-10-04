@@ -338,20 +338,6 @@ function CEPGP_populateFrame(CEPGP_criteria, items)
 	end
 end
 
-function CEPGP_strSplit(msgStr, c)
-	if not msgStr then
-		return nil;
-	end
-	local table_str = {};
-	local capture = string.format("(.-)%s", c);
-	
-	for v in string.gmatch(msgStr, capture) do
-		table.insert(table_str, v);
-	end
-	
-	return unpack(table_str);
-end
-
 function CEPGP_print(str, err)
 	if not str then return; end;
 	if err == nil then
@@ -1357,4 +1343,14 @@ function CEPGP_checkVersion(message)
 			CEPGP_VERSION_NOTIFIED = true;
 		end
 	end
+end
+
+function CEPGP_split(msg)
+	local args = {};
+	local count = 1;
+	for i in (msg .. ";"):gmatch("([^;]*);") do
+		args[count] = i;
+		count = count + 1;
+	end
+	return args;
 end

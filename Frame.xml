@@ -6740,6 +6740,9 @@
 						CEPGP_SendAddonMsg("MainSpec", "RAID");
 						CEPGP_respond:Hide();
 					</OnClick>
+					<OnHide>
+						--print(debugstack(2,3,2));
+					</OnHide>
 				</Scripts>
 			</Button>
 			<Button name="CEPGP_respond_pass" inherits="GameMenuButtonTemplate" text="Pass">
