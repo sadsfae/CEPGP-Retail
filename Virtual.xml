@@ -738,7 +738,7 @@
 					elseif name == "The Twin Emperors" then
 						EPVALS["Emperor Vek'lor"] = value;
 						EPVALS["Emperor Vek'nilash"] = value;
-					elseif name == "The Four Horseman" then
+					elseif name == "The Four Horsemen" then
 						EPVALS["Highlord Mograine"] = value;
 						EPVALS["Thane Korth'azz"] = value;
 						EPVALS["Lady Blaumeux"] = value;
@@ -829,20 +829,20 @@
 					end
 				elseif name == "The Twin Emperors" then
 					if self:GetChecked() then
-						EPVALS["Emperor Vek'lor"] = true;
-						EPVALS["Emperor Vek'nilash"] = true;
+						AUTOEP["Emperor Vek'lor"] = true;
+						AUTOEP["Emperor Vek'nilash"] = true;
 					else
-						EPVALS["Emperor Vek'lor"] = false;
-						EPVALS["Emperor Vek'nilash"] = false;
+						AUTOEP["Emperor Vek'lor"] = false;
+						AUTOEP["Emperor Vek'nilash"] = false;
 					end
-				elseif name == "The Four Horseman" then
+				elseif name == "The Four Horsemen" then
 					if self:GetChecked() then
 						AUTOEP["Highlord Mograine"] = true;
 						AUTOEP["Thane Korth'azz"] = true;
 						AUTOEP["Lady Blaumeux"] = true;
 						AUTOEP["Sir Zeliek"] = true;
 					else
-						AUTOEP["HIghlord Mograine"] = false;
+						AUTOEP["Highlord Mograine"] = false;
 						AUTOEP["Thane Korth'azz"] = false;
 						AUTOEP["Lady Blaumeux"] = false;
 						AUTOEP["Sir Zeliek"] = false;
