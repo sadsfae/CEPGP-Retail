@@ -7,7 +7,6 @@ function CEPGP_IncAddonMsg(message, sender)
 	
 	elseif args[2] == "distslot" and string.find(message, UnitName("player")) then
 		--Recipient should see this
-		print(message);
 		local slot = args[3];
 		if slot then --string.len(slot) > 0 and slot ~= nil then
 			local slotName = string.sub(slot, 9);
@@ -41,9 +40,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		
 	elseif args[2] == "receiving" then--and strfind(message, UnitName("player")) then--and strfind(message, GetRealmName()) then
-		--if CEPGP_isML() ~= 0 then
-				table.insert(CEPGP_responses, sender);
-			--end
+			table.insert(CEPGP_responses, sender);
 			local itemID = args[3];
 			local itemID2 = args[4];
 			if itemID == "noitem" or itemID == "noslot" then
@@ -144,7 +141,7 @@ function CEPGP_IncAddonMsg(message, sender)
 			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-nil~nil", "RAID");
 		end
 		
-	elseif strfind(message, "?LootClosed") then
+	elseif args[1] == "LootClosed" then
 		_G["CEPGP_respond"]:Hide();		
 		
 	elseif strfind(message, "STANDBYEP"..UnitName("player")) then
