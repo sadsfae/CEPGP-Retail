@@ -2556,13 +2556,8 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);
-								if CEPGP_options:IsVisible() then
 									CEPGP_options:Hide();
-									CEPGP_options_page_2:Show();
-								else
-									CEPGP_options:Show();
-									CEPGP_options_page_2:Hide();
-								end
+									CEPGP_options_page_3:Show();
 							</OnClick>
 						</Scripts>
 						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
@@ -2584,13 +2579,8 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);
-								if CEPGP_options:IsVisible() then
-									CEPGP_options:Hide();
-									CEPGP_options_page_2:Show();
-								else
-									CEPGP_options:Show();
-									CEPGP_options_page_2:Hide();
-								end
+								CEPGP_options:Hide();
+								CEPGP_options_page_2:Show();
 							</OnClick>
 						</Scripts>
 						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
@@ -2601,8 +2591,110 @@
 				</Frames>
 			</Frame>
 			<Frame name="CEPGP_options_page_2" inherits="CEPGPFrameTemplate">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="CEPGP_options_dec_text" inherits="GameFontNormal" text="GP Decimal Places:">
+							<Color r="1" g="1" b="1" />
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+									<AbsDimension x="15" y="-20" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
 				<Frames>
-					<Button name="CEPGP_options_page_2_mc_button" inherits="GameMenuButtonTemplate" text="Molten Core / Onyxia">
+					<EditBox name="CEPGP_options_dec_edit" inherits="InputBoxTemplate">
+						<Size>
+							<AbsDimension x="40" y="20" />
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_dec_text">
+								<AbsDimension x="10" y="0" />
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetAutoFocus(false);
+							</OnLoad>
+							<OnEnterPressed>
+								self:ClearFocus();
+							</OnEnterPressed>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Loot Master Feature\nAdjust the number of decimal places item GP values round to.\nValid range: 0-2");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+							<OnEditFocusLost>
+								local value = self:GetText();
+								if value == "" or not value or tonumber(value) > 2 or tonumber(value) % 1 ~= 0 then
+									CEPGP_print("Enter a valid number", true);
+									self:SetText(CEPGP_GP_decs);
+									return;
+								elseif value == CEPGP_GP_decs then
+									return;
+								end
+								CEPGP_GP_decs = value;
+								CEPGP_print("Updated item GP decimal places");
+							</OnEditFocusLost>
+							<OnShow>
+								self:SetText(CEPGP_GP_decs);
+							</OnShow>
+						</Scripts>
+					</EditBox>
+					<Button name="CEPGP_options_page_2_button_prev">
+						<Size>
+							<AbsDimension x="32" y="27.5"/>
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="7.5" y="22.5"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_options:Show();
+								CEPGP_options_page_2:Hide();
+							</OnClick>
+						</Scripts>
+						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+						<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+						<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+					</Button>
+					<Button name="CEPGP_options_page_2_button_next">
+						<Size>
+							<AbsDimension x="32" y="27.5"/>
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+								<Offset>
+									<AbsDimension x="-7.5" y="22.5"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_options_page_2:Hide();
+								CEPGP_options_page_3:Show();
+							</OnClick>
+						</Scripts>
+						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+						<PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+						<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+					</Button>
+				</Frames>
+			</Frame>
+			<Frame name="CEPGP_options_page_3" inherits="CEPGPFrameTemplate">
+				<Frames>
+					<Button name="CEPGP_options_page_3_mc_button" inherits="GameMenuButtonTemplate" text="Molten Core / Onyxia">
 						<Size>
 							<AbsDimension x="150" y="21" />
 						</Size>
@@ -2616,16 +2708,16 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);								
-								CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_mc");
+								CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_mc");
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="CEPGP_options_page_2_bwl_button" inherits="GameMenuButtonTemplate" text="Blackwing Lair">
+					<Button name="CEPGP_options_page_3_bwl_button" inherits="GameMenuButtonTemplate" text="Blackwing Lair">
 						<Size>
 							<AbsDimension x="150" y="21" />
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="CEPGP_options_page_2_mc_button" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="CEPGP_options_page_3_mc_button" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="10" y="0" />
 								</Offset>
@@ -2634,16 +2726,16 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);								
-								CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_bwl");
+								CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_bwl");
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="CEPGP_options_page_2_zg_button" inherits="GameMenuButtonTemplate" text="Zul'Gurub">
+					<Button name="CEPGP_options_page_3_zg_button" inherits="GameMenuButtonTemplate" text="Zul'Gurub">
 						<Size>
 							<AbsDimension x="100" y="21" />
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="CEPGP_options_page_2_bwl_button" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeTo="CEPGP_options_page_3_bwl_button" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="10" y="0" />
 								</Offset>
@@ -2652,16 +2744,16 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);								
-								CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_zg");
+								CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_zg");
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="CEPGP_options_page_2_aq20_button" inherits="GameMenuButtonTemplate" text="The Ruins of Ahn'Qiraj">
+					<Button name="CEPGP_options_page_3_aq20_button" inherits="GameMenuButtonTemplate" text="The Ruins of Ahn'Qiraj">
 						<Size>
 							<AbsDimension x="150" y="21" />
 						</Size>
 						<Anchors>
-							<Anchor point="TOP" relativeTo="CEPGP_options_page_2_mc_button" relativePoint="BOTTOM">
+							<Anchor point="TOP" relativeTo="CEPGP_options_page_3_mc_button" relativePoint="BOTTOM">
 								<Offset>
 									<AbsDimension x="0" y="0" />
 								</Offset>
@@ -2670,16 +2762,16 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);								
-								CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_aq20");
+								CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_aq20");
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="CEPGP_options_page_2_aq40_button" inherits="GameMenuButtonTemplate" text="The Temple of Ahn'Qiraj">
+					<Button name="CEPGP_options_page_3_aq40_button" inherits="GameMenuButtonTemplate" text="The Temple of Ahn'Qiraj">
 						<Size>
 							<AbsDimension x="175" y="21" />
 						</Size>
 						<Anchors>
-							<Anchor point="TOP" relativeTo="CEPGP_options_page_2_bwl_button" relativePoint="BOTTOM">
+							<Anchor point="TOP" relativeTo="CEPGP_options_page_3_bwl_button" relativePoint="BOTTOM">
 								<Offset>
 									<AbsDimension x="0" y="0" />
 								</Offset>
@@ -2688,16 +2780,16 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);								
-								CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_aq40");
+								CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_aq40");
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="CEPGP_options_page_2_naxx_button" inherits="GameMenuButtonTemplate" text="Naxxramas">
+					<Button name="CEPGP_options_page_3_naxx_button" inherits="GameMenuButtonTemplate" text="Naxxramas">
 						<Size>
 							<AbsDimension x="100" y="21" />
 						</Size>
 						<Anchors>
-							<Anchor point="TOP" relativeTo="CEPGP_options_page_2_zg_button" relativePoint="BOTTOM">
+							<Anchor point="TOP" relativeTo="CEPGP_options_page_3_zg_button" relativePoint="BOTTOM">
 								<Offset>
 									<AbsDimension x="0" y="0" />
 								</Offset>
@@ -2706,16 +2798,16 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);								
-								CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_naxx");
+								CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_naxx");
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="CEPGP_options_page_2_world_button" inherits="GameMenuButtonTemplate" text="World Encounters">
+					<Button name="CEPGP_options_page_3_world_button" inherits="GameMenuButtonTemplate" text="World Encounters">
 						<Size>
 							<AbsDimension x="150" y="21" />
 						</Size>
 						<Anchors>
-							<Anchor point="TOP" relativeTo="CEPGP_options_page_2_aq40_button" relativePoint="BOTTOM">
+							<Anchor point="TOP" relativeTo="CEPGP_options_page_3_aq40_button" relativePoint="BOTTOM">
 								<Offset>
 									<AbsDimension x="0" y="0" />
 								</Offset>
@@ -2724,11 +2816,11 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);								
-								CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_worldboss");
+								CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_worldboss");
 							</OnClick>
 						</Scripts>
 					</Button>
-					<Frame name="CEPGP_options_page_2_mc" enableMouse="true" toplevel="true" hidden="true">
+					<Frame name="CEPGP_options_page_3_mc" enableMouse="true" toplevel="true" hidden="true">
 						<Size>
 							<AbsDimension x="390" y="300" />
 						</Size>
@@ -2879,7 +2971,7 @@
 							<EditBox name="CEPGP_options_Onyxia_EP_value" inherits="epValInputBoxTemplate" />
 						</Frames>
 					</Frame>
-					<Frame name="CEPGP_options_page_2_bwl" enableMouse="true" toplevel="true" hidden="true">
+					<Frame name="CEPGP_options_page_3_bwl" enableMouse="true" toplevel="true" hidden="true">
 						<Size>
 							<AbsDimension x="390" y="300" />
 						</Size>
@@ -2994,7 +3086,7 @@
 							<EditBox name="CEPGP_options_Nefarian_EP_value" inherits="epValInputBoxTemplate" />
 						</Frames>
 					</Frame>
-					<Frame name="CEPGP_options_page_2_zg" enableMouse="true" toplevel="true" hidden="true">
+					<Frame name="CEPGP_options_page_3_zg" enableMouse="true" toplevel="true" hidden="true">
 						<Size>
 							<AbsDimension x="390" y="300" />
 						</Size>
@@ -3133,7 +3225,7 @@
 							<EditBox name="CEPGP_options_Hakkar_EP_value" inherits="epValInputBoxTemplate" />
 						</Frames>
 					</Frame>
-					<Frame name="CEPGP_options_page_2_aq20" enableMouse="true" toplevel="true" hidden="true">
+					<Frame name="CEPGP_options_page_3_aq20" enableMouse="true" toplevel="true" hidden="true">
 						<Size>
 							<AbsDimension x="390" y="300" />
 						</Size>
@@ -3224,7 +3316,7 @@
 							<EditBox name="CEPGP_options_Ossirian the Unscarred_EP_value" inherits="epValInputBoxTemplate" />
 						</Frames>
 					</Frame>
-					<Frame name="CEPGP_options_page_2_aq40" enableMouse="true" toplevel="true" hidden="true">
+					<Frame name="CEPGP_options_page_3_aq40" enableMouse="true" toplevel="true" hidden="true">
 						<Size>
 							<AbsDimension x="390" y="300" />
 						</Size>
@@ -3351,7 +3443,7 @@
 							<EditBox name="CEPGP_options_C'Thun_EP_value" inherits="epValInputBoxTemplate" />
 						</Frames>
 					</Frame>
-					<Frame name="CEPGP_options_page_2_naxx" enableMouse="true" toplevel="true" hidden="true">
+					<Frame name="CEPGP_options_page_3_naxx" enableMouse="true" toplevel="true" hidden="true">
 						<Size>
 							<AbsDimension x="390" y="300" />
 						</Size>
@@ -3550,7 +3642,7 @@
 							<EditBox name="CEPGP_options_Kel'Thuzad_EP_value" inherits="epValInputBoxTemplate" />
 						</Frames>
 					</Frame>
-					<Frame name="CEPGP_options_page_2_worldboss" enableMouse="true" toplevel="true" hidden="true">
+					<Frame name="CEPGP_options_page_3_worldboss" enableMouse="true" toplevel="true" hidden="true">
 						<Size>
 							<AbsDimension x="390" y="300" />
 						</Size>
@@ -3653,7 +3745,7 @@
 							<EditBox name="CEPGP_options_Taerar_EP_value" inherits="epValInputBoxTemplate" />
 						</Frames>
 					</Frame>
-					<Button name="CEPGP_options_button_prev">
+					<Button name="CEPGP_options_page_3_button_prev">
 						<Size>
 							<AbsDimension x="32" y="27.5"/>
 						</Size>
@@ -3667,13 +3759,8 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(856);
-								if CEPGP_options:IsVisible() then
-									CEPGP_options:Hide();
-									CEPGP_options_page_2:Show();
-								else
-									CEPGP_options:Show();
-									CEPGP_options_page_2:Hide();
-								end
+								CEPGP_options_page_3:Hide();
+								CEPGP_options_page_2:Show();
 							</OnClick>
 						</Scripts>
 						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
@@ -3681,7 +3768,7 @@
 						<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
 						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 					</Button>
-					<Button name="CEPGP_options_button_next">
+					<Button name="CEPGP_options_page_3_button_next">
 						<Size>
 							<AbsDimension x="32" y="27.5"/>
 						</Size>
@@ -3695,13 +3782,8 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(856);
-								if CEPGP_options:IsVisible() then
-									CEPGP_options:Hide();
-									CEPGP_options_page_2:Show();
-								else
-									CEPGP_options:Show();
-									CEPGP_options_page_2:Hide();
-								end
+								CEPGP_options:Show();
+								CEPGP_options_page_3:Hide();
 							</OnClick>
 						</Scripts>
 						<NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
@@ -3718,7 +3800,7 @@
 								<Anchor point="CENTER" relativePoint="TOP" />
 							</Anchors>
 						</FontString>
-						<FontString name="CEPGP_options_page_2_header" inherits="GameFontNormal" text="EP       Auto Award">
+						<FontString name="CEPGP_options_page_3_header" inherits="GameFontNormal" text="EP       Auto Award">
 							<Color r="1" g="1" b="1"/>
 							<Anchors>
 								<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
@@ -3732,7 +3814,7 @@
 				</Layers>
 				<Scripts>
 					<OnShow>
-						CEPGP_toggleBossConfigFrame("CEPGP_options_page_2_mc");
+						CEPGP_toggleBossConfigFrame("CEPGP_options_page_3_mc");
 					</OnShow>
 				</Scripts>
 			</Frame>

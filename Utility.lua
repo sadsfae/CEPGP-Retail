@@ -23,6 +23,9 @@ function CEPGP_initialise()
 	if CEPGP_keyword == nil then
 		CEPGP_keyword = "!need";
 	end
+	if CEPGP_GP_decs == nil then
+		CEPGP_GP_decs = "0";
+	end
 	if CEPGP_ntgetn(AUTOEP) == 0 then
 		for k, v in pairs(bossNameIndex) do
 			AUTOEP[k] = true;
@@ -198,9 +201,12 @@ function CEPGP_calcGP(link, quantity, id)
 	end
 	slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 	slot = SLOTWEIGHTS[slot];
-	name, quality, itemType, subType = nil;
 	if ilvl and rarity and slot then
-		return (math.floor((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity);
+		if tonumber(CEPGP_GP_decs) > 0 then
+			return math.floor(1*(10*tonumber(CEPGP_GP_decs))*(((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity))/(1*(10*tonumber(CEPGP_GP_decs)));
+		else
+			return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
+		end
 	else
 		return 0;
 	end
