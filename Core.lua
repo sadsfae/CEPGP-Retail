@@ -430,7 +430,7 @@ function CEPGP_addStandbyEP(player, amount, boss)
 	else
 		GuildRosterSetOfficerNote(CEPGP_roster[player][1], EP .. "," .. GP);
 	end
-	CEPGP_SendAddonMsg("STANDBYEP"..player..",You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
+	--CEPGP_SendAddonMsg("STANDBYEP"..player..",You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
 end
 
 function CEPGP_addGP(player, amount, itemID, itemLink, msg)
