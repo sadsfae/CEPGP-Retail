@@ -1095,39 +1095,47 @@ function CEPGP_getDebugInfo()
 		
 	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />";
 
-	info = info .. "<details><summary>Auto EP</summary><br />";
+	info = info .. "<details><summary>Auto EP</summary>";
 	for k, v in pairs(AUTOEP) do
 		if v then
-			info = info .. "<details><summary>" .. k .. "</summary>True</details><br />";
+			info = info .. k .. ": True<br />";
 		else
-			info = info .. "<details><summary>" .. k .. "</summary>False</details><br />";
+			info = info .. k .. ": False<br />";
 		end
 	end
 	info = info .. "</details><br />";
-	info = info .. "<details><summary>EP Values</summary><br />";
+	info = info .. "<details><summary>EP Values</summary>";
 	for k, v in pairs(EPVALS) do
-		info = info .. "<details><summary>" .. k .. "</summary>" .. v .. "</details><br />";
+		info = info .. k .. ": " .. v .. "<br />";
 	end
 	info = info .. "</details><br />";
-	info = info .. "<details><summary>Standby Guild Ranks</summary><br />";
+	info = info .. "<details><summary>Standby Guild Ranks</summary>";
 	for k, v in pairs(STANDBYRANKS) do
-		if v[1] then
+		if v[1] ~= "" and v[1] ~= nil then
 			if v[2] then
-				info = info .. "<details><summary>" .. v[1] .. "</summary>True</details><br />";
+				info = info .. v[1] .. ": True<br />";
 			else
-				info = info .. "<details><summary>" .. v[1] .. "</summary>False</details><br />";
+				info = info .. v[1] .. ": False<br />";
 			end
 		end
 	end
 	info = info .. "</details><br />";
-	info = info .. "<details><summary>Slot Weights</summary><br />";
+	info = info .. "<details><summary>Slot Weights</summary>";
 	for k, _ in pairs(SLOTWEIGHTS) do
-		info = info .. "<details><summary>" .. k .. "</summary>" .. SLOTWEIGHTS[k] .. "</details><br />";
+		info = info .. k .. ": " .. SLOTWEIGHTS[k] .. "<br />";
+	end
+	info = info .. "</details><br />";
+	info = info .. "<details><summary>Override List</summary>";
+	for k, v in pairs(OVERRIDE_INDEX) do
+		info = info .. k .. ": " .. v .. "<br />";
 	end
 	info = info .. "</details><br />";
 	info = info .. "<details><summary>Addons List</summary><br />";
 	for i = 1, GetNumAddOns() do
-		info = info .. "" .. GetAddOnInfo(i) .. "<br />";
+		local name, _, _, enabled = GetAddOnInfo(i);
+		if enabled then
+			info = info .. name .. "<br />";
+		end
 	end
 	info = info .. "</details>";
 	info = info .. "</details>";
