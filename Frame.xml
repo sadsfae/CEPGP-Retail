@@ -240,188 +240,6 @@
 									</Frame>
 								</ScrollChild>
 							</ScrollFrame>
-							<!--<ScrollFrame name="GuildScrollFrame" inherits="FauxScrollFrameTemplate">
-								<Size>
-									<AbsDimension x="360" y="350"/>
-								</Size>
-								<Anchors>
-									<Anchor point="RIGHT">
-										<Offset>
-											<AbsDimension x="-7" y="0"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-								<Scripts>
-									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateGuildScrollBar); 
-									</OnVerticalScroll>
-									<OnShow>
-										CEPGP_UpdateGuildScrollBar();
-									</OnShow>
-								</Scripts>
-							</ScrollFrame>
-							<Button name="GuildButton1" inherits="GuildButtonTemplate" id="1" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT">
-										<Offset>
-											<AbsDimension x="5" y="-6"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton2" inherits="GuildButtonTemplate" id="2" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton1" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton3" inherits="GuildButtonTemplate" id="3" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton2" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton4" inherits="GuildButtonTemplate" id="4" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton3" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton5" inherits="GuildButtonTemplate" id="5" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton4" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton6" inherits="GuildButtonTemplate" id="6" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton5" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton7" inherits="GuildButtonTemplate" id="7" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton6" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton8" inherits="GuildButtonTemplate" id="8" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton7" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton9" inherits="GuildButtonTemplate" id="9" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton8" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton10" inherits="GuildButtonTemplate" id="10" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton9" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton11" inherits="GuildButtonTemplate" id="11" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton10" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton12" inherits="GuildButtonTemplate" id="12" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton11" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton13" inherits="GuildButtonTemplate" id="13" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton12" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton14" inherits="GuildButtonTemplate" id="14" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton13" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton15" inherits="GuildButtonTemplate" id="15" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton14" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton16" inherits="GuildButtonTemplate" id="16" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton15" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton17" inherits="GuildButtonTemplate" id="17" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton16" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="GuildButton18" inherits="GuildButtonTemplate" id="18" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="GuildButton17" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>-->
 							<Scripts>
 								<OnLoad>
 									self:SetBackdropColor(0.1, 0.1, 0.1);
@@ -630,9 +448,9 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<Frame name="CEPGP_raid_scrollframe">
+					<ScrollFrame name="RaidScrollFrame" inherits="UIPanelScrollFrameTemplate">
 						<Size>
-							<AbsDimension x="410" y="350"/>
+							<AbsDimension x="400" y="325" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CEPGP_raid" relativePoint="TOPLEFT">
@@ -641,221 +459,22 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-						<Frames>
-							<ScrollFrame name="RaidScrollFrame" inherits="FauxScrollFrameTemplate">
+						<ScrollChild>
+							<Frame name="CEPGP_raid_scrollframe_container">
 								<Size>
-									<AbsDimension x="360" y="350"/>
+									<AbsDimension x="400" y="300" />
 								</Size>
-								<Anchors>
-									<Anchor point="RIGHT">
-										<Offset>
-											<AbsDimension x="-7" y="0"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-								<Scripts>
-									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateRaidScrollBar); 
-									</OnVerticalScroll>
-									<OnShow>
-										CEPGP_UpdateRaidScrollBar();
-									</OnShow>
-								</Scripts>
-							</ScrollFrame>
-							<Button name="RaidButton1" inherits="RaidButtonTemplate" id="1" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT">
-										<Offset>
-											<AbsDimension x="5" y="-6"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton2" inherits="RaidButtonTemplate" id="2" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton1" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton3" inherits="RaidButtonTemplate" id="3" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton2" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton4" inherits="RaidButtonTemplate" id="4" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton3" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton5" inherits="RaidButtonTemplate" id="5" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton4" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton6" inherits="RaidButtonTemplate" id="6" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton5" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton7" inherits="RaidButtonTemplate" id="7" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton6" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton8" inherits="RaidButtonTemplate" id="8" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton7" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton9" inherits="RaidButtonTemplate" id="9" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton8" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton10" inherits="RaidButtonTemplate" id="10" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton9" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton11" inherits="RaidButtonTemplate" id="11" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton10" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton12" inherits="RaidButtonTemplate" id="12" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton11" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton13" inherits="RaidButtonTemplate" id="13" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton12" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton14" inherits="RaidButtonTemplate" id="14" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton13" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton15" inherits="RaidButtonTemplate" id="15" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton14" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton16" inherits="RaidButtonTemplate" id="16" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton15" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton17" inherits="RaidButtonTemplate" id="17" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton16" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="RaidButton18" inherits="RaidButtonTemplate" id="18" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="RaidButton17" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Scripts>
-							<OnLoad>
-								self:SetBackdropColor(0.1, 0.1, 0.1);
-							</OnLoad>
-						</Scripts>
-						</Frames>
-					</Frame>
-					<Button name="CEPGP_raid_group" inherits="CEPGPHeaderButton" text="Group">
-						<Size>
-							<AbsDimension x="50" y="20" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="7.5" y="-50" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								CEPGP_setCriteria(8, "Raid");
-							</OnClick>
-						</Scripts>
-					</Button>
+							</Frame>
+						</ScrollChild>
+					</ScrollFrame>
 					<Button name="CEPGP_raid_name" inherits="CEPGPHeaderButton" text="Name">
 						<Size>
 							<AbsDimension x="50" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="CEPGP_raid_group">
+							<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
 								<Offset>
-									<AbsDimension x="44" y="0" />
+									<AbsDimension x="5" y="-50" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -878,7 +497,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(4, "Raid");
+								CEPGP_setCriteria(3, "Raid");
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -895,7 +514,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(5, "Raid");
+								CEPGP_setCriteria(4, "Raid");
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -906,13 +525,13 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_raid_EP">
 								<Offset>
-									<AbsDimension x="50" y="0" />
+									<AbsDimension x="75" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(6, "Raid");
+								CEPGP_setCriteria(5, "Raid");
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -929,7 +548,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(7, "Raid");
+								CEPGP_setCriteria(6, "Raid");
 							</OnClick>
 						</Scripts>
 					</Button>

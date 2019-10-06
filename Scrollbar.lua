@@ -181,90 +181,48 @@ function CEPGP_UpdateGuildScrollBar()
 end
 
 function CEPGP_UpdateRaidScrollBar()
-	local x, y;
-	local yoffset;
-	local t;
-	local tSize;
-	local group;
-	local name;
-	local rank;
-	local EP;
-	local GP;
-	local offNote;
-	local colour;
-	t = {};
-	tSize = GetNumGroupMembers();
-	for x = 1, tSize do
-		name, _, group, _, class = GetRaidRosterInfo(x);
-		if name == UnitName("player") then
-			name = UnitName("player");
-		end
-		if CEPGP_roster[name] then	--Fails check for same player because GetGuildInfo returns player-realm whereas this check is only for player name
-			rank = CEPGP_roster[name][3];
-			rankIndex = CEPGP_roster[name][4];
-			offNote = CEPGP_roster[name][5];
-			EP, GP = CEPGP_getEPGP(offNote, _, name);
-			PR = CEPGP_roster[name][6];
-		end
-		if not CEPGP_roster[name] then
-			rank = "Not in Guild";
-			rankIndex = 10;
-			EP = 0;
-			GP = BASEGP;
-			PR = 0;
-		end
-		t[x] = {
+	local tempTable = {};
+	for i = 1, CEPGP_ntgetn(CEPGP_raidRoster) do
+		local name = CEPGP_raidRoster[i];
+		local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], CEPGP_roster[name][1], name)
+		if not EP then EP = 0; end
+		if not GP then GP = BASEGP; end
+		tempTable[i] = {
 			[1] = name,
-			[2] = class,
-			[3] = rank,
-			[4] = rankIndex,
-			[5] = EP,
-			[6] = GP,
-			[7] = PR,
-			[8] = group
-		}
+			[2] = CEPGP_roster[name][2], --Class
+			[3] = CEPGP_roster[name][3], --Rank
+			[4] = EP,
+			[5] = GP,
+			[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+		};
 	end
-	t = CEPGP_tSort(t, CEPGP_criteria)
-	FauxScrollFrame_Update(RaidScrollFrame, tSize, 18, 15);
-	for y = 1, 18, 1 do
-		yoffset = y + FauxScrollFrame_GetOffset(RaidScrollFrame);
-		if (yoffset <= tSize) then
-			if not CEPGP_tContains(t, yoffset, true) then
-				_G["RaidButton" .. y]:Hide();
+	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
+	local kids = {_G["CEPGP_raid_scrollframe_container"]:GetChildren()};
+	for _, child in ipairs(kids) do
+		child:Hide();
+	end
+	for i = 1, CEPGP_ntgetn(tempTable) do
+		if not _G["RaidButton" .. i] then
+			local frame = CreateFrame('Button', "RaidButton" .. i, _G["CEPGP_raid_scrollframe_container"], "RaidButtonTemplate");
+			if i > 1 then
+				_G["RaidButton" .. i]:SetPoint("TOPLEFT", _G["RaidButton" .. i-1], "BOTTOMLEFT", 0, -2);
 			else
-				t2 = t[yoffset];
-				name = t2[1];
-				class = t2[2];
-				rank = t2[3];
-				EP = t2[5];
-				GP = t2[6];
-				PR = t2[7];
-				group = t2[8];
-				if class then
-					colour = RAID_CLASS_COLORS[string.upper(class)];
-				else
-					colour = RAID_CLASS_COLORS["WARRIOR"];
-				end
-				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
-				_G["RaidButton" .. y .. "Group"]:SetText(group);
-				_G["RaidButton" .. y .. "Group"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["RaidButton" .. y .. "Info"]:SetText(name);
-				_G["RaidButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["RaidButton" .. y .. "Rank"]:SetText(rank);
-				_G["RaidButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["RaidButton" .. y .. "EP"]:SetText(EP);
-				_G["RaidButton" .. y .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["RaidButton" .. y .. "GP"]:SetText(GP);
-				_G["RaidButton" .. y .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["RaidButton" .. y .. "PR"]:SetText(PR);
-				_G["RaidButton" .. y .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["RaidButton" .. y]:Show();
+				_G["RaidButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_raid_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
-		else
-			_G["RaidButton" .. y]:Hide();
 		end
+		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		_G["RaidButton" .. i]:Show();
+		_G["RaidButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+		_G["RaidButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["RaidButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+		_G["RaidButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["RaidButton" .. i .. "EP"]:SetText(tempTable[i][4]);
+		_G["RaidButton" .. i .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["RaidButton" .. i .. "GP"]:SetText(tempTable[i][5]);
+		_G["RaidButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["RaidButton" .. i .. "PR"]:SetText(tempTable[i][6]);
+		_G["RaidButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
 	end
-	x, y, yoffset, t, tSize, name, class, rank, EP, GP, offNote, colour = nil;
 end
 
 function CEPGP_initVersionScrollBar()

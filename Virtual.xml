@@ -235,7 +235,7 @@
 		</Frames>
 		<Layers>
 			<Layer level="BORDER">
-				<FontString name="$parentGroup" inherits="GameFontHighlight" justifyH="LEFT">
+				<FontString name="$parentInfo" inherits="GameFontHighlight" justifyH="LEFT">
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
@@ -244,47 +244,38 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentInfo" inherits="GameFontHighlight" justifyH="LEFT">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
-							<Offset>
-								<AbsDimension x="40" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
 				<FontString name="$parentRank" inherits="GameFontHighlight" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="LEFT" relativeTo="$parentInfo" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="140" y="0"/>
+								<AbsDimension x="97" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentEP" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="CENTER" relativeTo="$parentRank" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="290" y="0"/>
+								<AbsDimension x="145" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentGP" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="CENTER" relativeTo="$parentEP" relativePoint="CENTER">
 							<Offset>
-								<AbsDimension x="340" y="0"/>
+								<AbsDimension x="75" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</FontString>
 				<FontString name="$parentPR" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
+						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT">
 							<Offset>
-								<AbsDimension x="400" y="0"/>
+								<AbsDimension x="-20" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>

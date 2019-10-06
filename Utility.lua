@@ -231,7 +231,7 @@ function CEPGP_populateFrame(CEPGP_criteria, items)
 	local total;
 	if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
 		CEPGP_UpdateGuildScrollBar();
-	elseif CEPGP_mode == "raid" then
+	elseif CEPGP_mode == "raid" and _G["CEPGP_raid"]:IsVisible() then
 		CEPGP_UpdateRaidScrollBar();
 	elseif CEPGP_mode == "loot" then
 		subframe = CEPGP_loot;
@@ -441,7 +441,7 @@ function CEPGP_rosterUpdate(event)
 		end
 		if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
 			CEPGP_UpdateGuildScrollBar();
-		elseif CEPGP_mode == "raid" then
+		elseif CEPGP_mode == "raid" and _G["CEPGP_raid"]:IsVisible() then
 			CEPGP_UpdateRaidScrollBar();
 		end
 		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
@@ -476,7 +476,9 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_toggleFrame("CEPGP_guild");
 			
 		end
-		CEPGP_UpdateRaidScrollBar();
+		if _G["CEPGP_guild"]:IsVisible() then
+			CEPGP_UpdateRaidScrollBar();
+		end
 	end
 end
 
