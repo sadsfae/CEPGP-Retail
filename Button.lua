@@ -44,8 +44,8 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_EP_check:SetChecked(1);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
-		CEPGP_context_popup_title:SetText("Add EP/GP to " .. name);
-		CEPGP_context_popup_desc:SetText("Adding EP");
+		CEPGP_context_popup_title:SetText("Modify EP/GP for " .. name);
+		CEPGP_context_popup_desc:SetText("Add/Subtract EP");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then
@@ -71,8 +71,8 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_EP_check:SetChecked(1);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
-		CEPGP_context_popup_title:SetText("Add Guild EP");
-		CEPGP_context_popup_desc:SetText("Adds EP to all guild members");
+		CEPGP_context_popup_title:SetText("Modify Guild EP");
+		CEPGP_context_popup_desc:SetText("Adds/Subtracts EP for all guild members");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then
@@ -95,7 +95,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
 		CEPGP_context_popup_title:SetText("Decay Guild EPGP");
-		CEPGP_context_popup_desc:SetText("Decays EPGP standings by a percentage");
+		CEPGP_context_popup_desc:SetText("Decays/Inflates EPGP standings by a percentage");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then
@@ -141,8 +141,8 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_EP_check:SetChecked(1);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Raid Moderation");
-		CEPGP_context_popup_title:SetText("Add EP/GP to " .. name);
-		CEPGP_context_popup_desc:SetText("Adding EP");
+		CEPGP_context_popup_title:SetText("Modify EP/GP for " .. name);
+		CEPGP_context_popup_desc:SetText("Add/Subtract EP");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then
@@ -168,8 +168,8 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_EP_check:SetChecked(nil);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Raid Moderation");
-		CEPGP_context_popup_title:SetText("Award Raid EP");
-		CEPGP_context_popup_desc:SetText("Adds an amount of EP to the entire raid");
+		CEPGP_context_popup_title:SetText("Modify Raid EP");
+		CEPGP_context_popup_desc:SetText("Adds/Subtracts an amount of EP for the entire raid");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then

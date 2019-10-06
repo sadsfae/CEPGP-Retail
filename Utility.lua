@@ -229,7 +229,7 @@ function CEPGP_populateFrame(CEPGP_criteria, items)
 	end
 	local tempItems = {};
 	local total;
-	if CEPGP_mode == "guild" then
+	if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
 		CEPGP_UpdateGuildScrollBar();
 	elseif CEPGP_mode == "raid" then
 		CEPGP_UpdateRaidScrollBar();
@@ -439,7 +439,7 @@ function CEPGP_rosterUpdate(event)
 			end
 			name, rank, rankIndex, class, officerNote, EP, GP, PR = nil;
 		end
-		if CEPGP_mode == "guild" then
+		if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
 			CEPGP_UpdateGuildScrollBar();
 		elseif CEPGP_mode == "raid" then
 			CEPGP_UpdateRaidScrollBar();

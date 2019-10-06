@@ -221,7 +221,26 @@
 							</Anchor>
 						</Anchors>
 						<Frames>
-							<ScrollFrame name="GuildScrollFrame" inherits="FauxScrollFrameTemplate">
+							<ScrollFrame name="GuildScrollFrame" inherits="UIPanelScrollFrameTemplate">
+								<Size>
+									<AbsDimension x="400" y="325" />
+								</Size>
+								<Anchors>
+									<Anchor point="RIGHT">
+										<Offset>
+											<AbsDimension x="-7" y="-5"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<ScrollChild>
+									<Frame name="CEPGP_guild_scrollframe_container">
+										<Size>
+											<AbsDimension x="400" y="300" />
+										</Size>
+									</Frame>
+								</ScrollChild>
+							</ScrollFrame>
+							<!--<ScrollFrame name="GuildScrollFrame" inherits="FauxScrollFrameTemplate">
 								<Size>
 									<AbsDimension x="360" y="350"/>
 								</Size>
@@ -402,12 +421,12 @@
 										</Offset>
 									</Anchor>
 								</Anchors>
-							</Button>
+							</Button>-->
 							<Scripts>
-							<OnLoad>
-								self:SetBackdropColor(0.1, 0.1, 0.1);
-							</OnLoad>
-						</Scripts>
+								<OnLoad>
+									self:SetBackdropColor(0.1, 0.1, 0.1);
+								</OnLoad>
+							</Scripts>
 						</Frames>
 					</Frame>
 					<Button name="CEPGP_guild_name" inherits="CEPGPHeaderButton" text="Name">
