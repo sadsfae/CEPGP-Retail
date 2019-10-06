@@ -106,11 +106,11 @@ function CEPGP_initialise()
 end
 
 function CEPGP_calcGP(link, quantity, id)	
-	local name, rarity, ilvl, itemType, subType, slot;
+	local name, rarity, ilvl, itemType, subType, slot, classID, subClassID;
 	if id then
-		name, link, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(id);
+		name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
 	elseif link then
-		name, _, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(link);
+		name, _, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(link);
 	else
 		return 0;
 	end
@@ -195,6 +195,9 @@ function CEPGP_calcGP(link, quantity, id)
 		CEPGP_print("Name: " .. name);
 		CEPGP_print("Rarity: " .. quality);
 		CEPGP_print("Item Level: " .. ilvl);
+		CEPGP_print("Class ID: " .. classID);
+		CEPGP_print("Subclass ID: " .. subClassID);
+		CEPGP_print(GetItemSubClassInfo(classID, subClassID), false);
 		CEPGP_print("Item Type: " .. itemType);
 		CEPGP_print("Subtype: " .. subType);
 		CEPGP_print("Slot: " .. slot);
@@ -1296,12 +1299,16 @@ end
 function CEPGP_callItem(id, gp)
 	if not id then return; end
 	id = tonumber(id); -- Must be in a numerical format
-	local name, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
+	local name, link, _, _, _, _, _, _, _, tex, _, classID, subClassID = GetItemInfo(id);
 	local iString;
 	if not link then
 		local item = Item:CreateFromItemID(id);
 		item:ContinueOnItemLoad(function()
-				_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
+				_, link, _, _, _, _, _, _, _, tex, _, classID, subClassID = GetItemInfo(id)
+				if not CEPGP_canEquip(GetItemSubClassInfo(classID, subClassID)) and CEPGP_auto_pass then
+					CEPGP_print("Cannot equip " .. link .. "|c006969FF. Passing on item.|r");
+					return;
+				end
 				iString = CEPGP_getItemString(link);
 				_G["CEPGP_respond"]:Show();
 				_G["CEPGP_respond_texture"]:SetTexture(tex);
@@ -1318,6 +1325,10 @@ function CEPGP_callItem(id, gp)
 				_G["CEPGP_respond_gp_value"]:SetText(gp);
 			end);
 	else
+		if not CEPGP_canEquip(GetItemSubClassInfo(classID, subClassID)) and CEPGP_auto_pass then
+			CEPGP_print("Cannot equip " .. link .. "|c006969FF. Passing on item.|r");
+			return;
+		end
 		iString = CEPGP_getItemString(link);
 		_G["CEPGP_respond"]:Show();
 		_G["CEPGP_respond_texture"]:SetTexture(tex);
@@ -1372,4 +1383,10 @@ function CEPGP_split(msg)
 		count = count + 1;
 	end
 	return args;
+end
+
+function CEPGP_canEquip(slot)
+	local class = UnitClass("player");
+	if CEPGP_tContains(CEPGP_classes[class], slot) then return true; end
+	return false;
 end

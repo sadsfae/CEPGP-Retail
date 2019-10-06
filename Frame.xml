@@ -2239,6 +2239,14 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
+						<FontString name="CEPGP_options_auto_pass" inherits="GameFontNormal" text="Auto Pass on Ineligible Items:">
+							<Color r="1" g="1" b="1" />
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_dec_text">
+									<AbsDimension x="0" y="-7" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
@@ -2328,6 +2336,43 @@
 						<DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
 						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 					</Button>
+					<CheckButton name="CEPGP_options_auto_pass_check" inherits="UIOptionsCheckButtonTemplate">
+						<HitRectInsets>
+							<AbsInset left="0" right="0" top="0" bottom="0" />
+						</HitRectInsets>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_auto_pass">
+								<Offset>
+									<AbsDimension x="-5" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								if self:GetChecked() then
+									CEPGP_auto_pass = true;
+									CEPGP_print("Now passing on ineligible items");
+								else
+									CEPGP_auto_pass = false;
+									CEPGP_print("No longer passing on ineligible items");
+								end
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Automatically pass on items when using the loot GUI if you cannot equip the item.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+							<OnShow>
+								if CEPGP_auto_pass then
+									self:SetChecked(true);
+								else
+									self:SetChecked(false);
+								end
+							</OnShow>
+						</Scripts>
+					</CheckButton>
 				</Frames>
 			</Frame>
 			<Frame name="CEPGP_options_page_3" inherits="CEPGPFrameTemplate">

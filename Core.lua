@@ -60,6 +60,7 @@ CEPGP_standby_byrank = true;
 CEPGP_standby_manual = false;
 CEPGP_notice = false;
 CEPGP_loot_GUI = false;
+CEPGP_auto_pass = false;
 STANDBYPERCENT = nil;
 STANDBYRANKS = {};
 SLOTWEIGHTS = {};

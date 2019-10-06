@@ -300,7 +300,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		CEPGP_button_options_OnClick();
 		
-	elseif strfind(message, "CallItem") then
+	elseif args[1] == "CallItem" and sender ~= UnitName("player") then
 		local id = string.sub(message, 10, strfind(message, "?gp=")-1);
 		local gp = string.sub(message, strfind(message, "?gp=")+4);
 		CEPGP_callItem(id, gp);
