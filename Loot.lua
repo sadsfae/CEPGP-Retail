@@ -99,7 +99,11 @@ function CEPGP_announce(link, x, slotNum, quantity)
 				_, rank = GetRaidRosterInfo(i);
 			end
 		end
-		CEPGP_SendAddonMsg("RaidAssistLootDist;"..link..";"..gp..";"..UnitName("player"), "RAID");
+		if CEPGP_raid_wide_dist then
+			CEPGP_SendAddonMsg("RaidAssistLootDist;"..link..";"..gp..";true", "RAID");
+		else
+			CEPGP_SendAddonMsg("RaidAssistLootDist;"..link..";"..gp..";false", "RAID");
+		end
 		if CEPGP_loot_GUI then
 			CEPGP_callItem(id, gp);
 			CEPGP_SendAddonMsg("CallItem;"..id .. ";" .. gp, "RAID");

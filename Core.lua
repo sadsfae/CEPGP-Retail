@@ -61,6 +61,7 @@ CEPGP_standby_manual = false;
 CEPGP_notice = false;
 CEPGP_loot_GUI = false;
 CEPGP_auto_pass = false;
+CEPGP_raid_wide_dist = false;
 STANDBYPERCENT = nil;
 STANDBYRANKS = {};
 SLOTWEIGHTS = {};
@@ -231,7 +232,6 @@ end
 --[[ LOOT COUNCIL FUNCTIONS ]]--
 
 function CEPGP_RaidAssistLootClosed()
-	if UnitIsGroupAssistant("player") then
 		HideUIPanel(CEPGP_distribute_popup);
 		HideUIPanel(CEPGP_distribute);
 		HideUIPanel(CEPGP_loot_CEPGP_distributing);
@@ -239,22 +239,10 @@ function CEPGP_RaidAssistLootClosed()
 		CEPGP_distribute_item_tex:SetBackdrop(nil);
 		_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() end);
 		_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() end);
-		for y = 1, 18 do
-			_G["LootDistButton"..y]:Hide();
-			_G["LootDistButton" .. y .. "Info"]:SetText("");
-			_G["LootDistButton" .. y .. "Class"]:SetText("");
-			_G["LootDistButton" .. y .. "Rank"]:SetText("");
-			_G["LootDistButton" .. y .. "EP"]:SetText("");
-			_G["LootDistButton" .. y .. "GP"]:SetText("");
-			_G["LootDistButton" .. y .. "PR"]:SetText("");
-			_G["LootDistButton" .. y .. "Tex"]:SetBackdrop(nil);
-			_G["LootDistButton" .. y .. "Tex2"]:SetBackdrop(nil);
-		end
-	end
 end
 
-function CEPGP_RaidAssistLootDist(link, gp)
-	if UnitIsGroupAssistant("player") then --Only returns true if the unit is raid ASSIST, not raid leader
+function CEPGP_RaidAssistLootDist(link, gp, raidwide) --raidwide refers to whether or not the ML would like everyone in the raid to be able to see the distribution window
+	if UnitIsGroupAssistant("player") or raidwide then --Only returns true if the unit is raid ASSIST, not raid leader
 		ShowUIPanel(distributing);
 		CEPGP_itemsTable = {};
 		CEPGP_UpdateLootScrollBar();

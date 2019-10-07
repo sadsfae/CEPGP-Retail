@@ -98,11 +98,13 @@ function CEPGP_IncAddonMsg(message, sender)
 	end
 		
 		
-	if strfind(message, "RaidAssistLoot") and (sender ~= UnitName("player") and sender ~= UnitName("player"))	then
+	if strfind(message, "RaidAssistLoot") and sender ~= UnitName("player")	then
 		if args[1] == "RaidAssistLootDist" then
-			local link = args[2];
-			local gp = args[3];
-			CEPGP_RaidAssistLootDist(link, gp);
+			if args[4] == "true" then
+				CEPGP_RaidAssistLootDist(args[2], args[3], true);
+			else
+				CEPGP_RaidAssistLootDist(args[2], args[3], false);
+			end
 		else
 			CEPGP_RaidAssistLootClosed();
 		end
