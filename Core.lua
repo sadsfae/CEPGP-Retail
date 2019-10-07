@@ -1,6 +1,6 @@
 --[[ Globals ]]--
 CEPGP = CreateFrame("Frame");
-CEPGP_VERSION = "1.11.5";
+CEPGP_VERSION = "1.12.0";
 SLASH_CEPGP1 = "/CEPGP";
 SLASH_CEPGP2 = "/cep";
 CEPGP_VERSION_NOTIFIED = false;
@@ -256,42 +256,47 @@ end
 function CEPGP_RaidAssistLootDist(link, gp)
 	if UnitIsGroupAssistant("player") then --Only returns true if the unit is raid ASSIST, not raid leader
 		ShowUIPanel(distributing);
-		local y = 1;
-		for y = 1, 18 do
-			_G["LootDistButton"..y]:Hide();
-			_G["LootDistButton" .. y .. "Info"]:SetText("");
-			_G["LootDistButton" .. y .. "Class"]:SetText("");
-			_G["LootDistButton" .. y .. "Rank"]:SetText("");
-			_G["LootDistButton" .. y .. "EP"]:SetText("");
-			_G["LootDistButton" .. y .. "GP"]:SetText("");
-			_G["LootDistButton" .. y .. "PR"]:SetText("");
-			_G["LootDistButton" .. y .. "Icon"]:SetTexture(nil);
-			_G["LootDistButton" .. y .. "Icon2"]:SetTexture(nil);
-			y = y + 1;
-		end
 		CEPGP_itemsTable = {};
-		local name, iString, _, _, _, _, _, _, slot, tex = GetItemInfo(CEPGP_getItemString(link));
-		CEPGP_DistID = CEPGP_getItemID(iString);
+		CEPGP_UpdateLootScrollBar();
+		local name, iString, _, _, _, _, _, _, slot, tex = GetItemInfo(CEPGP_DistID);
 		CEPGP_distSlot = slot;
-		if not CEPGP_DistID then
-			CEPGP_print("Item not found in game cache. You must see the item in-game before item info can be retrieved and CEPGP will not be able to retrieve what items recipients are wearing in that slot", true);
-		end		
-
-		CEPGP_responses = {};
-		_G["CEPGP_distribute_item_name"]:SetText(link);
-		if iString then
-			_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function()
-																	GameTooltip:SetOwner(_G["CEPGP_distribute_item_tex"], "ANCHOR_TOPLEFT") GameTooltip:SetHyperlink(iString)
-																	GameTooltip:Show()
-																end);
-			_G["CEPGP_distribute_item_texture"]:SetTexture(tex);
-			_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString) end);
+		if not name then
+			local item = Item:CreateFromItemID(tonumber(CEPGP_DistID));
+			item:ContinueOnItemLoad(function()
+				name, iString, _, _, _, _, _, _, slot, tex = GetItemInfo(CEPGP_DistID);	
+				CEPGP_responses = {};
+				_G["CEPGP_distribute_item_name"]:SetText(link);
+				if iString then
+					_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function()
+																			GameTooltip:SetOwner(_G["CEPGP_distribute_item_tex"], "ANCHOR_TOPLEFT") GameTooltip:SetHyperlink(iString)
+																			GameTooltip:Show()
+																		end);
+					_G["CEPGP_distribute_item_texture"]:SetTexture(tex);
+					_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString) end);
+				else
+					_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() end);
+					_G["CEPGP_distribute_item_texture"]:SetTexture(nil);
+				end
+				_G["CEPGP_distribute_item_tex"]:SetScript('OnLeave', function() GameTooltip:Hide() end);
+				_G["CEPGP_distribute_GP_value"]:SetText(gp);				
+			end);
 		else
-			_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() end);
-			_G["CEPGP_distribute_item_texture"]:SetTexture(nil);
+			CEPGP_responses = {};
+			_G["CEPGP_distribute_item_name"]:SetText(link);
+			if iString then
+				_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function()
+																		GameTooltip:SetOwner(_G["CEPGP_distribute_item_tex"], "ANCHOR_TOPLEFT") GameTooltip:SetHyperlink(iString)
+																		GameTooltip:Show()
+																	end);
+				_G["CEPGP_distribute_item_texture"]:SetTexture(tex);
+				_G["CEPGP_distribute_item_name_frame"]:SetScript('OnClick', function() SetItemRef(iString) end);
+			else
+				_G["CEPGP_distribute_item_tex"]:SetScript('OnEnter', function() end);
+				_G["CEPGP_distribute_item_texture"]:SetTexture(nil);
+			end
+			_G["CEPGP_distribute_item_tex"]:SetScript('OnLeave', function() GameTooltip:Hide() end);
+			_G["CEPGP_distribute_GP_value"]:SetText(gp);
 		end
-		_G["CEPGP_distribute_item_tex"]:SetScript('OnLeave', function() GameTooltip:Hide() end);
-		_G["CEPGP_distribute_GP_value"]:SetText(gp);
 	end
 end
 
@@ -431,7 +436,7 @@ function CEPGP_addStandbyEP(player, amount, boss)
 	else
 		GuildRosterSetOfficerNote(CEPGP_roster[player][1], EP .. "," .. GP);
 	end
-	--CEPGP_SendAddonMsg("STANDBYEP"..player..",You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
+	CEPGP_SendAddonMsg("STANDBYEP"..player..",You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
 end
 
 function CEPGP_addGP(player, amount, itemID, itemLink, msg)

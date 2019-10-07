@@ -1347,7 +1347,8 @@ function CEPGP_callItem(id, gp)
 end
 
 function CEPGP_checkVersion(message)
-	local build = string.sub(message, string.find(message, " " )+1); --The whole message, but bits get taken off to form the major, minor and build
+	local build = string.sub(message, string.find(message, ";")+1); --The whole message, but bits get taken off to form the major, minor and build
+	build = string.sub(build, string.find(build, ";")+1);
 	local major = string.sub(build, 0, string.find(build, "%.")-1);
 	build = string.sub(build, string.len(major)+2);
 	local minor = string.sub(build, 0, string.find(build, "%.")-1);
@@ -1356,7 +1357,7 @@ function CEPGP_checkVersion(message)
 	--Current build information
 	local curBuild = CEPGP_VERSION;
 	local curMajor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
-	curBuild = string.sub(curBuild, string.len(major)+2);
+	curBuild = string.sub(curBuild, string.len(curMajor)+2);
 	local curMinor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
 	curBuild = string.sub(curBuild, string.find(curBuild, "%.")+1);
 	

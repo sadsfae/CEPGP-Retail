@@ -695,207 +695,6 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<Frame name="CEPGP_distribute_scrollframe">
-						<Size>
-							<AbsDimension x="360" y="350"/>
-						</Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CEPGP_distribute" relativePoint="TOPLEFT">
-								<Offset>
-									<AbsDimension x="10" y="-75"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Frames>
-							<ScrollFrame name="DistributeScrollFrame" inherits="FauxScrollFrameTemplate">
-								<Size>
-									<AbsDimension x="410" y="350"/>
-								</Size>
-								<Anchors>
-									<Anchor point="RIGHT">
-										<Offset>
-											<AbsDimension x="-7" y="0"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-								<Scripts>
-									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateLootScrollBar); 
-									</OnVerticalScroll>
-									<OnShow>
-										CEPGP_UpdateLootScrollBar();
-									</OnShow>
-								</Scripts>
-							</ScrollFrame>
-							<Button name="LootDistButton1" inherits="LootDistButtonTemplate" id="1" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT">
-										<Offset>
-											<AbsDimension x="5" y="-6"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton2" inherits="LootDistButtonTemplate" id="2" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton1" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton3" inherits="LootDistButtonTemplate" id="3" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton2" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton4" inherits="LootDistButtonTemplate" id="4" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton3" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton5" inherits="LootDistButtonTemplate" id="5" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton4" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton6" inherits="LootDistButtonTemplate" id="6" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton5" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton7" inherits="LootDistButtonTemplate" id="7" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton6" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton8" inherits="LootDistButtonTemplate" id="8" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton7" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton9" inherits="LootDistButtonTemplate" id="9" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton8" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton10" inherits="LootDistButtonTemplate" id="10" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton9" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton11" inherits="LootDistButtonTemplate" id="11" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton10" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton12" inherits="LootDistButtonTemplate" id="12" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton11" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton13" inherits="LootDistButtonTemplate" id="13" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton12" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton14" inherits="LootDistButtonTemplate" id="14" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton13" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton15" inherits="LootDistButtonTemplate" id="15" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton14" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton16" inherits="LootDistButtonTemplate" id="16" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton15" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton17" inherits="LootDistButtonTemplate" id="17" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton16" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="LootDistButton18" inherits="LootDistButtonTemplate" id="18" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="LootDistButton17" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Scripts>
-							<OnLoad>
-								self:SetBackdropColor(0.1, 0.1, 0.1);
-							</OnLoad>
-						</Scripts>
-						</Frames>
-					</Frame>
 					<Button name="CEPGP_distribute_item_tex">
 						<Size>
 							<AbsDimension x="30" y="30" />
@@ -936,9 +735,9 @@
 							<AbsDimension x="50" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="CEPGP_distribute_raid_name">
+							<Anchor point="LEFT" relativePoint="LEFT" relativeTo="CEPGP_distribute_raid_name">
 								<Offset>
-									<AbsDimension x="80" y="0" />
+									<AbsDimension x="70" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -953,7 +752,7 @@
 							<AbsDimension x="50" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="CEPGP_distribute_raid_class">
+							<Anchor point="LEFT" relativePoint="LEFT" relativeTo="CEPGP_distribute_raid_class">
 								<Offset>
 									<AbsDimension x="70" y="0" />
 								</Offset>
@@ -970,9 +769,9 @@
 							<AbsDimension x="50" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="CEPGP_distribute_raid_rank">
+							<Anchor point="LEFT" relativePoint="LEFT" relativeTo="CEPGP_distribute_raid_rank">
 								<Offset>
-									<AbsDimension x="105" y="0" />
+									<AbsDimension x="90" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -987,7 +786,7 @@
 							<AbsDimension x="50" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="RIGHT" relativeTo="CEPGP_distribute_raid_EP">
+							<Anchor point="LEFT" relativePoint="LEFT" relativeTo="CEPGP_distribute_raid_EP">
 								<Offset>
 									<AbsDimension x="45" y="0" />
 								</Offset>
@@ -1006,7 +805,7 @@
 						<Anchors>
 							<Anchor point="TOPRIGHT">
 								<Offset>
-									<AbsDimension x="-50" y="-60" />
+									<AbsDimension x="-75" y="-60" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -1016,6 +815,25 @@
 							</OnClick>
 						</Scripts>
 					</Button>
+					<ScrollFrame name="DistScrollFrame" inherits="UIPanelScrollFrameTemplate">
+						<Size>
+							<AbsDimension x="400" y="325" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+								<Offset>
+									<AbsDimension x="10" y="-75"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<ScrollChild>
+							<Frame name="CEPGP_dist_scrollframe_container">
+								<Size>
+									<AbsDimension x="420" y="300" />
+								</Size>
+							</Frame>
+						</ScrollChild>
+					</ScrollFrame>
 				</Frames>
 				<Scripts>
 					<OnShow>
@@ -4799,9 +4617,9 @@
 					<OnClick>
 						local CEPGP_target = CEPGP_settings_import_name:GetText();
 						if CEPGP_raidRoster[CEPGP_target] then
-							CEPGP_SendAddonMsg(CEPGP_target .. "-import", "RAID");
+							CEPGP_SendAddonMsg(CEPGP_target .. ";import", "RAID");
 						elseif CEPGP_roster[CEPGP_target] then
-							CEPGP_SendAddonMsg(CEPGP_target .. "-import", "GUILD");
+							CEPGP_SendAddonMsg(CEPGP_target .. ";import", "GUILD");
 						else
 							CEPGP_print(CEPGP_target .. " not found in guild or raid group", true);
 						end

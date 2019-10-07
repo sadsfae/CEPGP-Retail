@@ -1,4 +1,199 @@
 function CEPGP_UpdateLootScrollBar()
+	local tempTable = {};
+	local count = 1;
+	for name, id in pairs(CEPGP_itemsTable) do
+		local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], CEPGP_roster[name][1], name)
+		if not EP then EP = 0; end
+		if not GP then GP = BASEGP; end
+		tempTable[count] = {
+			[1] = name,
+			[2] = CEPGP_roster[name][2], --Class
+			[3] = CEPGP_roster[name][3], --Rank
+			[4] = CEPGP_roster[name][4], --RankIndex
+			[5] = EP,
+			[6] = GP,
+			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+			[8] = CEPGP_itemsTable[name][1],
+			[9] = CEPGP_itemsTable[name][2]
+		};
+		count = count + 1;
+	end
+	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
+	local kids = {_G["CEPGP_dist_scrollframe_container"]:GetChildren()};
+	for _, child in ipairs(kids) do
+		child:Hide();
+	end
+	for i = 1, CEPGP_ntgetn(tempTable) do
+		local name = tempTable[i][1];
+		if not _G["LootDistButton" .. i] then
+			local frame = CreateFrame('Button', "LootDistButton" .. i, _G["CEPGP_dist_scrollframe_container"], "LootDistButtonTemplate");
+			if i > 1 then
+				_G["LootDistButton" .. i]:SetPoint("TOPLEFT", _G["LootDistButton" .. i-1], "BOTTOMLEFT", 0, -2);
+			else
+				_G["LootDistButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_dist_scrollframe_container"], "TOPLEFT", 0, -10);
+			end
+		end
+		if tempTable[i][8] ~= "noitem" or tempTable[i][9] ~= "noitem" then
+			if tempTable[i][8] ~= "noitem" then
+				local id = tonumber(tempTable[i][8]);
+				_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
+				local iString;
+				if not link then
+					local item = Item:CreateFromItemID(id);
+					item:ContinueOnItemLoad(function()
+						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
+						iString = CEPGP_getItemString(link);
+						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+						_G["LootDistButton" .. i]:Show();
+						_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+						_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "Class"]:SetText(tempTable[i][2]);
+						_G["LootDistButton" .. i .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+						_G["LootDistButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "EP"]:SetText(tempTable[i][5]);
+						_G["LootDistButton" .. i .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "GP"]:SetText(tempTable[i][6]);
+						_G["LootDistButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "PR"]:SetText(tempTable[i][7]);
+						_G["LootDistButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "Tex"]:SetScript('OnLeave', function()
+																						GameTooltip:Hide()
+																			end);
+						_G["LootDistButton" .. i .. "Tex"]:SetScript('OnEnter', function()	
+																				GameTooltip:SetOwner(_G["LootDistButton" .. i .. "Tex"], "ANCHOR_TOPLEFT");
+																				GameTooltip:SetHyperlink(iString);
+																				GameTooltip:Show();
+																			end);
+						_G["LootDistButton" .. i .. "Icon"]:SetTexture(tex);					
+					end);
+				else
+					iString = CEPGP_getItemString(link);
+					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+					_G["LootDistButton" .. i]:Show();
+					_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+					_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "Class"]:SetText(tempTable[i][2]);
+					_G["LootDistButton" .. i .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+					_G["LootDistButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "EP"]:SetText(tempTable[i][5]);
+					_G["LootDistButton" .. i .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "GP"]:SetText(tempTable[i][6]);
+					_G["LootDistButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "PR"]:SetText(tempTable[i][7]);
+					_G["LootDistButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "Tex"]:SetScript('OnLeave', function()
+																					GameTooltip:Hide()
+																		end);
+					_G["LootDistButton" .. i .. "Tex"]:SetScript('OnEnter', function()	
+																			GameTooltip:SetOwner(_G["LootDistButton" .. i .. "Tex"], "ANCHOR_TOPLEFT");
+																			GameTooltip:SetHyperlink(iString);
+																			GameTooltip:Show();
+																		end);
+					_G["LootDistButton" .. i .. "Icon"]:SetTexture(tex);
+				end
+			else
+				_G["LootDistButton" .. i .. "Tex"]:SetScript('OnEnter', function() end);
+				_G["LootDistButton" .. i .. "Icon"]:SetTexture(nil);
+			end
+			
+			if tempTable[i][9] ~= "noitem" then
+				local id = tonumber(tempTable[i][9]);
+				_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id);
+				local iString2;
+				if not link then
+					local item = Item:CreateFromItemID(id);
+					item:ContinueOnItemLoad(function()
+						_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id)
+						iString2 = CEPGP_getItemString(link);
+						print(iString2);
+						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+						_G["LootDistButton" .. i]:Show();
+						_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+						_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "Class"]:SetText(tempTable[i][2]);
+						_G["LootDistButton" .. i .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+						_G["LootDistButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "EP"]:SetText(tempTable[i][5]);
+						_G["LootDistButton" .. i .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "GP"]:SetText(tempTable[i][6]);
+						_G["LootDistButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "PR"]:SetText(tempTable[i][7]);
+						_G["LootDistButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+						_G["LootDistButton" .. i .. "Tex2"]:SetScript('OnLeave', function()
+																				GameTooltip:Hide()
+																			end);
+						_G["LootDistButton" .. i .. "Tex2"]:SetScript('OnEnter', function()	
+														GameTooltip:SetOwner(_G["LootDistButton" .. i .. "Tex2"], "ANCHOR_TOPLEFT")
+														GameTooltip:SetHyperlink(iString2)
+														GameTooltip:Show()
+													end);				
+						_G["LootDistButton" .. i .. "Icon2"]:SetTexture(tex2);
+					end);
+				else
+					iString2 = CEPGP_getItemString(link);
+					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+					_G["LootDistButton" .. i]:Show();
+					_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+					_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "Class"]:SetText(tempTable[i][2]);
+					_G["LootDistButton" .. i .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+					_G["LootDistButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "EP"]:SetText(tempTable[i][5]);
+					_G["LootDistButton" .. i .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "GP"]:SetText(tempTable[i][6]);
+					_G["LootDistButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "PR"]:SetText(tempTable[i][7]);
+					_G["LootDistButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["LootDistButton" .. i .. "Tex2"]:SetScript('OnLeave', function()
+																			GameTooltip:Hide()
+																		end);
+					_G["LootDistButton" .. i .. "Tex2"]:SetScript('OnEnter', function()	
+													GameTooltip:SetOwner(_G["LootDistButton" .. i .. "Tex2"], "ANCHOR_TOPLEFT")
+													GameTooltip:SetHyperlink(iString2)
+													GameTooltip:Show()
+												end);				
+					_G["LootDistButton" .. i .. "Icon2"]:SetTexture(tex2);
+				end
+			else
+				_G["LootDistButton" .. i .. "Tex2"]:SetScript('OnEnter', function() end);
+				_G["LootDistButton" .. i .. "Icon2"]:SetTexture(nil);
+			end
+		else --Recipient has no items in the corresponding slots
+			local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+			_G["LootDistButton" .. i]:Show();
+			_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+			_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+			_G["LootDistButton" .. i .. "Class"]:SetText(tempTable[i][2]);
+			_G["LootDistButton" .. i .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+			_G["LootDistButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+			_G["LootDistButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+			_G["LootDistButton" .. i .. "EP"]:SetText(tempTable[i][5]);
+			_G["LootDistButton" .. i .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+			_G["LootDistButton" .. i .. "GP"]:SetText(tempTable[i][6]);
+			_G["LootDistButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+			_G["LootDistButton" .. i .. "PR"]:SetText(tempTable[i][7]);
+			_G["LootDistButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+			_G["LootDistButton" .. i .. "Tex"]:SetScript('OnLeave', function()
+																			GameTooltip:Hide()
+																end);
+			_G["LootDistButton" .. i .. "Tex2"]:SetScript('OnLeave', function()
+																	GameTooltip:Hide()
+																end);
+			_G["LootDistButton" .. i .. "Icon"]:SetTexture(nil);
+			_G["LootDistButton" .. i .. "Icon2"]:SetTexture(nil);
+			_G["LootDistButton" .. i .. "Tex2"]:SetScript('OnEnter', function() end);
+			_G["LootDistButton" .. i .. "Icon2"]:SetTexture(nil);
+			_G["LootDistButton" .. i .. "Tex"]:SetScript('OnEnter', function() end);
+			_G["LootDistButton" .. i .. "Icon"]:SetTexture(nil);
+		end
+	end
+end
+
+--[[function CEPGP_UpdateLootScrollBar()
 	local y;
 	local yoffset;
 	local t;
@@ -68,12 +263,40 @@ function CEPGP_UpdateLootScrollBar()
 				local tex = nil;
 				local tex2 = nil;
 				if CEPGP_itemsTable[name]then
-					if CEPGP_itemsTable[name][1] ~= nil then
-						iString = CEPGP_itemsTable[name][1].."|r";
-						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(iString);
-						if CEPGP_itemsTable[name][2] ~= nil then
-							iString2 = CEPGP_itemsTable[name][2].."|r";
-							_, _, _, _, _, _, _, _, _, tex2 = GetItemInfo(iString2);
+					if CEPGP_itemsTable[name][1] ~= "noitem" then
+						print("Table 1");
+						local id = tonumber(CEPGP_itemsTable[name][1]);
+						print(id);
+						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
+						if not link then
+							local item = Item:CreateFromItemID(id);
+							item:ContinueOnItemLoad(function()
+								--print(CEPGP_itemsTable[name][1]);
+								--print(tonumber(CEPGP_itemsTable[name][1]));
+								_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
+								iString = CEPGP_getItemString(link);
+							end);
+						else
+							iString = CEPGP_getItemString(link);
+						end
+					end
+					
+					if CEPGP_itemsTable[name][2] ~= "noitem" then
+						print("Table 2");
+						local id = tonumber(CEPGP_itemsTable[name][2]);
+						print(id);
+						_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id);
+						CEPGP_print(link);
+						if not link then
+							local item = Item:CreateFromItemID(id);
+							item:ContinueOnItemLoad(function()
+								--print(CEPGP_itemsTable[name][2]);
+								--print(tonumber(CEPGP_itemsTable[name][2]));
+								_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id)
+								iString2 = CEPGP_getItemString(link);
+							end);
+						else
+							iString2 = CEPGP_getItemString(link);
 						end
 					end
 				end
@@ -115,7 +338,7 @@ function CEPGP_UpdateLootScrollBar()
 														GameTooltip:SetHyperlink(iString2)
 														GameTooltip:Show()
 													end);				
-						_G["LootDistButton" .. y .. "Icon2"]:SetTexture(tex);
+						_G["LootDistButton" .. y .. "Icon2"]:SetTexture(tex2);
 					else
 						_G["LootDistButton" .. y .. "Tex2"]:SetScript('OnEnter', function() end);
 						_G["LootDistButton" .. y .. "Icon2"]:SetTexture(nil);
@@ -131,7 +354,7 @@ function CEPGP_UpdateLootScrollBar()
 		end
 	end
 	y, yoffset, t, tSize, name, class, rank, EP, GP, offNote, colour = nil;
-end
+end]]
 
 function CEPGP_UpdateGuildScrollBar()
 	local tempTable = {};

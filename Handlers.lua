@@ -12,7 +12,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 		end
 		if not duplicate then
 			if CEPGP_isML() == 0 then --If you are the master looter
-				CEPGP_SendAddonMsg("!need,"..arg2.."`"..CEPGP_DistID, "RAID"); --!need,playername`itemID (of the item being distributed) is sent for sharing with raid assist
+				CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
 			end
 			if CEPGP_debugMode then
 				CEPGP_print(arg2 .. " registered (" .. CEPGP_keyword .. ")");
@@ -82,7 +82,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			if not CEPGP_vInfo[arg2] then
 				SendChatMessage("EPGP Standings - EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100, "WHISPER", CEPGP_LANGUAGE, arg2);
 			else
-				CEPGP_SendAddonMsg("!info" .. arg2 .. "EPGP Standings - EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100, "GUILD");
+				CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EPGP Standings - EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100, "GUILD");
 			end
 		end
 	elseif event == "CHAT_MSG_WHISPER" and (string.lower(arg1) == "!infoguild" or string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass") then

@@ -75,7 +75,7 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_itemsTable = {};
 		CEPGP_distItemLink = link;
 		CEPGP_DistID = id;
-		CEPGP_SendAddonMsg("CEPGP_setDistID?" .. id, "RAID");
+		CEPGP_SendAddonMsg("CEPGP_setDistID;" .. id, "RAID");
 		CEPGP_distSlot = slot;
 		CEPGP_distSlotID = slotNum;
 		gp = _G[CEPGP_mode..'itemGP'..x]:GetText();
@@ -99,10 +99,10 @@ function CEPGP_announce(link, x, slotNum, quantity)
 				_, rank = GetRaidRosterInfo(i);
 			end
 		end
-		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"), "RAID");
+		CEPGP_SendAddonMsg("RaidAssistLootDist;"..link..";"..gp..";"..UnitName("player"), "RAID");
 		if CEPGP_loot_GUI then
 			CEPGP_callItem(id, gp);
-			CEPGP_SendAddonMsg("CallItem;"..id .. ";gp;" .. gp, "RAID");
+			CEPGP_SendAddonMsg("CallItem;"..id .. ";" .. gp, "RAID");
 		else
 			SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
 			if rank > 0 then
