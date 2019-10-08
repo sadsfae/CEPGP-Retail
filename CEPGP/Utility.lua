@@ -191,7 +191,6 @@ function CEPGP_calcGP(link, quantity, id)
 	end
 	
 	if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
-	if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
 	if CEPGP_debugMode then
 		local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
 		CEPGP_print("Name: " .. name);
