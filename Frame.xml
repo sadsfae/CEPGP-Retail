@@ -1100,16 +1100,6 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="CEPGP_options_force_sync" inherits="GameFontNormal" text="Allow Forced Synchronisation from Rank: ">
-							<Color r="1" g="1" b="1"/>
-							<Anchors>
-								<Anchor point="LEFT" relativePoint="LEFT">
-									<Offset>
-										<AbsDimension x="15" y="-20" />
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
 						<FontString name="CEPGP_options_standby_ep_head" inherits="GameFontNormal" text="Standby EP">
 							<Color r="0.95" g="0.75" b="0.26"/>
 							<Anchors>
@@ -1177,32 +1167,6 @@
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
 								GameTooltip:SetText("Allows you to create permanent overrides for item GP values.");
-							</OnEnter>
-							<OnLeave>
-								GameTooltip:Hide();
-							</OnLeave>
-						</Scripts>
-					</Button>
-					<Button name="CEPGP_button_options_force_sync" inherits="GameMenuButtonTemplate" text="Force Synchronise">
-						<Size>
-							<AbsDimension x="150" y="21" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOP" relativePoint="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-10" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								PlaySound(799);
-								CEPGP_SendAddonMsg("?forceSync", "GUILD");
-								CEPGP_print("Forced synchronisation with guild members");
-							</OnClick>
-							<OnEnter>
-								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-								GameTooltip:SetText("Forces players below your rank that have the 'Allowed Forced Synchronisation From Rank'\nsetting enabled to use the same settings as your addon.");
 							</OnEnter>
 							<OnLeave>
 								GameTooltip:Hide();
@@ -1492,55 +1456,6 @@
 					<EditBox name="CEPGP_options_RELIC_weight" inherits="slotWeightInputBoxTemplate" />
 					<EditBox name="CEPGP_options_THROWN_weight" inherits="slotWeightInputBoxTemplate" />
 					<EditBox name="CEPGP_options_2HWEAPON_weight" inherits="slotWeightInputBoxTemplate" />
-					<CheckButton name="CEPGP_options_allow_forced_sync_check" inherits="UIOptionsCheckButtonTemplate">
-						<HitRectInsets>
-							<AbsInset left="0" right="0" top="0" bottom="0" />
-						</HitRectInsets>
-						<Anchors>
-							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_force_sync">
-								<Offset>
-									<AbsDimension x="-5" y="0" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								if self:GetChecked() then
-									CEPGP_sync_rank:Show();
-									CEPGP_button_options_force_sync:Show();
-									ALLOW_FORCED_SYNC = true;
-									CEPGP_print("Enabled forced synchronisation");
-								else
-									CEPGP_sync_rank:Hide();
-									CEPGP_button_options_force_sync:Hide();
-									ALLOW_FORCED_SYNC = false;
-									CEPGP_print("Disabled forced synchronisation");
-								end
-							</OnClick>
-							<OnEnter>
-								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-								GameTooltip:SetText("Allows the selected rank or higher to force your addon to use the same configuration as theirs.");
-							</OnEnter>
-							<OnLeave>
-								GameTooltip:Hide();
-							</OnLeave>
-						</Scripts>
-					</CheckButton>
-					<Button name="CEPGP_sync_rank" inherits="UIDropDownMenuTemplate">
-						<Anchors>
-							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_allow_forced_sync_check">
-								<Offset>
-									<AbsDimension x="-20" y="-5" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnShow>
-								CEPGP_UIDropDownMenu_Initialize(self, CEPGP_syncRankDropdown);
-								UIDropDownMenu_SetWidth(self, 140);
-							</OnShow>
-						</Scripts>
-					</Button>
 					<CheckButton name="CEPGP_options_standby_ep_check" inherits="UIOptionsCheckButtonTemplate">
 						<HitRectInsets>
 							<AbsInset left="0" right="0" top="0" bottom="0" />
@@ -2071,7 +1986,7 @@
 							<Color r="1" g="1" b="1" />
 							<Anchors>
 								<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
-									<AbsDimension x="15" y="-20" />
+									<AbsDimension x="15" y="-50" />
 								</Anchor>
 							</Anchors>
 						</FontString>
@@ -2088,6 +2003,16 @@
 							<Anchors>
 								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_auto_pass">
 									<AbsDimension x="0" y="-7" />
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="CEPGP_options_force_sync" inherits="GameFontNormal" text="Allow Forced Synchronisation from Rank: ">
+							<Color r="1" g="1" b="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
+									<Offset>
+										<AbsDimension x="15" y="60" />
+									</Offset>
 								</Anchor>
 							</Anchors>
 						</FontString>
@@ -2134,6 +2059,81 @@
 							</OnShow>
 						</Scripts>
 					</EditBox>
+					<Button name="CEPGP_button_options_force_sync" inherits="GameMenuButtonTemplate" text="Force Synchronise">
+						<Size>
+							<AbsDimension x="150" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOP" relativePoint="TOP">
+								<Offset>
+									<AbsDimension x="0" y="-10" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_SendAddonMsg("?forceSync", "GUILD");
+								CEPGP_print("Forced synchronisation with guild members");
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Forces players below your rank that have the 'Allowed Forced Synchronisation From Rank'\nsetting enabled to use the same settings as your addon.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+						</Scripts>
+					</Button>
+					<CheckButton name="CEPGP_options_allow_forced_sync_check" inherits="UIOptionsCheckButtonTemplate">
+						<HitRectInsets>
+							<AbsInset left="0" right="0" top="0" bottom="0" />
+						</HitRectInsets>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_force_sync">
+								<Offset>
+									<AbsDimension x="-5" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								if self:GetChecked() then
+									CEPGP_sync_rank:Show();
+									CEPGP_button_options_force_sync:Show();
+									ALLOW_FORCED_SYNC = true;
+									CEPGP_print("Enabled forced synchronisation");
+								else
+									CEPGP_sync_rank:Hide();
+									CEPGP_button_options_force_sync:Hide();
+									ALLOW_FORCED_SYNC = false;
+									CEPGP_print("Disabled forced synchronisation");
+								end
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Allows the selected rank or higher to force your addon to use the same configuration as theirs.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+						</Scripts>
+					</CheckButton>
+					<Button name="CEPGP_sync_rank" inherits="UIDropDownMenuTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_allow_forced_sync_check">
+								<Offset>
+									<AbsDimension x="0" y="-5" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnShow>
+								CEPGP_UIDropDownMenu_Initialize(self, CEPGP_syncRankDropdown);
+								UIDropDownMenu_SetWidth(self, 140);
+							</OnShow>
+						</Scripts>
+					</Button>
 					<Button name="CEPGP_options_page_2_button_prev">
 						<Size>
 							<AbsDimension x="32" y="27.5"/>
