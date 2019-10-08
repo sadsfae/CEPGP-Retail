@@ -1105,7 +1105,17 @@
 							<Anchors>
 								<Anchor point="LEFT" relativePoint="LEFT">
 									<Offset>
-										<AbsDimension x="15" y="-40" />
+										<AbsDimension x="15" y="-20" />
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="CEPGP_options_standby_ep_share_text" inherits="GameFontNormal" text="Share Standby List with Assists:">
+							<Color r="1" g="1" b="1"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_standby_ep_head">
+									<Offset>
+										<AbsDimension x="0" y="-5" />
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -1487,6 +1497,47 @@
 							<OnLeave>
 								GameTooltip:Hide();
 							</OnLeave>
+						</Scripts>
+					</CheckButton>
+					<CheckButton name="CEPGP_options_standby_ep_share_check" inherits="UIOptionsCheckButtonTemplate">
+						<HitRectInsets>
+							<AbsInset left="0" right="0" top="0" bottom="0" />
+						</HitRectInsets>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_standby_ep_share_text">
+								<Offset>
+									<AbsDimension x="5" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:RegisterForClicks('LeftButtonDown');
+							</OnLoad>
+							<OnClick>
+								if self:GetChecked() then
+									CEPGP_standby_share = true;
+									for name, _ in pairs(CEPGP_standbyRoster) do
+										CEPGP_SendAddonMsg("StandbyListAdd;"..name, "RAID");
+									end
+								else
+									CEPGP_standby_share = false;
+								end
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Loot Master Feature\nShare the standby list with all raid assists.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+							<OnShow>
+								if CEPGP_standby_share then
+									self:SetChecked(true);
+								else
+									self:SetChecked(false);
+								end
+							</OnShow>
 						</Scripts>
 					</CheckButton>
 					<Frame name="CEPGP_options_standby_ep_options">
@@ -2123,7 +2174,7 @@
 						<Anchors>
 							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_allow_forced_sync_check">
 								<Offset>
-									<AbsDimension x="0" y="-5" />
+									<AbsDimension x="-15" y="-5" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -3600,7 +3651,6 @@
 						<Scripts>
 							<OnClick>
 								PlaySound(799);
-								ShowUIPanel(CEPGP_context_popup);
 								CEPGP_ListButton_OnClick(self:GetName());
 							</OnClick>
 						</Scripts>

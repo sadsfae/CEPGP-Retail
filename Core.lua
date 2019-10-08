@@ -54,6 +54,7 @@ CEPGP_GP_decs = nil;
 ALLOW_FORCED_SYNC = false;
 CEPGP_force_sync_rank = nil;
 CEPGP_standby_accept_whispers = false;
+CEPGP_standby_share = false;
 CEPGP_standby_whisper_msg = "standby";
 CEPGP_keyword = nil;
 CEPGP_standby_byrank = true;

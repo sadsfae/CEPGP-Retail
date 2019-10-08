@@ -503,8 +503,9 @@ function CEPGP_addToStandby(player)
 			CEPGP_print(player .. " is part of the raid", true);
 			return;
 		end
-	end
+	end	
 	table.insert(CEPGP_standbyRoster, player);
+	CEPGP_SendAddonMsg("StandbyListAdd;"..player, "RAID");
 	CEPGP_UpdateStandbyScrollBar();
 end
 

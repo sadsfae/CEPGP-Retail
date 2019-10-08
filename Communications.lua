@@ -131,6 +131,18 @@ function CEPGP_IncAddonMsg(message, sender)
 	elseif args[1] == "STANDBYEP" and args[2] == UnitName("player") then
 		CEPGP_print(args[3]);
 		
+	elseif args[1] == "StandbyListAdd" and UnitIsGroupAssistant("player") then
+		if CEPGP_tContains(CEPGP_standbyRoster, args[2]) then
+			return;
+		end
+		for _, name in ipairs(CEPGP_raidRoster) do
+			if args[2] == name then
+				return;
+			end
+		end
+		table.insert(CEPGP_standbyRoster, args[2]);
+		CEPGP_UpdateStandbyScrollBar();
+		
 		
 	elseif args[1] == "!info" and args[2] == UnitName("player") then--strfind(message, "!info"..UnitName("player")) then
 		CEPGP_print(args[3]);

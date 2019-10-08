@@ -42,6 +42,35 @@ function CEPGP_ListButton_OnClick(obj)
 																end
 															end
 														end);
+		return;
+	
+	elseif strfind(obj, "CEPGP_StandbyButton") then
+		local name = _G[_G[_G[obj]:GetName()]:GetParent():GetName() .. "Info"]:GetText();
+		for i = 1, CEPGP_ntgetn(CEPGP_standbyRoster) do
+			if CEPGP_standbyRoster[i] == name then
+				table.remove(CEPGP_standbyRoster, i);
+			end
+		end
+		CEPGP_UpdateStandbyScrollBar();
+		return;
+	end
+	
+	if strfind(obj, "CEPGP_standby_ep_list_add") and (CanEditOfficerNote() or CEPGP_debugMode) then
+		ShowUIPanel(CEPGP_context_popup);
+		CEPGP_context_popup_EP_check:Hide();
+		CEPGP_context_popup_GP_check:Hide();
+		_G["CEPGP_context_popup_EP_check_text"]:Hide();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
+		CEPGP_context_popup_header:SetText("Add to Standby");
+		CEPGP_context_popup_title:Hide();
+		CEPGP_context_popup_desc:SetText("Add a guild member to the standby list");
+		CEPGP_context_amount:SetText("");
+		CEPGP_context_popup_confirm:SetScript('OnClick', function()
+															PlaySound(799);
+															HideUIPanel(CEPGP_context_popup);
+															CEPGP_addToStandby(CEPGP_context_amount:GetText());
+														end);
+		return;
 	end
 	
 	if not CanEditOfficerNote() and not CEPGP_debugMode then
@@ -55,6 +84,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_distribute_popup_title:SetText(_G[_G[obj]:GetName() .. "Info"]:GetText());
 		CEPGP_distPlayer = _G[_G[obj]:GetName() .. "Info"]:GetText();
 		CEPGP_distribute_popup:SetID(CEPGP_distribute:GetID()); --CEPGP_distribute:GetID gets the ID of the LOOT SLOT. Not the player.
+		return;
 	
 		--[[ Guild Menu ]]--
 	elseif strfind(obj, "GuildButton") then --A player from the guild menu is clicked (awards EP)
@@ -84,6 +114,7 @@ function CEPGP_ListButton_OnClick(obj)
 																end
 															end
 														end);
+		return;
 		
 	elseif strfind(obj, "CEPGP_guild_add_EP") then --Click the Add Guild EP button in the Guild menu
 		ShowUIPanel(CEPGP_context_popup);
@@ -107,6 +138,7 @@ function CEPGP_ListButton_OnClick(obj)
 																CEPGP_addGuildEP(tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 															end
 														end);
+		return;
 	
 	elseif strfind(obj, "CEPGP_guild_decay") then --Click the Decay Guild EPGP button in the Guild menu
 		ShowUIPanel(CEPGP_context_popup);
@@ -130,6 +162,7 @@ function CEPGP_ListButton_OnClick(obj)
 																CEPGP_decay(tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 															end
 														end);
+		return;
 		
 	elseif strfind(obj, "CEPGP_guild_reset") then --Click the Reset All EPGP Standings button in the Guild menu
 		ShowUIPanel(CEPGP_context_popup);
@@ -148,6 +181,7 @@ function CEPGP_ListButton_OnClick(obj)
 															HideUIPanel(CEPGP_context_popup);
 															CEPGP_resetAll(CEPGP_context_reason:GetText());
 														end)
+		return;
 		
 		--[[ Raid Menu ]]--
 	elseif strfind(obj, "RaidButton") then --A player from the raid menu is clicked (awards EP)
@@ -181,6 +215,7 @@ function CEPGP_ListButton_OnClick(obj)
 																end
 															end
 														end);
+		return;
 	
 	elseif strfind(obj, "CEPGP_raid_add_EP") then --Click the Add Raid EP button in the Raid menu
 		ShowUIPanel(CEPGP_context_popup);
@@ -204,28 +239,7 @@ function CEPGP_ListButton_OnClick(obj)
 																CEPGP_AddRaidEP(tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 															end
 														end);
-	elseif strfind(obj, "CEPGP_standby_ep_list_add") then
-		CEPGP_context_popup_EP_check:Hide();
-		CEPGP_context_popup_GP_check:Hide();
-		_G["CEPGP_context_popup_EP_check_text"]:Hide();
-		_G["CEPGP_context_popup_GP_check_text"]:Hide();
-		CEPGP_context_popup_header:SetText("Add to Standby");
-		CEPGP_context_popup_title:Hide();
-		CEPGP_context_popup_desc:SetText("Add a guild member to the standby list");
-		CEPGP_context_amount:SetText("");
-		CEPGP_context_popup_confirm:SetScript('OnClick', function()
-															PlaySound(799);
-															HideUIPanel(CEPGP_context_popup);
-															CEPGP_addToStandby(CEPGP_context_amount:GetText());
-														end);
-	elseif strfind(obj, "CEPGP_StandbyButton") then
-		local name = _G[_G[_G[obj]:GetName()]:GetParent():GetName() .. "Info"]:GetText();
-		for i = 1, CEPGP_ntgetn(CEPGP_standbyRoster) do
-			if CEPGP_standbyRoster[i] == name then
-				table.remove(CEPGP_standbyRoster, i);
-			end
-		end
-		CEPGP_UpdateStandbyScrollBar();
+		return;
 	end
 end
 
