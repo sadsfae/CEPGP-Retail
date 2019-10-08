@@ -87,14 +87,14 @@ function CEPGP_IncAddonMsg(message, sender)
 	CEPGP_checkVersion(message);
 		
 		
-	elseif message == "version-check" then
+	--[[elseif message == "version-check" then
 		if not sender then return; end
 		CEPGP_updateGuild();
 		if CEPGP_roster[sender] then
 			CEPGP_SendAddonMsg(sender .. ";versioncheck;" .. CEPGP_VERSION, "GUILD");
 		else
 			CEPGP_SendAddonMsg(sender .. ";versioncheck;" .. CEPGP_VERSION);
-		end
+		end]]
 	end
 		
 		

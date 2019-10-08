@@ -41,6 +41,7 @@ CEPGP_RAZORGORE_EGG_COUNT = 0;
 CEPGP_THEKAL_PARAMS = {};
 CEPGP_snapshot = nil;
 CEPGP_use = false;
+CEPGP_lastUpdate = time();
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;

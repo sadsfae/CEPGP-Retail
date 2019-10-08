@@ -394,6 +394,8 @@ function CEPGP_toggleFrame(frame)
 end
 
 function CEPGP_rosterUpdate(event)
+	if time() - CEPGP_lastUpdate < 0.5 then return; end
+	CEPGP_lastUpdate = time();
 	if event == "GUILD_ROSTER_UPDATE" then
 		local numGuild = GetNumGuildMembers();
 		_G["CEPGP_frame"]:UnregisterEvent("GUILD_ROSTER_UPDATE");
@@ -449,8 +451,6 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_UpdateRaidScrollBar();
 		end
 		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
-		CEPGP_SendAddonMsg("version-check", "GUILD");
-		
 		
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then
@@ -718,6 +718,12 @@ end
 
 function CEPGP_checkEPGP(note)
 	if string.find(note, '^[0-9]+,[0-9]+$') then
+		return true;
+	elseif string.find(note, '^-[0-9]+,[0-9]+$') then
+		return true;
+	elseif string.find(note, '^[0-9]+,-[0-9]+$') then
+		return true;
+	elseif string.find(note, '^-[0-9]+,-[0-9]+$') then
 		return true;
 	else
 		return false;
