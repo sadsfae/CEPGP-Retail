@@ -376,6 +376,13 @@
 								PlaySound(799);
 								CEPGP_ListButton_OnClick(self:GetName());
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Add/subtract EP for the whole guild.\n|c00FF0000Warning: This may cause a brief lag spike for players in large guilds. Use with caution.|r");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_guild_decay" inherits="GameMenuButtonTemplate" text="Decay Guild EPGP">
@@ -399,6 +406,13 @@
 								PlaySound(799);
 								CEPGP_ListButton_OnClick(self:GetName());
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Decay/inflate the EPGP standings for the whole guild.\n|c00FF0000Warning: This may cause a brief lag spike for players in large guilds. Use with caution.|r");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_guild_reset" inherits="GameMenuButtonTemplate" text="Reset All EPGP Standings">
@@ -422,6 +436,13 @@
 								PlaySound(799);
 								CEPGP_ListButton_OnClick(self:GetName());
 							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Reset EPGP standings to default values for the whole guild.\n|c00FF0000Warning: This may cause a brief lag spike for players in large guilds. Use with caution.|r");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 				</Frames>
@@ -1960,6 +1981,13 @@
 										PlaySound(856);
 										CEPGP_toggleFrame("CEPGP_standby");
 									</OnClick>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+										GameTooltip:SetText("Moderate the standby list.");
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide();
+									</OnLeave>
 								</Scripts>
 							</Button>
 							<Button name="CEPGP_options_standby_ep_award" inherits="GameMenuButtonTemplate" text="Award Standby EP">
@@ -1978,6 +2006,13 @@
 										PlaySound(856);
 										CEPGP_ListButton_OnClick(self:GetName());
 									</OnClick>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+										GameTooltip:SetText("Add/subtract EP for players on the standby list.");
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide();
+									</OnLeave>
 								</Scripts>
 							</Button>
 						</Frames>
