@@ -128,8 +128,8 @@ function CEPGP_IncAddonMsg(message, sender)
 	elseif args[1] == "LootClosed" then
 		_G["CEPGP_respond"]:Hide();		
 		
-	elseif strfind(message, "STANDBYEP"..UnitName("player")) then
-		CEPGP_print(string.sub(message, strfind(message, ",")+1));
+	elseif args[1] == "STANDBYEP" and args[2] == UnitName("player") then
+		CEPGP_print(args[3]);
 		
 		
 	elseif args[1] == "!info" and args[2] == UnitName("player") then--strfind(message, "!info"..UnitName("player")) then

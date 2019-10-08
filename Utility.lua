@@ -1,5 +1,6 @@
 function CEPGP_initialise()
 	_, _, _, CEPGP_ElvUI = GetAddOnInfo("ElvUI");
+	if not CEPGP_ElvUI then CEPGP_ElvUI = GetAddOnInfo("TukUI"); end
 	_G["CEPGP_version_number"]:SetText("Running Version: " .. CEPGP_VERSION);
 	local ver2 = string.gsub(CEPGP_VERSION, "%.", ",");
 	if not CEPGP_notice then
@@ -449,6 +450,8 @@ function CEPGP_rosterUpdate(event)
 		end
 		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
 		CEPGP_SendAddonMsg("version-check", "GUILD");
+		
+		
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then
 			if not CEPGP_use then
@@ -461,12 +464,12 @@ function CEPGP_rosterUpdate(event)
 			local name = GetRaidRosterInfo(i);
 			if not name then break; end
 			if CEPGP_tContains(CEPGP_standbyRoster, name) then
-				for k, v in pairs(CEPGP_standbyRoster) do
+				for _, v in ipairs(CEPGP_standbyRoster) do
 					if v == name then
 						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
 					end
 				end
-				--CEPGP_UpdateStandbyScrollBar();
+				CEPGP_UpdateStandbyScrollBar();
 			end
 			CEPGP_raidRoster[i] = name;
 			name = nil;
@@ -494,13 +497,15 @@ function CEPGP_addToStandby(player)
 	elseif CEPGP_tContains(CEPGP_standbyRoster, player) then
 		CEPGP_print(player .. " is already in the standby roster", true);
 		return;
-	elseif CEPGP_tContains(CEPGP_raidRoster, player, true) then
-		CEPGP_print(player .. " is part of the raid", true);
-		return;
-	else
-		table.insert(CEPGP_standbyRoster, player);
-		CEPGP_UpdateStandbyScrollBar();
 	end
+	for _, v in ipairs(CEPGP_raidRoster) do
+		if player == v then
+			CEPGP_print(player .. " is part of the raid", true);
+			return;
+		end
+	end
+	table.insert(CEPGP_standbyRoster, player);
+	CEPGP_UpdateStandbyScrollBar();
 end
 
 function CEPGP_standardiseString(str)
@@ -607,7 +612,7 @@ end
 
 function CEPGP_getGuildInfo(name)
 	if CEPGP_tContains(CEPGP_roster, name, true) then
-		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6];  -- index, class, Rank, RankIndex, Class, OfficerNote, PR
+		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6];  -- index, class, Rank, RankIndex, OfficerNote, PR
 	else
 		return nil;
 	end

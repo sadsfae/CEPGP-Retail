@@ -1980,7 +1980,7 @@
 							<CheckButton name="CEPGP_options_standby_ep_check_rank_10" id="10" inherits="StandbyEPRankCheckBox" />
 							<Button name="CEPGP_options_standby_ep_list_button" inherits="GameMenuButtonTemplate" text="Standby List">
 								<Size>
-									<AbsDimension x="150" y="25"/>
+									<AbsDimension x="125" y="25"/>
 								</Size>
 								<Anchors>
 									<Anchor point="BOTTOM" relativePoint="BOTTOM" relativeTo="CEPGP_options">
@@ -1993,6 +1993,24 @@
 									<OnClick>
 										PlaySound(856);
 										CEPGP_toggleFrame("CEPGP_standby");
+									</OnClick>
+								</Scripts>
+							</Button>
+							<Button name="CEPGP_options_standby_ep_award" inherits="GameMenuButtonTemplate" text="Award Standby EP">
+								<Size>
+									<AbsDimension x="125" y="25"/>
+								</Size>
+								<Anchors>
+									<Anchor point="RIGHT" relativePoint="LEFT" relativeTo="CEPGP_options_standby_ep_list_button">
+										<Offset>
+											<AbsDimension x="0" y="0"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										PlaySound(856);
+										CEPGP_ListButton_OnClick(self:GetName());
 									</OnClick>
 								</Scripts>
 							</Button>
@@ -4145,7 +4163,7 @@
 					<OnClick>
 						if self:GetChecked() then
 							CEPGP_context_popup_GP_check:SetChecked(nil);
-							CEPGP_context_popup_desc:SetText("Adding EP");
+							CEPGP_context_popup_desc:SetText("Add/Subtract EP");
 						else
 							self:SetChecked(1);
 						end
@@ -4167,7 +4185,7 @@
 					<OnClick>
 						if self:GetChecked() then
 							CEPGP_context_popup_EP_check:SetChecked(nil);
-							CEPGP_context_popup_desc:SetText("Adding GP");
+							CEPGP_context_popup_desc:SetText("Add/Subtract GP");
 						else
 							self:SetChecked(1);
 						end

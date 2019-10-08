@@ -239,34 +239,8 @@ function CEPGP_handleCombat(name, except)
 				else
 					CEPGP_AddRaidEP(EP, CEPGP_combatModule .. " has been defeated! " .. EP .. " EP has been awarded to the raid", CEPGP_combatModule);
 				end
-				
-				if STANDBYEP then
-					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule};
-					CEPGP_ShareTraffic("Guild", UnitName("player"), "Standby EP +" .. EP*(STANDBYPERCENT/100) .. " - " .. CEPGP_combatModule);
-					CEPGP_UpdateTrafficScrollBar();
-					if CEPGP_standby_byrank then
-						for k, _ in pairs(CEPGP_roster) do -- The following module handles standby EP
-							if not CEPGP_tContains(CEPGP_raidRoster, k, true) then -- If the player in question is NOT in the raid group, then proceed
-								local player, rank, _, _, _, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[k][1]);
-								if string.find(player, "-") then
-									player = string.sub(player, 0, string.find(player, "-")-1);
-								end
-								if online or STANDBYOFFLINE then
-									for i = 1, table.getn(STANDBYRANKS) do
-										if STANDBYRANKS[i][1] == rank then
-											if STANDBYRANKS[i][2] == true then
-												CEPGP_addStandbyEP(player, EP*(STANDBYPERCENT/100), CEPGP_combatModule);
-											end
-										end
-									end
-								end
-							end
-						end
-					elseif CEPGP_standby_manual then
-						for i = 1, table.getn(CEPGP_standbyRoster) do
-							CEPGP_addStandbyEP(CEPGP_standbyRoster[i], EP*(STANDBYPERCENT/100), CEPGP_combatModule);
-						end
-					end
+				if STANDBYEP and tonumber(STANDBYPERCENT) > 0 then
+					CEPGP_addStandbyEP(EP*(tonumber(STANDBYPERCENT)/100), CEPGP_combatModule);
 				end
 			end
 		end

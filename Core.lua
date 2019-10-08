@@ -402,28 +402,117 @@ function CEPGP_addGuildEP(amount, msg)
 	CEPGP_UpdateTrafficScrollBar();
 end
 
-function CEPGP_addStandbyEP(player, amount, boss)
+function CEPGP_addStandbyEP(amount, boss, msg)
 	if amount == nil then
 		CEPGP_print("Please enter a valid number", 1);
 		return;
 	end
-	amount = (math.floor(amount*100))/100;
-	local name = CEPGP_getGuildInfo(player);
-	local EP,GP = CEPGP_getEPGP(CEPGP_roster[player][5]);
-	EP = tonumber(EP) + amount;
-	GP = tonumber(GP);
-	if GP < BASEGP then
-		GP = BASEGP;
+	local inRaid = false;
+	if CEPGP_standby_byrank then
+		for name, _ in pairs(CEPGP_roster) do
+			inRaid = false;
+			for _, v in ipairs(CEPGP_raidRoster) do
+				if name == v then
+					inRaid = true;
+					break;
+				end
+			end
+			if not inRaid then
+				local _, rank, _, _, offNote, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[name][1]);
+				local EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+				EP = tonumber(EP) + amount;
+				GP = tonumber(GP);
+				if GP < BASEGP then
+					GP = BASEGP;
+				end
+				if EP < 0 then
+					EP = 0;
+				end				
+				for i = 1, table.getn(STANDBYRANKS) do
+					if STANDBYRANKS[i][1] == rank then
+						if STANDBYRANKS[i][2] == true then
+							if offNote == "" or offNote == "Click here to set an Officer's Note" then
+								GuildRosterSetOfficerNote(CEPGP_roster[name][1], EP .. "," .. BASEGP);
+							else
+								GuildRosterSetOfficerNote(CEPGP_roster[name][1], EP .. "," .. GP);
+							end
+							if boss then
+								CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
+							elseif msg ~= "" and msg ~= nil then
+								if tonumber(amount) > 0 then
+									CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP - "..msg, "GUILD");
+								elseif tonumber(amount) < 0 then
+									CEPGP_SendAddonMsg("STANDBYEP;"..name..";"..amount.." standby EP has been taken from you - "..msg, "GUILD");
+								end
+							else
+								if tonumber(amount) > 0 then
+									CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP", "GUILD");
+								elseif tonumber(amount) < 0 then
+									CEPGP_SendAddonMsg("STANDBYEP;"..name..";"..amount.." standby EP has been taken from you", "GUILD");
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	elseif CEPGP_standby_manual then
+		for _, name in pairs(CEPGP_standbyRoster) do
+			inRaid = false;
+			for _, v in ipairs(CEPGP_raidRoster) do
+				if name == v then
+					inRaid = true;
+					break;
+				end
+			end
+			if not inRaid then
+				local _, rank, _, _, offNote, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[name][1]);
+				local EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+				EP = tonumber(EP) + amount;
+				GP = tonumber(GP);
+				if GP < BASEGP then
+					GP = BASEGP;
+				end
+				if EP < 0 then
+					EP = 0;
+				end
+				if online or STANDBYOFFLINE then
+					if offNote == "" or offNote == "Click here to set an Officer's Note" then
+						GuildRosterSetOfficerNote(CEPGP_roster[name][1], EP .. "," .. BASEGP);
+					else
+						GuildRosterSetOfficerNote(CEPGP_roster[name][1], EP .. "," .. GP);
+					end
+					if boss then
+						CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
+					elseif msg ~= "" and msg ~= nil then
+						if tonumber(amount) > 0 then
+							CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP - "..msg, "GUILD");
+						elseif tonumber(amount) < 0 then
+							CEPGP_SendAddonMsg("STANDBYEP;"..name..";"..amount.." standby EP has been taken from you - "..msg, "GUILD");
+						end
+					else
+						if tonumber(amount) > 0 then
+							CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP", "GUILD");
+						elseif tonumber(amount) < 0 then
+							CEPGP_SendAddonMsg("STANDBYEP;"..name..";"..amount.." standby EP has been taken from you", "GUILD");
+						end
+					end
+				end
+			end
+		end
 	end
-	if EP < 0 then
-		EP = 0;
+	if tonumber(amount) > 0 then
+		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Standby EP +" .. amount};
+	elseif tonumber(amount) < 0 then
+		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Guild", UnitName("player"), "Standby EP " .. amount};
 	end
-	if offNote == "" or offNote == "Click here to set an Officer's Note" then
-		GuildRosterSetOfficerNote(CEPGP_roster[player][1], EP .. "," .. BASEGP);
-	else
-		GuildRosterSetOfficerNote(CEPGP_roster[player][1], EP .. "," .. GP);
+	if tonumber(amount) > 0 then
+		CEPGP_ShareTraffic("Guild", UnitName("player"), "Standby EP +" .. amount);
+	elseif tonumber(amount) < 0 then
+		CEPGP_ShareTraffic("Guild", UnitName("player"), "Standby EP " .. amount);
 	end
-	CEPGP_SendAddonMsg("STANDBYEP"..player..",You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
+	CEPGP_UpdateTrafficScrollBar();
+	CEPGP_UpdateStandbyScrollBar();
 end
 
 function CEPGP_addGP(player, amount, itemID, itemLink, msg)

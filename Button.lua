@@ -20,6 +20,30 @@ function CEPGP_ListButton_OnClick(obj)
 		return;
 	end
 	
+	if obj == "CEPGP_options_standby_ep_award" then
+		ShowUIPanel(CEPGP_context_popup);
+		ShowUIPanel(CEPGP_context_amount);
+		ShowUIPanel(CEPGP_context_popup_EP_check);
+		_G["CEPGP_context_popup_EP_check_text"]:Show();
+		CEPGP_context_popup_EP_check:SetChecked(1);
+		CEPGP_context_popup_GP_check:SetChecked(nil);
+		CEPGP_context_popup_header:SetText("Standby EPGP Moderation");
+		CEPGP_context_popup_title:SetText("Modify EP for Standby List");
+		CEPGP_context_popup_desc:SetText("Add/Subtract EP");
+		CEPGP_context_amount:SetText("0");
+		CEPGP_context_popup_confirm:SetScript('OnClick', function()
+															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then
+																CEPGP_print("Enter a valid number", true);
+															else
+																PlaySound(799);
+																HideUIPanel(CEPGP_context_popup);
+																if CEPGP_context_popup_EP_check:GetChecked() then
+																	CEPGP_addStandbyEP(tonumber(CEPGP_context_amount:GetText()), _, CEPGP_context_reason:GetText());
+																end
+															end
+														end);
+	end
+	
 	if not CanEditOfficerNote() and not CEPGP_debugMode then
 		CEPGP_print("You don't have access to modify EPGP", 1);
 		return;
