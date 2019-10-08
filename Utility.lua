@@ -399,7 +399,6 @@ function CEPGP_rosterUpdate(event)
 	CEPGP_lastUpdate = time();
 	if event == "GUILD_ROSTER_UPDATE" then
 		local numGuild = GetNumGuildMembers();
-		_G["CEPGP_frame"]:UnregisterEvent("GUILD_ROSTER_UPDATE");
 		CEPGP_roster = {};
 		if CanEditOfficerNote() then
 			ShowUIPanel(CEPGP_guild_add_EP);
@@ -451,7 +450,6 @@ function CEPGP_rosterUpdate(event)
 		elseif CEPGP_mode == "raid" and _G["CEPGP_raid"]:IsVisible() then
 			CEPGP_UpdateRaidScrollBar();
 		end
-		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
 		
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then
@@ -460,7 +458,6 @@ function CEPGP_rosterUpdate(event)
 			end
 		end
 		CEPGP_raidRoster = {};
-		_G["CEPGP_frame"]:UnregisterEvent("GROUP_ROSTER_UPDATE");
 		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
 			if not name then break; end
@@ -475,7 +472,6 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_raidRoster[i] = name;
 			name = nil;
 		end
-		_G["CEPGP_frame"]:RegisterEvent("GROUP_ROSTER_UPDATE");
 		if UnitInRaid("player") then
 			ShowUIPanel(CEPGP_button_raid);
 		else --[[ Hides the raid and loot distribution buttons if the player is not in a raid group ]]--
