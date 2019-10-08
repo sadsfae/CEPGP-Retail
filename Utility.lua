@@ -99,6 +99,8 @@ function CEPGP_initialise()
 	
 	if not CEPGP_notice then
 		CEPGP_notice_frame:Show();
+	elseif not CEPGP_1120_notice then
+		_G["CEPGP_update_notice"]:Show();
 	end
 	
 	if IsInRaid("player") and CEPGP_isML() == 0 then
