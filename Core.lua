@@ -41,7 +41,7 @@ CEPGP_RAZORGORE_EGG_COUNT = 0;
 CEPGP_THEKAL_PARAMS = {};
 CEPGP_snapshot = nil;
 CEPGP_use = false;
-CEPGP_lastUpdate = time();
+CEPGP_lastUpdate = time()-0.5; --Permits an initial guild of the guild
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;
@@ -183,6 +183,7 @@ function SlashCmdList.CEPGP(msg, editbox)
 		CEPGP_updateGuild();
 	
 	elseif msg == "version" then
+		if not CEPGP_ntgetn(CEPGP_roster) == 0 then CEPGP_print("Guild roster is still initialising. Please try again in a moment.", true); return; end
 		CEPGP_vInfo = {};
 		CEPGP_initVersionScrollBar();
 		CEPGP_SendAddonMsg("version-check", CEPGP_vSearch);

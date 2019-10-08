@@ -106,6 +106,8 @@ function CEPGP_initialise()
 	if IsInRaid("player") and CEPGP_isML() == 0 then
 		_G["CEPGP_confirmation"]:Show();
 	end
+	
+	CEPGP_updateGuild();
 end
 
 function CEPGP_calcGP(link, quantity, id)	
