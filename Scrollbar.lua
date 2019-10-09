@@ -289,12 +289,7 @@ function CEPGP_initVersionScrollBar()
 	for i = 1, CEPGP_ntgetn(CEPGP_roster) do
 		if not _G["versionButton" .. i] then
 			local frame = CreateFrame('Button', "versionButton" .. i, _G["CEPGP_version_scrollframe_container"], "versionButtonTemplate"); -- Creates version frames if needed
-			local colour;
-			if not CEPGP_roster[CEPGP_groupVersion[i][1]][2] then
-				colour = RAID_CLASS_COLORS["WARRIOR"];
-			else
-				colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
-			end
+			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
 			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
 			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
@@ -321,12 +316,7 @@ function CEPGP_UpdateVersionScrollBar()
 				end
 			end
 			_G["versionButton" .. i]:Show();
-			local colour;
-			if not CEPGP_roster[CEPGP_groupVersion[i][1]][2] then
-				colour = RAID_CLASS_COLORS["WARRIOR"];
-			else
-				colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
-			end
+			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
 			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
 			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
