@@ -399,8 +399,9 @@ function CEPGP_toggleFrame(frame)
 end
 
 function CEPGP_rosterUpdate(event)
-	if time() - CEPGP_lastUpdate < 0.5 then return; end
-	CEPGP_lastUpdate = time();
+	--if time() - CEPGP_lastUpdate < 0.05 then return; end
+	--CEPGP_lastUpdate = time();
+	if CEPGP_ignoreUpdates then return; end
 	if event == "GUILD_ROSTER_UPDATE" then
 		local numGuild = GetNumGuildMembers();
 		CEPGP_roster = {};

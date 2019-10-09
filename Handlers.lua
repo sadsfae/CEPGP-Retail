@@ -43,9 +43,9 @@ function CEPGP_handleComms(event, arg1, arg2)
 							SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
 						end
 					end
-					if not CEPGP_vInfo[arg2] then
-						CEPGP_UpdateLootScrollBar();
-					end
+					--if not CEPGP_vInfo[arg2] then
+					CEPGP_UpdateLootScrollBar();
+					--end
 				end);
 			else
 				--	Sends an addon message to the person who whispered !need to me
@@ -71,9 +71,9 @@ function CEPGP_handleComms(event, arg1, arg2)
 						SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
 					end
 				end
-				if not CEPGP_vInfo[arg2] then
-					CEPGP_UpdateLootScrollBar();
-				end
+				--if not CEPGP_vInfo[arg2] then
+				CEPGP_UpdateLootScrollBar();
+				--end
 			end
 		end
 	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info" then

@@ -4615,24 +4615,31 @@
 					<OnClick>
 						local name = UIDropDownMenu_GetSelectedName(CEPGP_restoreDropdown);
 						CEPGP_updateGuild();
-						if RECORDS[name] ~= nil and CEPGP_confirmrestore then
-							for i = 1, GetNumGuildMembers(), 1 do
-								if RECORDS[name][GetGuildRosterInfo(i)] == nil then
-									GuildRosterSetOfficerNote(i, "0,"..BASEGP);
-								else
-									GuildRosterSetOfficerNote(i, RECORDS[name][GetGuildRosterInfo(i)]);
+						CEPGP_ignoreUpdates = true;
+						C_Timer.After(0.1, function()
+							if RECORDS[name] ~= nil and CEPGP_confirmrestore then
+								for i = 1, GetNumGuildMembers(), 1 do
+									if RECORDS[name][GetGuildRosterInfo(i)] == nil then
+										GuildRosterSetOfficerNote(i, "0,"..BASEGP);
+									else
+										GuildRosterSetOfficerNote(i, RECORDS[name][GetGuildRosterInfo(i)]);
+									end
 								end
+								CEPGP_print("Guild EPGP standings have been restored from record [" .. name .. "]");
+								CEPGP_confirmrestore = false;
+								HideUIPanel(CEPGP_restore_guild_logs);
+							elseif RECORDS[name] ~= nil then
+								CEPGP_print("Are you sure you would like to restore guild EPGP standings from record [" .. name .. "]?");
+								CEPGP_print("This action CANNOT be undone. Press confirm again to restore.");
+								CEPGP_confirmrestore = true;
+							else
+								CEPGP_print("Record [" .. name .. "] could not be found", true);
 							end
-							CEPGP_print("Guild EPGP standings have been restored from record [" .. name .. "]");
-							CEPGP_confirmrestore = false;
-							HideUIPanel(CEPGP_restore_guild_logs);
-						elseif RECORDS[name] ~= nil then
-							CEPGP_print("Are you sure you would like to restore guild EPGP standings from record [" .. name .. "]?");
-							CEPGP_print("This action CANNOT be undone. Press confirm again to restore.");
-							CEPGP_confirmrestore = true;
-						else
-							CEPGP_print("Record [" .. name .. "] could not be found", true);
-						end
+						end);
+						C_Timer.After(1, function()
+							CEPGP_ignoreUpdates = true;
+							CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+						end);
 					</OnClick>
 					<OnHide>
 						CEPGP_confirmrestore = false;
