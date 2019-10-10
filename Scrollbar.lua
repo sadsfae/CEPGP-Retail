@@ -16,6 +16,9 @@ function CEPGP_UpdateLootScrollBar()
 			[8] = CEPGP_itemsTable[name][1],
 			[9] = CEPGP_itemsTable[name][2]
 		};
+		--print(tempTable[count][1]);
+		--print(tempTable[count][8]);
+		--print(tempTable[count][9]);
 		count = count + 1;
 	end
 	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
@@ -24,7 +27,6 @@ function CEPGP_UpdateLootScrollBar()
 		child:Hide();
 	end
 	for i = 1, CEPGP_ntgetn(tempTable) do
-		local name = tempTable[i][1];
 		if not _G["LootDistButton" .. i] then
 			local frame = CreateFrame('Button', "LootDistButton" .. i, _G["CEPGP_dist_scrollframe_container"], "LootDistButtonTemplate");
 			if i > 1 then
@@ -33,6 +35,7 @@ function CEPGP_UpdateLootScrollBar()
 				_G["LootDistButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_dist_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
+		--local link; --link was not declared prior, so it was operating as a global. TEST THIS
 		if tempTable[i][8] ~= "noitem" or tempTable[i][9] ~= "noitem" then
 			if tempTable[i][8] ~= "noitem" then
 				local id = tonumber(tempTable[i][8]);

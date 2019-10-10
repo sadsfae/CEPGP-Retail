@@ -92,8 +92,27 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 		else
 			_G["CEPGP_confirmation"]:Hide();
 		end
+	elseif event == "CHAT_MSG_BN_WHISPER" then
+		local sender = arg2;
+		for i = 1, BNGetNumFriends() do
+			local _, accName, _, _, name = BNGetFriendInfo(i);
+			if sender == accName then --Behaves the same way for both Battle Tag and RealID friends
+				if string.lower(arg1) == string.lower(CEPGP_standby_whisper_msg) then
+					if (CEPGP_standby_manual and CEPGP_standby_accept_whispers) and
+						not CEPGP_tContains(CEPGP_standbyRoster, name) and not CEPGP_tContains(CEPGP_raidRoster, name, true) and CEPGP_tContains(CEPGP_roster, name, true) then
+						CEPGP_addToStandby(name);
+					end
+				elseif (string.lower(arg1) == string.lower(CEPGP_keyword) and CEPGP_distributing) or
+						(string.lower(arg1) == "!info" or string.lower(arg1) == "!infoguild" or
+						string.lower(arg1) == "!inforaid" or string.lower(arg1) == "!infoclass") then
+						CEPGP_handleComms("CHAT_MSG_WHISPER", arg1, name);
+				end
+				return;
+			end
+		end
 		
-	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == CEPGP_standby_whisper_msg and CEPGP_standby_manual and CEPGP_standby_accept_whispers then
+	
+	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == string.lower(CEPGP_standby_whisper_msg) and CEPGP_standby_manual and CEPGP_standby_accept_whispers then
 		if not CEPGP_tContains(CEPGP_standbyRoster, arg5)
 		and not CEPGP_tContains(CEPGP_raidRoster, arg5, true)
 		and CEPGP_tContains(CEPGP_roster, arg5, true) then

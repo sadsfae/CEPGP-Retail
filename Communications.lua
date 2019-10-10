@@ -114,15 +114,28 @@ function CEPGP_IncAddonMsg(message, sender)
 	elseif args[1] == "!need" and args[2] == UnitName("player") and sender ~= UnitName("player") then
 		local arg2 = args[2];
 		local slot = nil;
+		local name;
 		CEPGP_DistID = args[3];
 		if CEPGP_DistID then
-			_, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
+			name, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
 		end
 		CEPGP_updateGuild();
-		if slot then
-			CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;"..CEPGP_DistID..";"..slot, "RAID");
+		if not name then
+			local item = Item:CreateFromItemID(CEPGP_DistID);
+			item:ContinueOnItemLoad(function()
+				_, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
+				if slot then
+					CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;"..CEPGP_DistID..";"..slot, "RAID");
+				else
+					CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;nil;nil", "RAID");
+				end
+			end);
 		else
-			CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;nil;nil", "RAID");
+			if slot then
+				CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;"..CEPGP_DistID..";"..slot, "RAID");
+			else
+				CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;nil;nil", "RAID");
+			end
 		end
 		
 	elseif args[1] == "LootClosed" then
