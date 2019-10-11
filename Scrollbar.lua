@@ -13,12 +13,9 @@ function CEPGP_UpdateLootScrollBar()
 			[5] = EP,
 			[6] = GP,
 			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
-			[8] = CEPGP_itemsTable[name][1],
-			[9] = CEPGP_itemsTable[name][2]
+			[8] = CEPGP_itemsTable[name][1] or "noitem",
+			[9] = CEPGP_itemsTable[name][2] or "noitem"
 		};
-		--print(tempTable[count][1]);
-		--print(tempTable[count][8]);
-		--print(tempTable[count][9]);
 		count = count + 1;
 	end
 	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
@@ -35,7 +32,6 @@ function CEPGP_UpdateLootScrollBar()
 				_G["LootDistButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_dist_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
-		--local link; --link was not declared prior, so it was operating as a global. TEST THIS
 		if tempTable[i][8] ~= "noitem" or tempTable[i][9] ~= "noitem" then
 			if tempTable[i][8] ~= "noitem" then
 				local id = tonumber(tempTable[i][8]);
@@ -245,25 +241,39 @@ end
 function CEPGP_UpdateRaidScrollBar()
 	local tempTable = {};
 	for i = 1, CEPGP_ntgetn(CEPGP_raidRoster) do
-		local name = CEPGP_raidRoster[i];
-		local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], CEPGP_roster[name][1], name)
-		if not EP then EP = 0; end
-		if not GP then GP = BASEGP; end
-		tempTable[i] = {
-			[1] = name,
-			[2] = CEPGP_roster[name][2], --Class
-			[3] = CEPGP_roster[name][3], --Rank
-			[4] = EP,
-			[5] = GP,
-			[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
-		};
+		local name = CEPGP_raidRoster[i][1];
+		local EP, GP;
+		if CEPGP_roster[name] then
+			EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], CEPGP_roster[name][1], name);
+			if not EP then EP = 0; end
+			if not GP then GP = BASEGP; end
+			tempTable[i] = {
+				[1] = name,
+				[2] = CEPGP_roster[name][2], --Class
+				[3] = CEPGP_roster[name][3], --Rank
+				[4] = EP,
+				[5] = GP,
+				[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+			};
+		else
+			tempTable[i] = {
+				[1] = name,
+				[2] = CEPGP_raidRoster[i][2], --Class
+				[3] = CEPGP_raidRoster[i][3], --Rank
+				[4] = CEPGP_raidRoster[i][4], --EP
+				[5] = CEPGP_raidRoster[i][5], --GP
+				[6] = CEPGP_raidRoster[i][6] --PR
+			};
+		end
+		
+		if not tempTable[i][3] then tempTable[i][3] = CEPGP_raidRoster[i][3]; end
 	end
-	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
+	--tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
 	local kids = {_G["CEPGP_raid_scrollframe_container"]:GetChildren()};
 	for _, child in ipairs(kids) do
 		child:Hide();
 	end
-	for i = 1, CEPGP_ntgetn(tempTable) do
+	for i = 1, CEPGP_ntgetn(CEPGP_raidRoster) do
 		if not _G["RaidButton" .. i] then
 			local frame = CreateFrame('Button', "RaidButton" .. i, _G["CEPGP_raid_scrollframe_container"], "RaidButtonTemplate");
 			if i > 1 then
@@ -287,29 +297,13 @@ function CEPGP_UpdateRaidScrollBar()
 	end
 end
 
-function CEPGP_initVersionScrollBar()
-	CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
-	for i = 1, CEPGP_ntgetn(CEPGP_roster) do
-		if not _G["versionButton" .. i] then
-			local frame = CreateFrame('Button', "versionButton" .. i, _G["CEPGP_version_scrollframe_container"], "versionButtonTemplate"); -- Creates version frames if needed
-			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
-			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
-			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
-			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
-			_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
-			if i > 1 then
-				_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["versionButton" .. i-1], "BOTTOMLEFT", 0, -2);
-			else
-				_G["versionButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_version_scrollframe_container"], "TOPLEFT", 5, -6);
-			end
-		end
-	end
-end
-
 function CEPGP_UpdateVersionScrollBar()
+	local kids = {_G["CEPGP_version_scrollframe_container"]:GetChildren()};
+	for _, child in ipairs(kids) do
+		child:Hide();
+	end
 	if CEPGP_vSearch == "GUILD" then
-		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
-		for i = 1, GetNumGuildMembers() do
+		for i = 1, CEPGP_ntgetn(CEPGP_groupVersion) do
 			if not _G["versionButton" .. i] then
 				local frame = CreateFrame('Button', "versionButton" .. i, _G["CEPGP_version_scrollframe_container"], "versionButtonTemplate"); -- Creates version frames if needed
 				if i > 1 then
@@ -319,33 +313,32 @@ function CEPGP_UpdateVersionScrollBar()
 				end
 			end
 			_G["versionButton" .. i]:Show();
-			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_roster[CEPGP_groupVersion[i][1]][2])];
+			local name = CEPGP_groupVersion[i][1];
+			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_groupVersion[i][3])];
 			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
 			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
 			_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
 		end
 	else
-		local kids = {_G["CEPGP_version_scrollframe_container"]:GetChildren()};
-		for _, child in ipairs(kids) do
-			child:Hide();
-		end
-		for i = 1, GetNumGroupMembers() do
+		for i = 1, CEPGP_ntgetn(CEPGP_groupVersion) do
 			_G["versionButton" .. i]:Show();
 			local name, class, version;
-			name = GetRaidRosterInfo(i);
-			for x = 1, CEPGP_ntgetn(CEPGP_groupVersion) do
-				if CEPGP_groupVersion[x][1] == name then
+			for x = 1, GetNumGroupMembers() do
+				if CEPGP_groupVersion[x][1] == GetRaidRosterInfo(i) then
+					name = CEPGP_groupVersion[x][1];
 					version = CEPGP_groupVersion[x][2];
 					class = CEPGP_groupVersion[x][3];
+				--	print(name);
+				--	print(class);
+					local colour = RAID_CLASS_COLORS[string.upper(class)];
+					_G["versionButton" .. i .. "name"]:SetText(name);
+					_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
+					_G["versionButton" .. i .. "version"]:SetText(version);
+					_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
 					break;
 				end
 			end
-			local colour = RAID_CLASS_COLORS[string.upper(class)];
-			_G["versionButton" .. i .. "name"]:SetText(name);
-			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
-			_G["versionButton" .. i .. "version"]:SetText(version);
-			_G["versionButton" .. i .. "version"]:SetTextColor(colour.r, colour.g, colour.b);
 		end
 	end
 end

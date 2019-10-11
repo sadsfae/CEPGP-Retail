@@ -1,5 +1,3 @@
---This function gets run twice. Once by the loot master when someone whispers !need
---and again by raid assists when the loot master's addon notifies theirs of the !need response
 function CEPGP_IncAddonMsg(message, sender)
 	local args = CEPGP_split(message); -- The broken down message, delimited by semi-colons
 	
@@ -64,27 +62,27 @@ function CEPGP_IncAddonMsg(message, sender)
 	if args[1] == UnitName("player") and args[2] == "versioncheck" then
 		local index = CEPGP_ntgetn(CEPGP_groupVersion);
 		if not index then index = 0; end
-		if CEPGP_vSearch == "GUILD" then
-			for i=1, index do
-				if CEPGP_groupVersion[i][1] == sender then
-					CEPGP_groupVersion[i][2] = args[3];
-					if _G["versionButton" .. i] then
-						_G["versionButton" .. i .. "name"]:SetText(sender);
-						_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
+		for i=1, index do
+			if CEPGP_groupVersion[i][1] == sender then
+				CEPGP_groupVersion[i][2] = args[3];
+				if CEPGP_roster[sender] then
+					CEPGP_groupVersion[i][3] = CEPGP_roster[sender][2];
+				else
+					for x = 1, GetNumGroupMembers() do
+						if GetRaidRosterInfo(x) == sender then
+							_, _, _, _, CEPGP_groupVersion[i][3] = GetRaidRosterInfo(x);
+							print(CEPGP_groupVersion[i][1]);
+							print(CEPGP_groupVersion[i][3]);
+							break;
+						end
 					end
-					break;
 				end
+				break;
 			end
-		else
-			for i=1, index do
-				if CEPGP_groupVersion[i][1] == sender then
-					CEPGP_groupVersion[i][2] = args[3];
-					break;
-				end
-			end
-			CEPGP_vInfo[sender] = args[3];
 		end
-	CEPGP_checkVersion(message);
+		CEPGP_vInfo[sender] = args[3];
+		CEPGP_checkVersion(message);
+		CEPGP_UpdateVersionScrollBar();
 		
 		
 	elseif message == "version-check" then
@@ -93,7 +91,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		if CEPGP_roster[sender] then
 			CEPGP_SendAddonMsg(sender .. ";versioncheck;" .. CEPGP_VERSION, "GUILD");
 		else
-			CEPGP_SendAddonMsg(sender .. ";versioncheck;" .. CEPGP_VERSION);
+			CEPGP_SendAddonMsg(sender .. ";versioncheck;" .. CEPGP_VERSION, "RAID");
 		end
 	end
 		
@@ -112,31 +110,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		--Raid assists receiving !need responses in the format of !need;playername;itemID (of item being distributed)
 	elseif args[1] == "!need" and args[2] == UnitName("player") and sender ~= UnitName("player") then
-		local arg2 = args[2];
-		local slot = nil;
-		local name;
-		CEPGP_DistID = args[3];
-		if CEPGP_DistID then
-			name, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
-		end
-		CEPGP_updateGuild();
-		if not name then
-			local item = Item:CreateFromItemID(CEPGP_DistID);
-			item:ContinueOnItemLoad(function()
-				_, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
-				if slot then
-					CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;"..CEPGP_DistID..";"..slot, "RAID");
-				else
-					CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;nil;nil", "RAID");
-				end
-			end);
-		else
-			if slot then
-				CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;"..CEPGP_DistID..";"..slot, "RAID");
-			else
-				CEPGP_SendAddonMsg(arg2..";CEPGP_distributing;nil;nil", "RAID");
-			end
-		end
+		CEPGP_itemsTable[args[2]] = {};
 		
 	elseif args[1] == "LootClosed" then
 		_G["CEPGP_respond"]:Hide();		
@@ -148,8 +122,8 @@ function CEPGP_IncAddonMsg(message, sender)
 		if CEPGP_tContains(CEPGP_standbyRoster, args[2]) then
 			return;
 		end
-		for _, name in ipairs(CEPGP_raidRoster) do
-			if args[2] == name then
+		for _, v in ipairs(CEPGP_raidRoster) do
+			if args[2] == v[1] then
 				return;
 			end
 		end
@@ -169,12 +143,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		end
 		
 	elseif args[1] == UnitName("player") and args[2] == "import" then
-		local lane;
-		if CEPGP_tContains(CEPGP_raidRoster, sender) then
-			lane = "RAID";
-		elseif CEPGP_roster[sender] then
-			lane = "GUILD";
-		end
+		local lane = "GUILD";
 		CEPGP_SendAddonMsg(sender..";impresponse;CHANNEL;"..CHANNEL, lane);
 		CEPGP_SendAddonMsg(sender..";impresponse;MOD;"..MOD, lane);
 		CEPGP_SendAddonMsg(sender..";impresponse;COEF;"..COEF, lane);
@@ -233,7 +202,8 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		if option == "SLOTWEIGHTS" or option == "STANDBYRANKS" or option == "EPVALS" or option == "AUTOEP" or option == "OVERRIDE" then
 			local field = args[4];
-			local value = args[5];
+			local val = args[5];
+			
 			if option == "SLOTWEIGHTS" then
 				SLOTWEIGHTS[field] = tonumber(val);
 			elseif option == "STANDBYRANKS" then

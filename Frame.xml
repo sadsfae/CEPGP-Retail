@@ -501,6 +501,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
+								CEPGP_raidRoster = CEPGP_tSort(CEPGP_raidRoster, 1);
 								CEPGP_setCriteria(1, "Raid");
 							</OnClick>
 						</Scripts>
@@ -518,6 +519,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
+								CEPGP_raidRoster = CEPGP_tSort(CEPGP_raidRoster, 4);
 								CEPGP_setCriteria(3, "Raid");
 							</OnClick>
 						</Scripts>
@@ -535,6 +537,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
+								CEPGP_raidRoster = CEPGP_tSort(CEPGP_raidRoster, 5);
 								CEPGP_setCriteria(4, "Raid");
 							</OnClick>
 						</Scripts>
@@ -552,6 +555,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
+								CEPGP_raidRoster = CEPGP_tSort(CEPGP_raidRoster, 6);
 								CEPGP_setCriteria(5, "Raid");
 							</OnClick>
 						</Scripts>
@@ -569,6 +573,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
+								CEPGP_raidRoster = CEPGP_tSort(CEPGP_raidRoster, 7);
 								CEPGP_setCriteria(6, "Raid");
 							</OnClick>
 						</Scripts>
@@ -1172,7 +1177,7 @@
 							</OnClick>
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-								GameTooltip:SetText("Allows your addon to use the same settings as the select player.");
+								GameTooltip:SetText("Import CEPGP configuration from a guild member.");
 							</OnEnter>
 							<OnLeave>
 								GameTooltip:Hide();
@@ -3892,9 +3897,9 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1);
-						--CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
-						--CEPGP_InitVersionScrollBar();
+						CEPGP_setCriteria(1);
+						CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
+						CEPGP_UpdateVersionScrollBar();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -3911,9 +3916,9 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(2);
-						--CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 2);
-						--CEPGP_InitVersionScrollBar();
+						CEPGP_setCriteria(2);
+						CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 2);
+						CEPGP_UpdateVersionScrollBar();
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -3949,9 +3954,28 @@
 				<Scripts>
 					<OnClick>
 						PlaySound(799);
+						CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 						CEPGP_vInfo = {};
-						CEPGP_vSearch = "RAID";
 						CEPGP_SendAddonMsg("version-check", "RAID");
+						CEPGP_vSearch = "RAID";
+						CEPGP_groupVersion = {};
+						for i = 1, GetNumGroupMembers() do
+							local name, _, _, _, class, _, _, online = GetRaidRosterInfo(i);
+							if online then
+								CEPGP_groupVersion[i] = {
+									[1] = name,
+									[2] = "Addon not enabled",
+									[3] = class
+								};
+							else
+								CEPGP_groupVersion[i] = {
+									[1] = name,
+									[2] = "Offline",
+									[3] = class
+								};
+							end
+						end
+						CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
 						CEPGP_UpdateVersionScrollBar();
 					</OnClick>
 				</Scripts>
@@ -3966,9 +3990,30 @@
 				<Scripts>
 					<OnClick>
 						PlaySound(799);
-						CEPGP_updateGuild();
+						CEPGP_vInfo = {};
 						CEPGP_vSearch = "GUILD";
 						CEPGP_SendAddonMsg("version-check", "GUILD");
+						CEPGP_groupVersion = {};
+						for i = 1, GetNumGuildMembers() do
+							local name, _, _, _, class, _, _, _, online = GetGuildRosterInfo(i);
+							if string.find(name, "-") then
+								name = string.sub(name, 0, string.find(name, "-")-1);
+							end
+							if online then
+								CEPGP_groupVersion[i] = {
+									[1] = name,
+									[2] = "Addon not enabled",
+									[3] = class
+								};
+							else
+								CEPGP_groupVersion[i] = {
+									[1] = name,
+									[2] = "Offline",
+									[3] = class
+								};
+							end
+						end
+						CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
 						CEPGP_UpdateVersionScrollBar();
 					</OnClick>
 				</Scripts>
@@ -4773,12 +4818,10 @@
 				<Scripts>
 					<OnClick>
 						local CEPGP_target = CEPGP_settings_import_name:GetText();
-						if CEPGP_raidRoster[CEPGP_target] then
-							CEPGP_SendAddonMsg(CEPGP_target .. ";import", "RAID");
-						elseif CEPGP_roster[CEPGP_target] then
+						if CEPGP_roster[CEPGP_target] then
 							CEPGP_SendAddonMsg(CEPGP_target .. ";import", "GUILD");
 						else
-							CEPGP_print(CEPGP_target .. " not found in guild or raid group", true);
+							CEPGP_print(CEPGP_target .. " not found in guild.", true);
 						end
 						CEPGP_settings_import_name:ClearFocus();
 						HideUIPanel(CEPGP_settings_import);
@@ -6841,6 +6884,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				CEPGP_notice_frame:SetWidth(CEPGP_notice_desc:GetStringWidth()+25);
 				CEPGP_notice_desc:SetText("|c00FF0000Classic EPGP Important Notice|r\nVersion 1.12.0 contains major updates which\nrender previous versions of CEPGP incompatible.\n\nPlease ensure that your guild members update to\nversion 1.12.0 to avoid unexpected results.");
 			</OnLoad>
 		</Scripts>

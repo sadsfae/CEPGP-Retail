@@ -76,10 +76,7 @@ function CEPGP_initialise()
 		end
 	end
 	if UnitInRaid("player") then
-		for i = 1, GetNumGroupMembers() do
-			name = GetRaidRosterInfo(i);
-			CEPGP_raidRoster[i] = name;
-		end 
+		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
 	end
 	if CEPGP_force_sync_rank == nil then
 		CEPGP_force_sync_rank = 1;
@@ -122,8 +119,10 @@ function CEPGP_calcGP(link, quantity, id)
 	if not name then return 0; end
 	if not ilvl then ilvl = 0; end
 	for k, v in pairs(OVERRIDE_INDEX) do
-		if string.lower(name) == string.lower(k) then
-			return OVERRIDE_INDEX[k];
+		local temp = string.lower(string.gsub(name, " ", ""));
+		k = string.lower(string.gsub(k, " ", ""));
+		if string.lower(temp) == string.lower(k) then
+			return v;
 		end
 	end
 	local found = false;
@@ -434,13 +433,13 @@ function CEPGP_rosterUpdate(event)
 				[5] = officerNote,
 				[6] = PR
 				};
-				if online then
+				if online and CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
 						[1] = name,
 						[2] = "Addon not enabled",
 						[3] = class
 					};
-				else
+				elseif CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
 						[1] = name,
 						[2] = "Offline",
@@ -474,8 +473,33 @@ function CEPGP_rosterUpdate(event)
 				end
 				CEPGP_UpdateStandbyScrollBar();
 			end
-			CEPGP_raidRoster[i] = name;
-			name = nil;
+			local rank;
+			local _, _, _, _, class = GetRaidRosterInfo(i);
+			if CEPGP_roster[name] then
+				rank = CEPGP_roster[name][3];
+				local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], _, name);
+				local rankIndex = CEPGP_roster[name][4];
+				CEPGP_raidRoster[i] = {
+					[1] = name,
+					[2] = class,
+					[3] = rank,
+					[4] = rankIndex,
+					[5] = EP,
+					[6] = GP,
+					[7] = tonumber(EP)/tonumber(GP)
+				};
+			else
+				rank = "Not in Guild";
+				CEPGP_raidRoster[i] = {
+					[1] = name,
+					[2] = class,
+					[3] = rank,
+					[4] = 11,
+					[5] = 0,
+					[6] = 1,
+					[7] = 0
+				};
+			end
 		end
 		if UnitInRaid("player") then
 			ShowUIPanel(CEPGP_button_raid);
@@ -501,7 +525,7 @@ function CEPGP_addToStandby(player)
 		return;
 	end
 	for _, v in ipairs(CEPGP_raidRoster) do
-		if player == v then
+		if player == v[1] then
 			CEPGP_print(player .. " is part of the raid", true);
 			return;
 		end

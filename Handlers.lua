@@ -11,9 +11,6 @@ function CEPGP_handleComms(event, arg1, arg2)
 			end
 		end
 		if not duplicate then
-			if CEPGP_isML() == 0 then --If you are the master looter
-				CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
-			end
 			if CEPGP_debugMode then
 				CEPGP_print(arg2 .. " registered (" .. CEPGP_keyword .. ")");
 			end
@@ -33,6 +30,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 					if CEPGP_distributing then
 						if inGuild then
 							SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
+							
 						else
 							local total = GetNumGroupMembers();
 							for i = 1, total do
@@ -42,10 +40,12 @@ function CEPGP_handleComms(event, arg1, arg2)
 							end
 							SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
 						end
+						if CEPGP_isML() == 0 then --If you are the master looter
+							CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
+							CEPGP_itemsTable[arg2] = {};
+						end
 					end
-					--if not CEPGP_vInfo[arg2] then
 					CEPGP_UpdateLootScrollBar();
-					--end
 				end);
 			else
 				--	Sends an addon message to the person who whispered !need to me
@@ -70,10 +70,12 @@ function CEPGP_handleComms(event, arg1, arg2)
 						end
 						SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
 					end
+					if CEPGP_isML() == 0 then --If you are the master looter
+						CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
+						CEPGP_itemsTable[arg2] = {};
+					end
 				end
-				--if not CEPGP_vInfo[arg2] then
 				CEPGP_UpdateLootScrollBar();
-				--end
 			end
 		end
 	elseif event == "CHAT_MSG_WHISPER" and string.lower(arg1) == "!info" then
