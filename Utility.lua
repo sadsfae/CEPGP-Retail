@@ -116,107 +116,187 @@ function CEPGP_calcGP(link, quantity, id)
 	else
 		return 0;
 	end
-	if not name then return 0; end
-	if not ilvl then ilvl = 0; end
-	for k, v in pairs(OVERRIDE_INDEX) do
-		local temp = string.lower(string.gsub(name, " ", ""));
-		k = string.lower(string.gsub(k, " ", ""));
-		if string.lower(temp) == string.lower(k) then
-			return v;
-		end
-	end
-	local found = false;
-	--[[if not found then
-		if ((slot ~= "" and level == 60 and rarity > 3) or (slot == "" and rarity > 3))
-			and (itemType ~= "Blacksmithing" and itemType ~= "Tailoring" and itemType ~= "Alchemy" and itemType ~= "Leatherworking"
-			and itemType ~= "Enchanting" and itemType ~= "Engineering" and itemType ~= "Mining") then
-			local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
-			CEPGP_print("Warning: " .. name .. " not found in index! Please report this to the addon developer");
-			if slot ~= "" then
-				slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
-			end
-		end
-		return 0;
-	end]]
-	if slot == "" or slot == nil then
-		--Tier 3 slots
-		if strfind(name, "desecrated") and rarity == 4 then
-			if (name == "desecratedshoulderpads" or name == "desecratedspaulders" or name == "desecratedpauldrons") then slot = "INVTYPE_SHOULDER";
-			elseif (name == "desecratedsandals" or name == "desecratedboots" or name == "desecratedsabatons") then slot = "INVTYPE_FEET";
-			elseif (name == "desecratedbindings" or name == "desecratedwristguards" or name == "desecratedbracers") then slot = "INVTYPE_WRIST";
-			elseif (name == "desecratedgloves" or name == "desecratedhandguards" or name == "desecratedgauntlets") then slot = "INVTYPE_HAND";
-			elseif (name == "desecratedbelt" or name == "desecratedwaistguard" or name == "desecratedgirdle") then slot = "INVTYPE_WAIST";
-			elseif (name == "desecratedleggings" or name == "desecratedlegguards" or name == "desecratedlegplates") then slot = "INVTYPE_LEGS";
-			elseif (name == "desecratedcirclet" or name == "desecratedheadpiece" or name == "desecratedhelmet") then slot = "INVTYPE_HEAD";
-			elseif name == "desecratedrobe" then slot = "INVTYPE_ROBE";
-			elseif (name == "desecratedtunic" or name == "desecratedbreastplate") then slot = "INVTYPE_CHEST";
-			end
+	if not name then 
+		local item = Item:CreateFromItemID(id);
+		item:ContinueOnItemLoad(function()
+			name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
+			for k, v in pairs(OVERRIDE_INDEX) do
+				local temp = string.lower(string.gsub(name, " ", ""));
+				k = string.lower(string.gsub(k, " ", ""));
+				if string.lower(temp) == string.lower(k) then
+					return v;
+				end
+			end	
+			local found = false;
+			--Tier 3 slots
+			if strfind(name, "desecrated") and rarity == 4 then
+				if (name == "desecratedshoulderpads" or name == "desecratedspaulders" or name == "desecratedpauldrons") then slot = "INVTYPE_SHOULDER";
+				elseif (name == "desecratedsandals" or name == "desecratedboots" or name == "desecratedsabatons") then slot = "INVTYPE_FEET";
+				elseif (name == "desecratedbindings" or name == "desecratedwristguards" or name == "desecratedbracers") then slot = "INVTYPE_WRIST";
+				elseif (name == "desecratedgloves" or name == "desecratedhandguards" or name == "desecratedgauntlets") then slot = "INVTYPE_HAND";
+				elseif (name == "desecratedbelt" or name == "desecratedwaistguard" or name == "desecratedgirdle") then slot = "INVTYPE_WAIST";
+				elseif (name == "desecratedleggings" or name == "desecratedlegguards" or name == "desecratedlegplates") then slot = "INVTYPE_LEGS";
+				elseif (name == "desecratedcirclet" or name == "desecratedheadpiece" or name == "desecratedhelmet") then slot = "INVTYPE_HEAD";
+				elseif name == "desecratedrobe" then slot = "INVTYPE_ROBE";
+				elseif (name == "desecratedtunic" or name == "desecratedbreastplate") then slot = "INVTYPE_CHEST";
+				end
+				
+			elseif strfind(name, "primalhakkari") and rarity == 4 then
+				if (name == "primalhakkari bindings" or name == "primalhakkari armsplint" or name == "primalhakkari stanchion") then slot = "INVTYPE_WRIST";
+				elseif (name == "primalhakkari girdle" or name == "primalhakkari sash" or name == "primalhakkari shawl") then slot = "INVTYPE_WAIST";
+				elseif (name == "primalhakkari tabard" or name == "primalhakkari kossack" or name == "primalhakkari aegis") then slot = "INVTYPE_CHEST";
+				end
 			
-		elseif strfind(name, "primalhakkari") and rarity == 4 then
-			if (name == "primalhakkari bindings" or name == "primalhakkari armsplint" or name == "primalhakkari stanchion") then slot = "INVTYPE_WRIST";
-			elseif (name == "primalhakkari girdle" or name == "primalhakkari sash" or name == "primalhakkari shawl") then slot = "INVTYPE_WAIST";
-			elseif (name == "primalhakkari tabard" or name == "primalhakkari kossack" or name == "primalhakkari aegis") then slot = "INVTYPE_CHEST";
+			elseif strfind(name, "qiraji") then
+				if (name == "qirajispikedhilt" or name == "qirajiornatehilt") then slot = "INVTYPE_WEAPONMAINHAND";
+				elseif (name == "qirajiregaldrape" or name == "qirajimartialdrape") then slot = "INVTYPE_CLOAK";
+				elseif (name == "qirajimagisterialring" or name == "qirajiceremonialring") then slot = "INVTYPE_FINGER";
+				elseif (name == "imperialqirajiarmaments" or name == "imperialqirajiregalia") then slot = "INVTYPE_2HWEAPON";
+				elseif (name == "qirajibindingsofcommand" or name == "qirajibindingsofdominance") then slot = "INVTYPE_WRIST";
+				end
+				
+			elseif name == "headofossiriantheunscarred" or name == "headofonyxia" or name == "headofnefarian" or name == "eyeofcthun" then
+				slot = "INVTYPE_NECK";
+			elseif name == "thephylacteryofkel'thuzad" or name == "heartofhakkar" then
+				slot = "INVTYPE_TRINKET";
+			elseif name == "huskoftheoldgod" or name == "carapaceoftheoldgod" then
+				slot = "INVTYPE_CHEST";
+			elseif name == "ourosintacthide" or name == "skinofthegreatsandworm" then
+				slot = "INVTYPE_LEGS";
+					
+			--Exceptions: Items that should not carry GP but still need to be distributed
+			elseif name == "splinterofatiesh"
+				or name == "tomeoftranquilizingshot"
+				or name == "bindingsofthewindseeker"
+				or name == "resilienceofthescourge"
+				or name == "fortitudeofthescourge"
+				or name == "mightofthescourge" 
+				or name == "powerofthescourge"
+				or name == "sulfuroningot"
+				or name == "matureblackdragonsinew"
+				or name == "nightmareengulfedobject"
+				or name == "ancientpetrifiedleaf" then
+				slot = "INVTYPE_EXCEPTION";
+			else
+				slot = "INVTYPE_EXCEPTION";
 			end
 		
-		elseif strfind(name, "qiraji") then
-			if (name == "qirajispikedhilt" or name == "qirajiornatehilt") then slot = "INVTYPE_WEAPONMAINHAND";
-			elseif (name == "qirajiregaldrape" or name == "qirajimartialdrape") then slot = "INVTYPE_CLOAK";
-			elseif (name == "qirajimagisterialring" or name == "qirajiceremonialring") then slot = "INVTYPE_FINGER";
-			elseif (name == "imperialqirajiarmaments" or name == "imperialqirajiregalia") then slot = "INVTYPE_2HWEAPON";
-			elseif (name == "qirajibindingsofcommand" or name == "qirajibindingsofdominance") then slot = "INVTYPE_WRIST";
+			if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
+			if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
+			if CEPGP_debugMode then
+				local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
+				CEPGP_print("Name: " .. name);
+				CEPGP_print("Rarity: " .. quality);
+				CEPGP_print("Item Level: " .. ilvl);
+				CEPGP_print("Class ID: " .. classID);
+				CEPGP_print("Subclass ID: " .. subClassID);
+				CEPGP_print(GetItemSubClassInfo(classID, subClassID), false);
+				CEPGP_print("Item Type: " .. itemType);
+				CEPGP_print("Subtype: " .. subType);
+				CEPGP_print("Slot: " .. slot);
 			end
-			
-		elseif name == "headofossiriantheunscarred" or name == "headofonyxia" or name == "headofnefarian" or name == "eyeofcthun" then
-			slot = "INVTYPE_NECK";
-		elseif name == "thephylacteryofkel'thuzad" or name == "heartofhakkar" then
-			slot = "INVTYPE_TRINKET";
-		elseif name == "huskoftheoldgod" or name == "carapaceoftheoldgod" then
-			slot = "INVTYPE_CHEST";
-		elseif name == "ourosintacthide" or name == "skinofthegreatsandworm" then
-			slot = "INVTYPE_LEGS";
-				
-		--Exceptions: Items that should not carry GP but still need to be distributed
-		elseif name == "splinterofatiesh"
-			or name == "tomeoftranquilizingshot"
-			or name == "bindingsofthewindseeker"
-			or name == "resilienceofthescourge"
-			or name == "fortitudeofthescourge"
-			or name == "mightofthescourge" 
-			or name == "powerofthescourge"
-			or name == "sulfuroningot"
-			or name == "matureblackdragonsinew"
-			or name == "nightmareengulfedobject"
-			or name == "ancientpetrifiedleaf" then
-			slot = "INVTYPE_EXCEPTION";
-		else
-			slot = "INVTYPE_EXCEPTION";
-		end
-	end
-	
-	if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
-	if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
-	if CEPGP_debugMode then
-		local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
-		CEPGP_print("Name: " .. name);
-		CEPGP_print("Rarity: " .. quality);
-		CEPGP_print("Item Level: " .. ilvl);
-		CEPGP_print("Class ID: " .. classID);
-		CEPGP_print("Subclass ID: " .. subClassID);
-		CEPGP_print(GetItemSubClassInfo(classID, subClassID), false);
-		CEPGP_print("Item Type: " .. itemType);
-		CEPGP_print("Subtype: " .. subType);
-		CEPGP_print("Slot: " .. slot);
-	end
-	slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
-	slot = SLOTWEIGHTS[slot];
-	if ilvl and rarity and slot then
-		if tonumber(CEPGP_GP_decs) > 0 then
-			return math.floor(1*(10*tonumber(CEPGP_GP_decs))*(((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity))/(1*(10*tonumber(CEPGP_GP_decs)));
-		else
-			return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
-		end
+			slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
+			slot = SLOTWEIGHTS[slot];
+			if ilvl and rarity and slot then
+				if tonumber(CEPGP_GP_decs) > 0 then
+					return math.floor(1*(10*tonumber(CEPGP_GP_decs))*(((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity))/(1*(10*tonumber(CEPGP_GP_decs)));
+				else
+					return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
+				end
+			else
+				return 0;
+			end
+		end);
 	else
-		return 0;
+		if not ilvl then ilvl = 0; end
+		for k, v in pairs(OVERRIDE_INDEX) do
+			local temp = string.lower(string.gsub(name, " ", ""));
+			k = string.lower(string.gsub(k, " ", ""));
+			if string.lower(temp) == string.lower(k) then
+				return v;
+			end
+		end	
+		local found = false;
+		if slot == "" or slot == nil then
+			--Tier 3 slots
+			if strfind(name, "desecrated") and rarity == 4 then
+				if (name == "desecratedshoulderpads" or name == "desecratedspaulders" or name == "desecratedpauldrons") then slot = "INVTYPE_SHOULDER";
+				elseif (name == "desecratedsandals" or name == "desecratedboots" or name == "desecratedsabatons") then slot = "INVTYPE_FEET";
+				elseif (name == "desecratedbindings" or name == "desecratedwristguards" or name == "desecratedbracers") then slot = "INVTYPE_WRIST";
+				elseif (name == "desecratedgloves" or name == "desecratedhandguards" or name == "desecratedgauntlets") then slot = "INVTYPE_HAND";
+				elseif (name == "desecratedbelt" or name == "desecratedwaistguard" or name == "desecratedgirdle") then slot = "INVTYPE_WAIST";
+				elseif (name == "desecratedleggings" or name == "desecratedlegguards" or name == "desecratedlegplates") then slot = "INVTYPE_LEGS";
+				elseif (name == "desecratedcirclet" or name == "desecratedheadpiece" or name == "desecratedhelmet") then slot = "INVTYPE_HEAD";
+				elseif name == "desecratedrobe" then slot = "INVTYPE_ROBE";
+				elseif (name == "desecratedtunic" or name == "desecratedbreastplate") then slot = "INVTYPE_CHEST";
+				end
+				
+			elseif strfind(name, "primalhakkari") and rarity == 4 then
+				if (name == "primalhakkari bindings" or name == "primalhakkari armsplint" or name == "primalhakkari stanchion") then slot = "INVTYPE_WRIST";
+				elseif (name == "primalhakkari girdle" or name == "primalhakkari sash" or name == "primalhakkari shawl") then slot = "INVTYPE_WAIST";
+				elseif (name == "primalhakkari tabard" or name == "primalhakkari kossack" or name == "primalhakkari aegis") then slot = "INVTYPE_CHEST";
+				end
+			
+			elseif strfind(name, "qiraji") then
+				if (name == "qirajispikedhilt" or name == "qirajiornatehilt") then slot = "INVTYPE_WEAPONMAINHAND";
+				elseif (name == "qirajiregaldrape" or name == "qirajimartialdrape") then slot = "INVTYPE_CLOAK";
+				elseif (name == "qirajimagisterialring" or name == "qirajiceremonialring") then slot = "INVTYPE_FINGER";
+				elseif (name == "imperialqirajiarmaments" or name == "imperialqirajiregalia") then slot = "INVTYPE_2HWEAPON";
+				elseif (name == "qirajibindingsofcommand" or name == "qirajibindingsofdominance") then slot = "INVTYPE_WRIST";
+				end
+				
+			elseif name == "headofossiriantheunscarred" or name == "headofonyxia" or name == "headofnefarian" or name == "eyeofcthun" then
+				slot = "INVTYPE_NECK";
+			elseif name == "thephylacteryofkel'thuzad" or name == "heartofhakkar" then
+				slot = "INVTYPE_TRINKET";
+			elseif name == "huskoftheoldgod" or name == "carapaceoftheoldgod" then
+				slot = "INVTYPE_CHEST";
+			elseif name == "ourosintacthide" or name == "skinofthegreatsandworm" then
+				slot = "INVTYPE_LEGS";
+					
+			--Exceptions: Items that should not carry GP but still need to be distributed
+			elseif name == "splinterofatiesh"
+				or name == "tomeoftranquilizingshot"
+				or name == "bindingsofthewindseeker"
+				or name == "resilienceofthescourge"
+				or name == "fortitudeofthescourge"
+				or name == "mightofthescourge" 
+				or name == "powerofthescourge"
+				or name == "sulfuroningot"
+				or name == "matureblackdragonsinew"
+				or name == "nightmareengulfedobject"
+				or name == "ancientpetrifiedleaf" then
+				slot = "INVTYPE_EXCEPTION";
+			else
+				slot = "INVTYPE_EXCEPTION";
+			end
+		end
+		
+		if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
+		if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
+		if CEPGP_debugMode then
+			local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
+			CEPGP_print("Name: " .. name);
+			CEPGP_print("Rarity: " .. quality);
+			CEPGP_print("Item Level: " .. ilvl);
+			CEPGP_print("Class ID: " .. classID);
+			CEPGP_print("Subclass ID: " .. subClassID);
+			CEPGP_print(GetItemSubClassInfo(classID, subClassID), false);
+			CEPGP_print("Item Type: " .. itemType);
+			CEPGP_print("Subtype: " .. subType);
+			CEPGP_print("Slot: " .. slot);
+		end
+		slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
+		slot = SLOTWEIGHTS[slot];
+		if ilvl and rarity and slot then
+			if tonumber(CEPGP_GP_decs) > 0 then
+				return math.floor(1*(10*tonumber(CEPGP_GP_decs))*(((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity))/(1*(10*tonumber(CEPGP_GP_decs)));
+			else
+				return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
+			end
+		else
+			return 0;
+		end
 	end
 end
 
