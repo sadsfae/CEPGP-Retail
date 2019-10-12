@@ -278,6 +278,8 @@ function CEPGP_distribute_popup_OnEvent(event, msg, name)
 	end
 end
 
+		--[[ Restore DropDown ]]--
+
 function CEPGP_initRestoreDropdown(frame, level, menuList)
 	for k, _ in pairs(RECORDS) do
 		local info = {text = k, func = CEPGP_restoreDropdownOnClick};
@@ -285,6 +287,14 @@ function CEPGP_initRestoreDropdown(frame, level, menuList)
 	end
 end
 
+function CEPGP_restoreDropdownOnClick(self, arg1, arg2, checked)
+	if (not checked) then
+		UIDropDownMenu_SetSelectedName(CEPGP_restoreDropdown, self:GetText());
+	end
+end
+
+		--[[ Sync Rank DropDown ]]--
+		
 function CEPGP_syncRankDropdown(frame, level, menuList)
 	for i = 1, 10, 1 do
 		if GuildControlGetRankName(i) ~= "" then
@@ -296,6 +306,17 @@ function CEPGP_syncRankDropdown(frame, level, menuList)
 	UIDropDownMenu_SetSelectedValue(CEPGP_sync_rank, CEPGP_force_sync_rank);
 end
 
+function CEPGP_syncRankChange(self, arg1, arg2, checked)
+	if (not checked) then
+		UIDropDownMenu_SetSelectedName(CEPGP_sync_rank, self:GetText());
+		UIDropDownMenu_SetSelectedValue(CEPGP_sync_rank, self.value);
+		CEPGP_force_sync_rank = self.value;
+		CEPGP_print("Updated forced synchronisation rank");
+	end
+end
+
+		--[[ Attendance DropDown ]]--
+		
 function CEPGP_attendanceDropdown(frame, level, menuList)
 	local info = {text = "All Records", value = 0, func = CEPGP_attendanceChange};
 	local entry = UIDropDownMenu_AddButton(info);
@@ -312,17 +333,32 @@ function CEPGP_attendanceChange(self, arg1, arg2, checked)
 	end
 end
 
-function CEPGP_syncRankChange(self, arg1, arg2, checked)
-	if (not checked) then
-		UIDropDownMenu_SetSelectedName(CEPGP_sync_rank, self:GetText());
-		UIDropDownMenu_SetSelectedValue(CEPGP_sync_rank, self.value);
-		CEPGP_force_sync_rank = self.value;
-		CEPGP_print("Updated forced synchronisation rank");
+		--[[ Minimum Threshold DropDown ]]--
+
+function CEPGP_minThresholdDropdown(frame, level, menuList)
+	local rarity = {
+		[0] = "|cFF9D9D9DPoor|r",
+		[1] = "|cFFFFFFFFCommon|r",
+		[2] = "|cFF1EFF00Uncommon|r",
+		[3] = "|cFF0070DDRare|r",
+		[4] = "|cFFA335EEEpic|r",
+		[5] = "|cFFFF8000Legendary|r"
+	};
+	for i = 0, 5 do
+		local info = {
+			text = rarity[i],
+			value = i,
+			func = CEPGP_minThresholdChange
+		};
+		local entry = UIDropDownMenu_AddButton(info);
 	end
+	UIDropDownMenu_SetSelectedName(CEPGP_min_threshold_dropdown, rarity[CEPGP_min_threshold]);
+	UIDropDownMenu_SetSelectedValue(CEPGP_min_threshold_dropdown, CEPGP_min_threshold);
 end
 
-function CEPGP_restoreDropdownOnClick(self, arg1, arg2, checked)
-	if (not checked) then
-		UIDropDownMenu_SetSelectedName(CEPGP_restoreDropdown, self:GetText());
-	end
+function CEPGP_minThresholdChange(self, value)
+	UIDropDownMenu_SetSelectedName(CEPGP_min_threshold_dropdown, self:GetText());
+	UIDropDownMenu_SetSelectedValue(CEPGP_min_threshold_dropdown, self.value);
+	CEPGP_min_threshold = self.value;
+	CEPGP_print("Minimum auto show threshold is now set to " .. self:GetText());
 end

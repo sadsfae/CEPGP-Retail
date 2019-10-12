@@ -2109,12 +2109,22 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString name="CEPGP_options_force_sync" inherits="GameFontNormal" text="Allow Forced Synchronisation from Rank: ">
+						<FontString name="CEPGP_options_force_sync" inherits="GameFontNormal" text="Allow Forced Synchronisation from Rank:">
 							<Color r="1" g="1" b="1"/>
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
 									<Offset>
 										<AbsDimension x="15" y="60" />
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="CEPGP_options_min_threshold_text" inherits="GameFontNormal" text="Minimum Threshold for Auto Show:">
+							<Color r="1" g="1" b="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="CEPGP_options_force_sync">
+									<Offset>
+										<AbsDimension x="0" y="10" />
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -2235,6 +2245,28 @@
 								CEPGP_UIDropDownMenu_Initialize(self, CEPGP_syncRankDropdown);
 								UIDropDownMenu_SetWidth(self, 140);
 							</OnShow>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_min_threshold_dropdown" inherits="UIDropDownMenuTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_min_threshold_text">
+								<Offset>
+									<AbsDimension x="-15" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnShow>
+								CEPGP_UIDropDownMenu_Initialize(self, CEPGP_minThresholdDropdown);
+								UIDropDownMenu_SetWidth(self, 140);
+							</OnShow>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Set the minimum item rarity for the CEPGP loot window to automatically show in raids.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_options_page_2_button_prev">

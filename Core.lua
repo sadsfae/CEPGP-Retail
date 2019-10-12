@@ -52,6 +52,7 @@ BASEGP = nil;
 STANDBYEP = false;
 STANDBYOFFLINE = false;
 CEPGP_GP_decs = nil;
+CEPGP_min_threshold = nil;
 ALLOW_FORCED_SYNC = false;
 CEPGP_force_sync_rank = nil;
 CEPGP_standby_accept_whispers = false;

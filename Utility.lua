@@ -21,6 +21,9 @@ function CEPGP_initialise()
 	if BASEGP == nil then
 		BASEGP = 1;
 	end
+	if CEPGP_min_threshold == nil then
+		CEPGP_min_threshold = 2;
+	end
 	if CEPGP_keyword == nil then
 		CEPGP_keyword = "!need";
 	end
@@ -1202,7 +1205,7 @@ end
 function CEPGP_getDebugInfo()
 	local info = "<details><summary>Debug Info</summary><br />\n";
 	info = info .. "Version: " .. CEPGP_VERSION .. "<br />\n";
-	info = info .. "GP Modifier: " .. MOD .. "<br />\n";
+	info = info .. "GP Formula: (" .. COEF .. "x(" .. MOD_COEF .. "^<sup>((ilvl/26)+(rarity-4))</sup>)xSlot Modifier)x" .. MOD .. "<br />";
 	info = info .. "Base GP: " .. BASEGP .. "<br />\n";
 	if STANDBYEP then
 		info = info .. "Standby EP: True<br />\n";
