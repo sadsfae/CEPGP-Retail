@@ -596,10 +596,14 @@ end
 
 function CEPGP_addToStandby(player)
 	if not player then return; end
-	--[[if not UnitInRaid("player") then
-		CEPGP_print("You cannot add players to the standby list while not in a raid group", true);
+	if not UnitInRaid("player") then
+		CEPGP_print("You cannot add players to the standby list while not in a raid group.", true);
 		return;
-	end]]
+	end
+	if player == UnitName("player") then
+		CEPGP_print("You cannot add yourself to the standby list.", true);
+		return;
+	end
 	player = CEPGP_standardiseString(player);
 	if not CEPGP_tContains(CEPGP_roster, player, true) then
 		CEPGP_print(player .. " is not a guild member", true);
