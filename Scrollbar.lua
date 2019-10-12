@@ -455,73 +455,44 @@ function CEPGP_UpdateTrafficScrollBar()
 end
 
 function CEPGP_UpdateStandbyScrollBar()
-	local x, y;
-	local yoffset;
-	local t;
-	local tSize;
-	local name;
-	local class;
-	local rank;
-	local EP;
-	local GP;
-	local offNote;
-	local colour;
-	t = {};
-	tSize = CEPGP_ntgetn(CEPGP_standbyRoster);
-	for x = 1, tSize do
-		name = CEPGP_standbyRoster[x];
-		index, class, rank, rankIndex, offNote = CEPGP_getGuildInfo(name);
-		EP, GP = CEPGP_getEPGP(offNote)
-		t[x] = {
-			[1] = name,
-			[2] = class,
-			[3] = rank,
-			[4] = rankIndex,
-			[5] = EP,
-			[6] = GP,
-			[7] = math.floor((EP/GP)*100)/100,
-			[8] = 0
-		}
+	local tempTable = {};
+	local kids = {_G["CEPGP_standby_scrollframe_container"]:GetChildren()};
+	for _, child in ipairs(kids) do
+		child:Hide();
 	end
-	t = CEPGP_tSort(t, CEPGP_criteria)
-	FauxScrollFrame_Update(CEPGP_StandbyScrollFrame, tSize, 18, 15);
-	for y = 1, 18, 1 do
-		yoffset = y + FauxScrollFrame_GetOffset(CEPGP_StandbyScrollFrame);
-		if (yoffset <= tSize) then
-			if not CEPGP_tContains(t, yoffset, true) then
-				_G["CEPGP_StandbyButton" .. y]:Hide();
+	for i = 1, CEPGP_ntgetn(CEPGP_standbyRoster) do
+		if not _G["StandbyButton" .. i] then
+			local frame = CreateFrame('Button', "StandbyButton" .. i, _G["CEPGP_standby_scrollframe_container"], "StandbyButtonTemplate");
+			if i > 1 then
+				_G["StandbyButton" .. i]:SetPoint("TOPLEFT", _G["StandbyButton" .. i-1], "BOTTOMLEFT", 0, -2);
 			else
-				name = t[yoffset][1]
-				class = t[yoffset][2];
-				rank = t[yoffset][3];
-				EP = t[yoffset][5];
-				GP = t[yoffset][6];
-				PR = t[yoffset][7];
-				if class then
-					colour = RAID_CLASS_COLORS[string.upper(class)];
-				else
-					colour = RAID_CLASS_COLORS["WARRIOR"];
-				end
-				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
-				_G["CEPGP_StandbyButton" .. y .. "Info"]:SetText(name);
-				_G["CEPGP_StandbyButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["CEPGP_StandbyButton" .. y .. "Class"]:SetText(class);
-				_G["CEPGP_StandbyButton" .. y .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["CEPGP_StandbyButton" .. y .. "Rank"]:SetText(rank);
-				_G["CEPGP_StandbyButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["CEPGP_StandbyButton" .. y .. "EP"]:SetText(EP);
-				_G["CEPGP_StandbyButton" .. y .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["CEPGP_StandbyButton" .. y .. "GP"]:SetText(GP);
-				_G["CEPGP_StandbyButton" .. y .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["CEPGP_StandbyButton" .. y .. "PR"]:SetText(PR);
-				_G["CEPGP_StandbyButton" .. y .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["CEPGP_StandbyButton" .. y]:Show();
+				_G["StandbyButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_standby_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
-		else
-			_G["CEPGP_StandbyButton" .. y]:Hide();
 		end
+		tempTable[i] = {
+			[1] = CEPGP_standbyRoster[i][1], --name
+			[2] = CEPGP_standbyRoster[i][2], --class
+			[3] = CEPGP_standbyRoster[i][3], --rank
+			[4] = CEPGP_standbyRoster[i][4], --rankIndex
+			[5] = CEPGP_standbyRoster[i][5], --EP
+			[6] = CEPGP_standbyRoster[i][6], --GP
+			[7] = CEPGP_standbyRoster[i][7] --PR
+		};
+		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		_G["StandbyButton" .. i]:Show();
+		_G["StandbyButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+		_G["StandbyButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["StandbyButton" .. i .. "Class"]:SetText(tempTable[i][2]);
+		_G["StandbyButton" .. i .. "Class"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["StandbyButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+		_G["StandbyButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["StandbyButton" .. i .. "EP"]:SetText(tempTable[i][5]);
+		_G["StandbyButton" .. i .. "EP"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["StandbyButton" .. i .. "GP"]:SetText(tempTable[i][6]);
+		_G["StandbyButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["StandbyButton" .. i .. "PR"]:SetText(tempTable[i][7]);
+		_G["StandbyButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
 	end
-	x, y, yoffset, t, tSize, name, class, rank, EP, GP, offNote, colour = nil;
 end
 
 function CEPGP_UpdateAttendanceScrollBar()

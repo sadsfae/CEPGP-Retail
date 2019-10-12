@@ -44,11 +44,12 @@ function CEPGP_ListButton_OnClick(obj)
 														end);
 		return;
 	
-	elseif strfind(obj, "CEPGP_StandbyButton") then
+	elseif strfind(obj, "StandbyButton") then
 		local name = _G[_G[_G[obj]:GetName()]:GetParent():GetName() .. "Info"]:GetText();
 		for i = 1, CEPGP_ntgetn(CEPGP_standbyRoster) do
-			if CEPGP_standbyRoster[i] == name then
+			if CEPGP_standbyRoster[i][1] == name then
 				table.remove(CEPGP_standbyRoster, i);
+				break;
 			end
 		end
 		CEPGP_UpdateStandbyScrollBar();

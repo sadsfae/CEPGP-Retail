@@ -3476,7 +3476,7 @@
 			</Frame>
 			<Frame name="CEPGP_standby" inherits="CEPGPFrameTemplate">
 				<Frames>
-					<Frame name="CEPGP_standby_scrollframe">
+					<ScrollFrame name="CEPGP_standby_scrollframe">
 						<Size>
 							<AbsDimension x="410" y="300"/>
 						</Size>
@@ -3487,196 +3487,14 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-						<Frames>
-							<ScrollFrame name="CEPGP_StandbyScrollFrame" inherits="FauxScrollFrameTemplate">
+						<ScrollChild>
+							<Frame name="CEPGP_standby_scrollframe_container">
 								<Size>
-									<AbsDimension x="360" y="350"/>
+									<AbsDimension x="400" y="275" />
 								</Size>
-								<Anchors>
-									<Anchor point="RIGHT">
-										<Offset>
-											<AbsDimension x="-7" y="0"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-								<Scripts>
-									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateStandbyScrollBar); 
-									</OnVerticalScroll>
-									<OnShow>
-										CEPGP_UpdateStandbyScrollBar();
-									</OnShow>
-								</Scripts>
-							</ScrollFrame>
-							<Button name="CEPGP_StandbyButton1" inherits="StandbyButtonTemplate" id="1" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT">
-										<Offset>
-											<AbsDimension x="5" y="-6"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton2" inherits="StandbyButtonTemplate" id="2" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton1" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton3" inherits="StandbyButtonTemplate" id="3" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton2" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton4" inherits="StandbyButtonTemplate" id="4" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton3" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton5" inherits="StandbyButtonTemplate" id="5" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton4" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton6" inherits="StandbyButtonTemplate" id="6" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton5" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton7" inherits="StandbyButtonTemplate" id="7" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton6" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton8" inherits="StandbyButtonTemplate" id="8" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton7" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton9" inherits="StandbyButtonTemplate" id="9" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton8" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton10" inherits="StandbyButtonTemplate" id="10" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton9" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton11" inherits="StandbyButtonTemplate" id="11" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton10" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton12" inherits="StandbyButtonTemplate" id="12" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton11" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton13" inherits="StandbyButtonTemplate" id="13" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton12" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton14" inherits="StandbyButtonTemplate" id="14" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton13" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton15" inherits="StandbyButtonTemplate" id="15" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton14" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton16" inherits="StandbyButtonTemplate" id="16" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton15" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton17" inherits="StandbyButtonTemplate" id="17" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton16" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Button name="CEPGP_StandbyButton18" inherits="StandbyButtonTemplate" id="18" hidden="true">
-								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="CEPGP_StandbyButton17" relativePoint="BOTTOMLEFT">
-										<Offset>
-											<AbsDimension x="0" y="-2"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-							</Button>
-							<Scripts>
-							<OnLoad>
-								self:SetBackdropColor(0.1, 0.1, 0.1);
-							</OnLoad>
-						</Scripts>
-						</Frames>
-					</Frame>
+							</Frame>
+						</ScrollChild>
+					</ScrollFrame>
 					<Button name="CEPGP_standby_ep_list_add" inherits="GameMenuButtonTemplate" text="Add to Standby">
 						<Size>
 							<AbsDimension x="100" y="25" />

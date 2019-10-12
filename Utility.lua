@@ -596,6 +596,10 @@ end
 
 function CEPGP_addToStandby(player)
 	if not player then return; end
+	--[[if not UnitInRaid("player") then
+		CEPGP_print("You cannot add players to the standby list while not in a raid group", true);
+		return;
+	end]]
 	player = CEPGP_standardiseString(player);
 	if not CEPGP_tContains(CEPGP_roster, player, true) then
 		CEPGP_print(player .. " is not a guild member", true);
@@ -610,8 +614,18 @@ function CEPGP_addToStandby(player)
 			return;
 		end
 	end	
-	table.insert(CEPGP_standbyRoster, player);
-	CEPGP_SendAddonMsg("StandbyListAdd;"..player, "RAID");
+	local _, class, rank, rankIndex, oNote = CEPGP_getGuildInfo(player);
+	local EP,GP = CEPGP_getEPGP(oNote);
+	CEPGP_standbyRoster[CEPGP_ntgetn(CEPGP_standbyRoster)+1] = {
+		[1] = player,
+		[2] = class,
+		[3] = rank,
+		[4] = rankIndex,
+		[5] = EP,
+		[6] = GP,
+		[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+	};
+	CEPGP_SendAddonMsg("StandbyListAdd;"..player..";"..class..";"..rank..";"..rankIndex..";"..EP..";"..GP, "RAID");
 	CEPGP_UpdateStandbyScrollBar();
 end
 

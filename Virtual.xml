@@ -524,7 +524,7 @@
 				<Anchors>
 					<Anchor point="RIGHT" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="5" y="0" />
+							<AbsDimension x="0" y="0" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -542,7 +542,7 @@
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="-5" y="0"/>
+								<AbsDimension x="5" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
