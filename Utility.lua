@@ -1200,95 +1200,95 @@ function CEPGP_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level
 end
 
 function CEPGP_getDebugInfo()
-	local info = "<details><summary>Debug Info</summary><br />";
-	info = info .. "Version: " .. CEPGP_VERSION .. "<br />";
-	info = info .. "GP Modifier: " .. MOD .. "<br />";
-	info = info .. "Base GP: " .. BASEGP .. "<br />";
+	local info = "<details><summary>Debug Info</summary><br />\n";
+	info = info .. "Version: " .. CEPGP_VERSION .. "<br />\n";
+	info = info .. "GP Modifier: " .. MOD .. "<br />\n";
+	info = info .. "Base GP: " .. BASEGP .. "<br />\n";
 	if STANDBYEP then
-		info = info .. "Standby EP: True<br />";
+		info = info .. "Standby EP: True<br />\n";
 	else
-		info = info .. "Standby EP: False<br />";
+		info = info .. "Standby EP: False<br />\n";
 	end
 	if STANDBYOFFLINE then
-		info = info .. "Standby Offline: True<br />";
+		info = info .. "Standby Offline: True<br />\n";
 	else
-		info = info .. "Standby Offline: False<br />";
+		info = info .. "Standby Offline: False<br />\n";
 	end
-	info = info .. "Standby Percent: " .. STANDBYPERCENT .. "<br />";
+	info = info .. "Standby Percent: " .. STANDBYPERCENT .. "<br />\n";
 		if CEPGP_standby_accept_whispers then
-		info = info .. "Standby Accept Whispers: True<br />";
+		info = info .. "Standby Accept Whispers: True<br />\n";
 	else
-		info = info .. "Standby Accept Whispers: False<br />";
+		info = info .. "Standby Accept Whispers: False<br />\n";
 	end
 	if CEPGP_standby_byrank then
-		info = info .. "Standby EP by Rank: True<br />";
+		info = info .. "Standby EP by Rank: True<br />\n";
 	else
-		info = info .. "Standby EP by Rank: False<br />";
+		info = info .. "Standby EP by Rank: False<br />\n";
 	end
 	if CEPGP_standby_manual then
-		info = info .. "Standby EP Manual Delegation: True<br />";
+		info = info .. "Standby EP Manual Delegation: True<br />\n";
 	else
-		info = info .. "Standby EP Manual Delegation: False<br />";
+		info = info .. "Standby EP Manual Delegation: False<br />\n";
 	end
 	
 	if CEPGP_loot_GUI then
-		info = info .. "GUI for Loot: True<br />";
+		info = info .. "GUI for Loot: True<br />\n";
 	else
-		info = info .. "GUI for Loot: False<br />";
+		info = info .. "GUI for Loot: False<br />\n";
 	end
 	
-	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br />";
+	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br />\n";
 		
-	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />";
+	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />\n";
 
-	info = info .. "<details><summary>Auto EP</summary>";
+	info = info .. "<details><summary>Auto EP</summary>\n";
 	for k, v in pairs(AUTOEP) do
 		if v then
-			info = info .. k .. ": True<br />";
+			info = info .. k .. ": True<br />\n";
 		else
-			info = info .. k .. ": False<br />";
+			info = info .. k .. ": False<br />\n";
 		end
 	end
-	info = info .. "</details>";
-	info = info .. "<details><summary>EP Values</summary>";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>EP Values</summary>\n";
 	for k, v in pairs(EPVALS) do
-		info = info .. k .. ": " .. v .. "<br />";
+		info = info .. k .. ": " .. v .. "<br />\n";
 	end
-	info = info .. "</details>";
-	info = info .. "<details><summary>Standby Guild Ranks</summary>";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Standby Guild Ranks</summary>\n";
 	for k, v in pairs(STANDBYRANKS) do
 		if v[1] ~= "" and v[1] ~= nil then
 			if v[2] then
-				info = info .. v[1] .. ": True<br />";
+				info = info .. v[1] .. ": True<br />\n";
 			else
-				info = info .. v[1] .. ": False<br />";
+				info = info .. v[1] .. ": False<br />\n";
 			end
 		end
 	end
-	info = info .. "</details>";
-	info = info .. "<details><summary>Slot Weights</summary>";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Slot Weights</summary>\n";
 	for k, _ in pairs(SLOTWEIGHTS) do
-		info = info .. k .. ": " .. SLOTWEIGHTS[k] .. "<br />";
+		info = info .. k .. ": " .. SLOTWEIGHTS[k] .. "<br />\n";
 	end
-	info = info .. "</details>";
-	info = info .. "<details><summary>Override List</summary>";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Override List</summary>\n";
 	for k, v in pairs(OVERRIDE_INDEX) do
-		info = info .. k .. ": " .. v .. "<br />";
+		info = info .. k .. ": " .. v .. "<br />\n";
 	end
-	info = info .. "</details>";
-	info = info .. "<details><summary>Addons List</summary>";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Addons List</summary>\n";
 	for i = 1, GetNumAddOns() do
 		local name, _, _, enabled = GetAddOnInfo(i);
 		if enabled then
-			info = info .. name .. "<br />";
+			info = info .. name .. "<br />\n";
 		end
 	end
-	info = info .. "</details>";
-	info = info .. "<details><summary>Enabled Plugins</summary>";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Enabled Plugins</summary>\n";
 	for _, plugin in ipairs(CEPGP_plugins) do
-		info = info .. plugin .. "<br />";
+		info = info .. plugin .. "<br />\n";
 	end
-	info = info .. "</details>";
+	info = info .. "</details>\n";
 	info = info .. "</details>";
 	return info;
 end
