@@ -268,7 +268,6 @@ function CEPGP_UpdateRaidScrollBar()
 		
 		if not tempTable[i][3] then tempTable[i][3] = CEPGP_raidRoster[i][3]; end
 	end
-	--tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
 	local kids = {_G["CEPGP_raid_scrollframe_container"]:GetChildren()};
 	for _, child in ipairs(kids) do
 		child:Hide();
@@ -394,64 +393,56 @@ function CEPGP_UpdateOverrideScrollBar()
 end
 
 function CEPGP_UpdateTrafficScrollBar()
-	if TRAFFIC == nil then
-		return;
+	local kids = {_G["CEPGP_traffic_scrollframe_container"]:GetChildren()};
+	for _, child in ipairs(kids) do
+		child:Hide();
 	end
-	local yoffset;
-	local tSize;
-	tSize = CEPGP_ntgetn(TRAFFIC);
-	FauxScrollFrame_Update(trafficScrollFrame, tSize, 18, 15);
-	for y = 1, 18, 1 do
-		yoffset = y + FauxScrollFrame_GetOffset(trafficScrollFrame);
-		if (yoffset <= tSize) then
-			local name = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][1];
-			local issuer = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][2];
-			local action = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][3];
-			local EPB = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][4];
-			local EPA = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][5];
-			local GPB = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][6];
-			local GPA = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][7];
-			local item = TRAFFIC[CEPGP_ntgetn(TRAFFIC) - (yoffset-1)][8];
-			local _, colour = CEPGP_getPlayerClass(name);
-			_G["trafficButton" .. y .. "Name"]:SetText(name);
-			if colour then
-				_G["trafficButton" .. y .. "Name"]:SetTextColor(colour.r, colour.g, colour.b);
+	for i = #TRAFFIC, 1, -1 do
+		if not _G["TrafficButton" .. i] then
+			local frame = CreateFrame('Button', "TrafficButton" .. i, _G["CEPGP_traffic_scrollframe_container"], "trafficButtonTemplate");
+			if i ~= #TRAFFIC then
+				_G["TrafficButton" .. i]:SetPoint("TOPLEFT", _G["TrafficButton" .. i+1], "BOTTOMLEFT", 0, -2);
 			else
-				_G["trafficButton" .. y .. "Name"]:SetTextColor(1, 1, 1);
+				_G["TrafficButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_traffic_scrollframe_container"], "TOPLEFT", 7.5, -10);
 			end
-			_, colour = CEPGP_getPlayerClass(issuer);
-			_G["trafficButton" .. y .. "Issuer"]:SetText(issuer);
-			if colour then
-				_G["trafficButton" .. y .. "Issuer"]:SetTextColor(colour.r, colour.g, colour.b);
-			else
-				_G["trafficButton" .. y .. "Issuer"]:SetTextColor(1, 1, 1);
-			end
-			if item then
-				_G["trafficButton" .. y .. "ItemName"]:SetText(item);
-				_G["trafficButton" .. y .. "ItemName"]:Show();
-				_G["trafficButton" .. y .. "Item"]:SetScript('OnClick', function() SetItemRef(tostring(CEPGP_getItemString(item))) end);
-			else
-				_G["trafficButton" .. y .. "ItemName"]:SetText("");
-				_G["trafficButton" .. y .. "ItemName"]:Hide();
-				_G["trafficButton" .. y .. "Item"]:SetScript('OnClick', function() end);
-			end
-			_G["trafficButton" .. y .. "Action"]:SetText(action);
-			_G["trafficButton" .. y .. "Action"]:SetTextColor(1, 1, 1);
-			_G["trafficButton" .. y .. "EPBefore"]:SetText(EPB);
-			_G["trafficButton" .. y .. "EPBefore"]:SetTextColor(1, 1, 1);
-			_G["trafficButton" .. y .. "EPAfter"]:SetText(EPA);
-			_G["trafficButton" .. y .. "EPAfter"]:SetTextColor(1, 1, 1);
-			_G["trafficButton" .. y .. "GPBefore"]:SetText(GPB);
-			_G["trafficButton" .. y .. "GPBefore"]:SetTextColor(1, 1, 1);
-			_G["trafficButton" .. y .. "GPAfter"]:SetText(GPA);
-			_G["trafficButton" .. y .. "GPAfter"]:SetTextColor(1, 1, 1);
-			_G["trafficButton" .. y]:Show();
-			name, issuer, action, EPB, EPA, GPB, GPA, item = nil;
+		end
+		local name, issuer, action, EPB, EPA, GPB, GPA, item = TRAFFIC[i][1], TRAFFIC[i][2], TRAFFIC[i][3], TRAFFIC[i][4], TRAFFIC[i][5], TRAFFIC[i][6], TRAFFIC[i][7], TRAFFIC[i][8];
+		local _, class = CEPGP_getPlayerClass(name);
+		local _, issuerClass = CEPGP_getPlayerClass(issuer);
+		local colour, issuerColour = class, issuerClass;
+		if not class then
+			colour = {
+				r = 1,
+				g = 1,
+				b = 1
+			};
+		end
+		if not issuerClass then
+			issuerColour = {
+				r = 1,
+				g = 1,
+				b = 1
+			};
+		end
+		_G["TrafficButton" .. i]:Show();
+		_G["TrafficButton" .. i .. "Name"]:SetText(name);
+		_G["TrafficButton" .. i .. "Name"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["TrafficButton" .. i .. "Issuer"]:SetText(issuer);
+		_G["TrafficButton" .. i .. "Issuer"]:SetTextColor(issuerColour.r, issuerColour.g, issuerColour.b);
+		_G["TrafficButton" .. i .. "Action"]:SetText(action);
+		_G["TrafficButton" .. i .. "EPBefore"]:SetText(EPB);
+		_G["TrafficButton" .. i .. "EPAfter"]:SetText(EPA);
+		_G["TrafficButton" .. i .. "GPBefore"]:SetText(GPB);
+		_G["TrafficButton" .. i .. "GPAfter"]:SetText(GPA);
+		if item then
+			local _, link = GetItemInfo(item);
+			_G["TrafficButton" .. i .. "ItemName"]:SetText(item);
+			_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
 		else
-			_G["trafficButton" .. y]:Hide();
+			_G["TrafficButton" .. i .. "ItemName"]:SetText("");
+			_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() end);
 		end
 	end
-	yoffset, tSize = nil;
 end
 
 function CEPGP_UpdateStandbyScrollBar()

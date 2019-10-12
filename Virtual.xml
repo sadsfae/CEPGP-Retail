@@ -431,7 +431,7 @@
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="105" y="0"/>
+								<AbsDimension x="100" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -440,7 +440,7 @@
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentName" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="480" y="0"/>
+								<AbsDimension x="465" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -458,7 +458,7 @@
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentEPBefore" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="90" y="0"/>
+								<AbsDimension x="70" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -476,7 +476,7 @@
 					<Anchors>
 						<Anchor point="RIGHT" relativeTo="$parentGPBefore" relativePoint="LEFT">
 							<Offset>
-								<AbsDimension x="90" y="0"/>
+								<AbsDimension x="70" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>

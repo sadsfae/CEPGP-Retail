@@ -5155,7 +5155,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
 							<Offset>
-								<AbsDimension x="15" y="-100"/>
+								<AbsDimension x="15" y="-90"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -5247,204 +5247,25 @@
 					</OnClick>
 				</Scripts>
 			</Button>
-			<Frame name="CEPGP_traffic_scrollframe">
+			<ScrollFrame name="trafficScrollFrame" inherits="UIPanelScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="760" y="300"/>
+					<AbsDimension x="745" y="320"/>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="CEPGP_traffic" relativePoint="TOPLEFT">
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-115"/>
+							<AbsDimension x="7.5" y="-105"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Frames>
-					<ScrollFrame name="trafficScrollFrame" inherits="FauxScrollFrameTemplate">
+				<ScrollChild>
+					<Frame name="CEPGP_traffic_scrollframe_container">
 						<Size>
-							<AbsDimension x="760" y="350"/>
+							<AbsDimension x="740" y="300" />
 						</Size>
-						<Anchors>
-							<Anchor point="RIGHT">
-								<Offset>
-									<AbsDimension x="-7" y="0"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateTrafficScrollBar); 
-							</OnVerticalScroll>
-						</Scripts>
-					</ScrollFrame>
-					<Button name="trafficButton1" inherits="trafficButtonTemplate" id="1" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="5" y="-6"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton2" inherits="trafficButtonTemplate" id="2" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton1" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton3" inherits="trafficButtonTemplate" id="3" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton2" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton4" inherits="trafficButtonTemplate" id="4" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton3" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton5" inherits="trafficButtonTemplate" id="5" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton4" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton6" inherits="trafficButtonTemplate" id="6" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton5" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton7" inherits="trafficButtonTemplate" id="7" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton6" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton8" inherits="trafficButtonTemplate" id="8" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton7" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton9" inherits="trafficButtonTemplate" id="9" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton8" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton10" inherits="trafficButtonTemplate" id="10" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton9" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton11" inherits="trafficButtonTemplate" id="11" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton10" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton12" inherits="trafficButtonTemplate" id="12" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton11" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton13" inherits="trafficButtonTemplate" id="13" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton12" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton14" inherits="trafficButtonTemplate" id="14" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton13" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton15" inherits="trafficButtonTemplate" id="15" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton14" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton16" inherits="trafficButtonTemplate" id="16" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton15" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton17" inherits="trafficButtonTemplate" id="17" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton16" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="trafficButton18" inherits="trafficButtonTemplate" id="18" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="trafficButton17" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Scripts>
-					<OnLoad>
-						self:SetBackdropColor(0.1, 0.1, 0.1);
-					</OnLoad>
-				</Scripts>
-				</Frames>
-			</Frame>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
 		</Frames>
 		<Scripts>
 			<OnLoad>
@@ -5539,7 +5360,7 @@
 			</Button>
 			<ScrollFrame name="CEPGP_debug_scrollframe" inherits="UIPanelScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="350" y="175" />
+					<AbsDimension x="350" y="150" />
 				</Size>
 				<Anchors>
 					<Anchor point="RIGHT" relativePoint="RIGHT">
@@ -5551,7 +5372,7 @@
 				<ScrollChild>
 					<EditBox name="CEPGP_debuginfo_details" autofocus="false" multiline="true">
 						<Size>
-							<AbsDimension x="340" y="175" />
+							<AbsDimension x="340" y="150" />
 						</Size>
 						<Anchors>
 							<Anchor point="CENTER" />

@@ -207,6 +207,21 @@ function SlashCmdList.CEPGP(msg, editbox)
 		ShowUIPanel(CEPGP_frame);
 		CEPGP_toggleFrame("");
 		CEPGP_updateGuild();
+		
+	elseif msg == "abc" then
+		local _, link = GetItemInfo(17075);
+		print(link);
+		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+			[1] = "Alorean",
+			[2] = "Alorean",
+			[3] = "TESTING",
+			[4] = 0,
+			[5] = 0,
+			[6] = 0,
+			[7] = 0,
+			[8] = link
+		};
+		CEPGP_UpdateTrafficScrollBar();
 	
 	elseif msg == "version" then
 		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
