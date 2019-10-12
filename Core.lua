@@ -41,6 +41,7 @@ CEPGP_THEKAL_PARAMS = {};
 CEPGP_snapshot = nil;
 CEPGP_use = false;
 CEPGP_ignoreUpdates = false;
+CEPGP_plugins = {};
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;

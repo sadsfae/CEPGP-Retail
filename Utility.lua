@@ -541,6 +541,11 @@ function CEPGP_rosterUpdate(event)
 				_G["CEPGP_confirmation"]:Show();
 			end
 		end
+		if IsInRaid("player") then
+			_G["CEPGP_button_raid"]:Show();
+		else
+			_G["CEPGP_button_raid"]:Hide();
+		end
 		CEPGP_raidRoster = {};
 		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
@@ -1196,43 +1201,43 @@ end
 
 function CEPGP_getDebugInfo()
 	local info = "<details><summary>Debug Info</summary><br />";
-	info = info .. "Version: " .. CEPGP_VERSION .. "<br /><br />";
-	info = info .. "GP Modifier: " .. MOD .. "<br /><br />";
-	info = info .. "Base GP: " .. BASEGP .. "<br /><br />";
+	info = info .. "Version: " .. CEPGP_VERSION .. "<br />";
+	info = info .. "GP Modifier: " .. MOD .. "<br />";
+	info = info .. "Base GP: " .. BASEGP .. "<br />";
 	if STANDBYEP then
-		info = info .. "Standby EP: True<br /><br />";
+		info = info .. "Standby EP: True<br />";
 	else
-		info = info .. "Standby EP: False<br /><br />";
+		info = info .. "Standby EP: False<br />";
 	end
 	if STANDBYOFFLINE then
-		info = info .. "Standby Offline: True<br /><br />";
+		info = info .. "Standby Offline: True<br />";
 	else
-		info = info .. "Standby Offline: False<br /><br />";
+		info = info .. "Standby Offline: False<br />";
 	end
-	info = info .. "Standby Percent: " .. STANDBYPERCENT .. "<br /><br />";
+	info = info .. "Standby Percent: " .. STANDBYPERCENT .. "<br />";
 		if CEPGP_standby_accept_whispers then
-		info = info .. "Standby Accept Whispers: True<br /><br />";
+		info = info .. "Standby Accept Whispers: True<br />";
 	else
-		info = info .. "Standby Accept Whispers: False<br /><br />";
+		info = info .. "Standby Accept Whispers: False<br />";
 	end
 	if CEPGP_standby_byrank then
-		info = info .. "Standby EP by Rank: True<br /><br />";
+		info = info .. "Standby EP by Rank: True<br />";
 	else
-		info = info .. "Standby EP by Rank: False<br /><br />";
+		info = info .. "Standby EP by Rank: False<br />";
 	end
 	if CEPGP_standby_manual then
-		info = info .. "Standby EP Manual Delegation: True<br /><br />";
+		info = info .. "Standby EP Manual Delegation: True<br />";
 	else
-		info = info .. "Standby EP Manual Delegation: False<br /><br />";
+		info = info .. "Standby EP Manual Delegation: False<br />";
 	end
 	
 	if CEPGP_loot_GUI then
-		info = info .. "GUI for Loot: True<br /><br />";
+		info = info .. "GUI for Loot: True<br />";
 	else
-		info = info .. "GUI for Loot: False<br /><br />";
+		info = info .. "GUI for Loot: False<br />";
 	end
 	
-	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br /><br />";
+	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br />";
 		
 	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />";
 
@@ -1244,12 +1249,12 @@ function CEPGP_getDebugInfo()
 			info = info .. k .. ": False<br />";
 		end
 	end
-	info = info .. "</details><br />";
+	info = info .. "</details>";
 	info = info .. "<details><summary>EP Values</summary>";
 	for k, v in pairs(EPVALS) do
 		info = info .. k .. ": " .. v .. "<br />";
 	end
-	info = info .. "</details><br />";
+	info = info .. "</details>";
 	info = info .. "<details><summary>Standby Guild Ranks</summary>";
 	for k, v in pairs(STANDBYRANKS) do
 		if v[1] ~= "" and v[1] ~= nil then
@@ -1260,23 +1265,28 @@ function CEPGP_getDebugInfo()
 			end
 		end
 	end
-	info = info .. "</details><br />";
+	info = info .. "</details>";
 	info = info .. "<details><summary>Slot Weights</summary>";
 	for k, _ in pairs(SLOTWEIGHTS) do
 		info = info .. k .. ": " .. SLOTWEIGHTS[k] .. "<br />";
 	end
-	info = info .. "</details><br />";
+	info = info .. "</details>";
 	info = info .. "<details><summary>Override List</summary>";
 	for k, v in pairs(OVERRIDE_INDEX) do
 		info = info .. k .. ": " .. v .. "<br />";
 	end
-	info = info .. "</details><br />";
-	info = info .. "<details><summary>Addons List</summary><br />";
+	info = info .. "</details>";
+	info = info .. "<details><summary>Addons List</summary>";
 	for i = 1, GetNumAddOns() do
 		local name, _, _, enabled = GetAddOnInfo(i);
 		if enabled then
 			info = info .. name .. "<br />";
 		end
+	end
+	info = info .. "</details>";
+	info = info .. "<details><summary>Enabled Plugins</summary>";
+	for _, plugin in ipairs(CEPGP_plugins) do
+		info = info .. plugin .. "<br />";
 	end
 	info = info .. "</details>";
 	info = info .. "</details>";

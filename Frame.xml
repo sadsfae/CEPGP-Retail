@@ -1209,6 +1209,18 @@
 							</OnLeave>
 						</Scripts>
 					</Button>
+					<Button name="CEPGP_button_options_plugins" inherits="GameMenuButtonTemplate" hidden="true" text="Plugins">
+						<Size>
+							<AbsDimension x="125" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOP" relativePoint="TOP">
+								<Offset>
+									<AbsDimension x="0" y="-10" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
 					<Button name="CEPGP_button_options_attendance" inherits="GameMenuButtonTemplate" text="Raid Attendance">
 						<Size>
 							<AbsDimension x="125" y="21" />
