@@ -434,10 +434,20 @@ function CEPGP_UpdateTrafficScrollBar()
 		_G["TrafficButton" .. i .. "EPAfter"]:SetText(EPA);
 		_G["TrafficButton" .. i .. "GPBefore"]:SetText(GPB);
 		_G["TrafficButton" .. i .. "GPAfter"]:SetText(GPA);
-		if item then
-			local _, link = GetItemInfo(item);
+		if item and strfind(item, "item") then --Accommodates for earlier versions when malformed information may be stored in the item index of the traffic log
 			_G["TrafficButton" .. i .. "ItemName"]:SetText(item);
-			_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
+			local _, link = GetItemInfo(item);
+			if link then
+				_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
+			else
+				local id = string.sub(tostring(item), string.find(item, ":")+1);
+				id = tonumber(string.sub(id, 0, string.find(id, ":")-1));
+				local newItem = Item:CreateFromItemID(id);
+				newItem:ContinueOnItemLoad(function()
+					_, link = GetItemInfo(item);
+					_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
+				end);
+			end
 		else
 			_G["TrafficButton" .. i .. "ItemName"]:SetText("");
 			_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() end);
