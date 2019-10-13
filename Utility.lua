@@ -1346,6 +1346,7 @@ function CEPGP_deleteAttendance()
 		CEPGP_raid_logs[index] = CEPGP_raid_logs[index+1];
 	end
 	CEPGP_raid_logs[size] = nil;
+	CEPGP_snapshot = nil;
 	UIDropDownMenu_SetSelectedValue(CEPGP_attendance_dropdown, 0);
 	CEPGP_UpdateAttendanceScrollBar();
 end
@@ -1386,15 +1387,12 @@ function CEPGP_calcAttendance(name)
 	local cTwoMonth = 0; --count 2 months
 	local cThreeMonth = 0; --count 3 months
 	for k, v in pairs(CEPGP_raid_logs) do
-		if CEPGP_snapshot and k ~= CEPGP_snapshot then
-			break;
-		end
 		for i = 2, CEPGP_ntgetn(v), 1 do
 			local diff = time() - v[1];
 			diff = diff/60/60/24;
 			if v[i] == name then
 				count = count + 1;
-				if diff <= 90 and not CEPGP_snapshot then -- no point in collecting interval data if a snapshot was requested
+				if diff <= 90 then
 					cThreeMonth = cThreeMonth + 1;
 					if diff <= 60 then
 						cTwoMonth = cTwoMonth + 1;
@@ -1417,7 +1415,6 @@ function CEPGP_calcAttendance(name)
 end
 
 function CEPGP_calcAttIntervals()
-	if CEPGP_snapshot then return; end
 	local week = 0;
 	local fn = 0;
 	local mon = 0;

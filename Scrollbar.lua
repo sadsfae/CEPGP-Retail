@@ -497,115 +497,90 @@ function CEPGP_UpdateStandbyScrollBar()
 end
 
 function CEPGP_UpdateAttendanceScrollBar()
-	local x, y;
-	local yoffset;
-	local t;
-	local tSize;
-	local name;
-	local class;
-	local rank;
-	local colour;
-	local total;
-	local week;
-	local fn;
-	local month;
-	local twoMon;
-	local ThreeMon;
-	local avg; --average attendance
-	t = {};
-	if snapshot then
-		tSize = CEPGP_ntgetn(CEPGP_raid_logs[CEPGP_snapshot]);
-	else
-		tSize = CEPGP_ntgetn(CEPGP_roster);
+	local tempTable = {};
+	local name, class, rank, index, colour, total, week, fn, month, twoMon, threeMon;
+	local kids = {_G["CEPGP_attendance_scrollframe_container"]:GetChildren()};
+	for _, child in ipairs(kids) do
+		child:Hide();
 	end
-	for x = 1, tSize do
-		if CEPGP_snapshot then
-			name = CEPGP_raid_logs[CEPGP_snapshot][x+1];
-		else
-			name = CEPGP_indexToName(x);
+	local size;
+	if CEPGP_snapshot then 
+		size = #CEPGP_raid_logs[CEPGP_snapshot]-1;
+	else
+		size = CEPGP_ntgetn(CEPGP_roster);
+	end
+	for i = 1, size do
+		if not _G["AttendanceButton" .. i] then
+			local frame = CreateFrame('Button', "AttendanceButton" .. i, _G["CEPGP_attendance_scrollframe_container"], "AttendanceButtonTemplate");
+			if i > 1 then
+				_G["AttendanceButton" .. i]:SetPoint("TOPLEFT", _G["AttendanceButton" .. i-1], "BOTTOMLEFT", 0, -2);
+			else
+				_G["AttendanceButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_attendance_scrollframe_container"], "TOPLEFT", 0, -10);
+			end
 		end
+		if CEPGP_snapshot then
+			name = CEPGP_raid_logs[CEPGP_snapshot][i+1];
+		else
+			name = CEPGP_indexToName(i);
+		end
+		total, week, fn, month, twoMon, threeMon = CEPGP_calcAttendance(name);
 		index, class, rank = CEPGP_getGuildInfo(name);
 		if not index then
-			rank = "Non-Guild Member"
+			rank = "Non-Guild Member";
 		end
-		total, week, fn, month, twoMon, ThreeMon = CEPGP_calcAttendance(name);
-		t[x] = {
+		
+		tempTable[i] = {
 			[1] = name,
 			[2] = class,
 			[3] = rank,
 			[4] = total,
-			[5] = week,
-			[6] = fn,
-			[7] = month,
-			[8] = twoMon,
-			[9] = ThreeMon
+			[5] = tostring(week),
+			[6] = tostring(fn),
+			[7] = tostring(month),
+			[8] = tostring(twoMon),
+			[9] = tostring(threeMon)
 		}
 	end
-	t = CEPGP_tSort(t, 1)
-	FauxScrollFrame_Update(AttendanceScrollFrame, tSize, 18, 15);
-	for y = 1, 18, 1 do
-		yoffset = y + FauxScrollFrame_GetOffset(AttendanceScrollFrame);
-		if (yoffset <= tSize) then
-			if not CEPGP_tContains(t, yoffset, true) then
-				_G["AttendanceButton" .. y]:Hide();
-			else
-				name = t[yoffset][1];
-				class = t[yoffset][2];
-				rank = t[yoffset][3];
-				total = t[yoffset][4];
-				week = t[yoffset][5];
-				fn = t[yoffset][6];
-				month = t[yoffset][7];
-				twoMon = t[yoffset][8];
-				threeMon = t[yoffset][9];
-				avg = total/CEPGP_ntgetn(CEPGP_raid_logs);
-				avg = math.floor(avg*100)/100;
-				if class then
-					colour = RAID_CLASS_COLORS[string.upper(class)];
-				else
-					colour = RAID_CLASS_COLORS["WARRIOR"];
-				end
-				if not colour then colour = RAID_CLASS_COLORS["WARRIOR"]; end
-				_G["AttendanceButton" .. y .. "Info"]:SetText(name);
-				_G["AttendanceButton" .. y .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
-				_G["AttendanceButton" .. y .. "Rank"]:SetText(rank);
-				_G["AttendanceButton" .. y .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);
-				
-				_G["AttendanceButton" .. y]:Show();
-				
-				if CEPGP_snapshot then
-					_G["AttendanceButton" .. y .. "Total"]:Hide();
-					_G["AttendanceButton" .. y .. "Int7"]:Hide();
-					_G["AttendanceButton" .. y .. "Int14"]:Hide();
-					_G["AttendanceButton" .. y .. "Int30"]:Hide();
-					_G["AttendanceButton" .. y .. "Int60"]:Hide();
-					_G["AttendanceButton" .. y .. "Int90"]:Hide();
-				else
-					local totals = {CEPGP_calcAttIntervals()};
-					_G["AttendanceButton" .. y .. "Total"]:SetText(total .. " (" .. avg*100 .. "%)");
-					_G["AttendanceButton" .. y .. "Total"]:SetTextColor(1-avg,avg/1,0);
-					_G["AttendanceButton" .. y .. "Int7"]:SetText(week .. "/" .. totals[1]);
-					_G["AttendanceButton" .. y .. "Int7"]:SetTextColor(1-(week/totals[1]), (week/totals[1])/1, 0);
-					_G["AttendanceButton" .. y .. "Int14"]:SetText(fn .. "/" .. totals[2]);
-					_G["AttendanceButton" .. y .. "Int14"]:SetTextColor(1-(week/totals[2]), (week/totals[2])/1, 0);
-					_G["AttendanceButton" .. y .. "Int30"]:SetText(month .. "/" .. totals[3]);
-					_G["AttendanceButton" .. y .. "Int30"]:SetTextColor(1-(week/totals[3]), (week/totals[3])/1, 0);
-					_G["AttendanceButton" .. y .. "Int60"]:SetText(twoMon .. "/" .. totals[4]);
-					_G["AttendanceButton" .. y .. "Int60"]:SetTextColor(1-(week/totals[4]), (week/totals[4])/1, 0);
-					_G["AttendanceButton" .. y .. "Int90"]:SetText(threeMon .. "/" .. totals[5]);
-					_G["AttendanceButton" .. y .. "Int90"]:SetTextColor(1-(week/totals[5]), (week/totals[5])/1, 0);
-					_G["AttendanceButton" .. y .. "Total"]:Show();
-					_G["AttendanceButton" .. y .. "Int7"]:Show();
-					_G["AttendanceButton" .. y .. "Int14"]:Show();
-					_G["AttendanceButton" .. y .. "Int30"]:Show();
-					_G["AttendanceButton" .. y .. "Int60"]:Show();
-					_G["AttendanceButton" .. y .. "Int90"]:Show();
-				end
-			end
-		else
-			_G["AttendanceButton" .. y]:Hide();
-		end
+	tempTable = CEPGP_tSort(tempTable, 1);
+	local totals = {CEPGP_calcAttIntervals()};
+	if #CEPGP_raid_logs then
+		_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. #CEPGP_raid_logs);
+	else
+		_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: 0");
 	end
-	_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. CEPGP_ntgetn(CEPGP_raid_logs));
-	x, y, yoffset, t, tSize, name, class, rank, colour, total, week, fn, month, twoMon, ThreeMon, avg = nil;
+	for i = 1, size do
+		local avg = tempTable[i][4]/CEPGP_ntgetn(CEPGP_raid_logs);
+		avg = math.floor(avg*100)/100;
+		if tempTable[i][2] then
+			colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		else
+			colour = {
+				r = 0.5,
+				g = 0,
+				b = 0
+			};
+		end
+		if tempTable[i][5] == "nil" then tempTable[i][5] = "0"; end;
+		if tempTable[i][6] == "nil" then tempTable[i][6] = "0"; end;
+		if tempTable[i][7] == "nil" then tempTable[i][7] = "0"; end;
+		if tempTable[i][8] == "nil" then tempTable[i][8] = "0"; end;
+		if tempTable[i][9] == "nil" then tempTable[i][9] = "0"; end;
+		_G["AttendanceButton" .. i]:Show();
+		_G["AttendanceButton" .. i .. "Info"]:SetText(tempTable[i][1]);
+		_G["AttendanceButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["AttendanceButton" .. i .. "Rank"]:SetText(tempTable[i][3]);
+		_G["AttendanceButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);		
+		_G["AttendanceButton" .. i .. "Total"]:SetText(tempTable[i][4] .. " (" .. avg*100 .. "%)");
+		_G["AttendanceButton" .. i .. "Total"]:SetTextColor(1-avg,avg/1,0);
+		_G["AttendanceButton" .. i .. "Int7"]:SetText(tempTable[i][5] .. "/" .. totals[1]);
+		_G["AttendanceButton" .. i .. "Int7"]:SetTextColor(1-(tempTable[i][5]/totals[1]), (tempTable[i][5]/totals[1])/1, 0);
+		_G["AttendanceButton" .. i .. "Int14"]:SetText(tempTable[i][6] .. "/" .. totals[2]);
+		_G["AttendanceButton" .. i .. "Int14"]:SetTextColor(1-(tempTable[i][6]/totals[2]), (tempTable[i][6]/totals[2])/1, 0);
+		_G["AttendanceButton" .. i .. "Int30"]:SetText(tempTable[i][7] .. "/" .. totals[3]);
+		_G["AttendanceButton" .. i .. "Int30"]:SetTextColor(1-(tempTable[i][7]/totals[3]), (tempTable[i][7]/totals[3])/1, 0);
+		_G["AttendanceButton" .. i .. "Int60"]:SetText(tempTable[i][8] .. "/" .. totals[4]);
+		_G["AttendanceButton" .. i .. "Int60"]:SetTextColor(1-(tempTable[i][8]/totals[4]), (tempTable[i][8]/totals[4])/1, 0);
+		_G["AttendanceButton" .. i .. "Int90"]:SetText(tempTable[i][9] .. "/" .. totals[5]);
+		_G["AttendanceButton" .. i .. "Int90"]:SetTextColor(1-(tempTable[i][9]/totals[5]), (tempTable[i][9]/totals[5])/1, 0);
+	end
 end

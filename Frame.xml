@@ -208,10 +208,9 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-
-					<Frame name="CEPGP_guild_scrollframe">
+					<ScrollFrame name="GuildScrollFrame" inherits="UIPanelScrollFrameTemplate">
 						<Size>
-							<AbsDimension x="410" y="300"/>
+							<AbsDimension x="400" y="325" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CEPGP_guild" relativePoint="TOPLEFT">
@@ -220,33 +219,14 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-						<Frames>
-							<ScrollFrame name="GuildScrollFrame" inherits="UIPanelScrollFrameTemplate">
+						<ScrollChild>
+							<Frame name="CEPGP_guild_scrollframe_container">
 								<Size>
-									<AbsDimension x="400" y="325" />
+									<AbsDimension x="400" y="300" />
 								</Size>
-								<Anchors>
-									<Anchor point="RIGHT">
-										<Offset>
-											<AbsDimension x="-7" y="-5"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-								<ScrollChild>
-									<Frame name="CEPGP_guild_scrollframe_container">
-										<Size>
-											<AbsDimension x="400" y="300" />
-										</Size>
-									</Frame>
-								</ScrollChild>
-							</ScrollFrame>
-							<Scripts>
-								<OnLoad>
-									self:SetBackdropColor(0.1, 0.1, 0.1);
-								</OnLoad>
-							</Scripts>
-						</Frames>
-					</Frame>
+							</Frame>
+						</ScrollChild>
+					</ScrollFrame>
 					<Button name="CEPGP_guild_name" inherits="CEPGPHeaderButton" text="Name">
 						<Size>
 							<AbsDimension x="50" y="20" />
@@ -1236,6 +1216,7 @@
 							<OnClick>
 								PlaySound(799);
 								CEPGP_attendance:Show();
+								CEPGP_UpdateAttendanceScrollBar();
 							</OnClick>
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
@@ -2262,7 +2243,7 @@
 							</OnShow>
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-								GameTooltip:SetText("Set the minimum item rarity for the CEPGP loot window to automatically show in raids.");
+								GameTooltip:SetText("Personal Feature\nSet the minimum item rarity for the CEPGP loot window to automatically show in raids.\nRequires that you are the master looter and are in a raid group.");
 							</OnEnter>
 							<OnLeave>
 								GameTooltip:Hide();
@@ -5870,207 +5851,25 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Frame name="CEPGP_attendance_scrollframe">
+			<ScrollFrame name="CEPGP_attendance_scrollframe" inherits="UIPanelScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="640" y="315"/>
+					<AbsDimension x="600" y="315"/>
 				</Size>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="CEPGP_attendance" relativePoint="LEFT">
+					<Anchor point="RIGHT" relativeTo="CEPGP_attendance" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-20" y="-10"/>
+							<AbsDimension x="-35" y="-20"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Frames>
-					<ScrollFrame name="AttendanceScrollFrame" inherits="FauxScrollFrameTemplate">
+				<ScrollChild>
+					<Frame name="CEPGP_attendance_scrollframe_container">
 						<Size>
-							<AbsDimension x="555" y="315"/>
+							<AbsDimension x="620" y="315" />
 						</Size>
-						<Anchors>
-							<Anchor point="RIGHT">
-								<Offset>
-									<AbsDimension x="-7" y="0"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnVerticalScroll>
-								FauxScrollFrame_OnVerticalScroll(self, offset, 15, CEPGP_UpdateAttendanceScrollBar); 
-							</OnVerticalScroll>
-							<OnShow>
-								CEPGP_UpdateAttendanceScrollBar();
-							</OnShow>
-						</Scripts>
-					</ScrollFrame>
-					<Button name="AttendanceButton1" inherits="AttendanceButtonTemplate" id="1" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="32.5" y="-10"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton2" inherits="AttendanceButtonTemplate" id="2" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton1" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton3" inherits="AttendanceButtonTemplate" id="3" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton2" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton4" inherits="AttendanceButtonTemplate" id="4" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton3" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton5" inherits="AttendanceButtonTemplate" id="5" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton4" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton6" inherits="AttendanceButtonTemplate" id="6" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton5" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton7" inherits="AttendanceButtonTemplate" id="7" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton6" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton8" inherits="AttendanceButtonTemplate" id="8" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton7" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton9" inherits="AttendanceButtonTemplate" id="9" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton8" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton10" inherits="AttendanceButtonTemplate" id="10" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton9" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton11" inherits="AttendanceButtonTemplate" id="11" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton10" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton12" inherits="AttendanceButtonTemplate" id="12" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton11" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton13" inherits="AttendanceButtonTemplate" id="13" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton12" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton14" inherits="AttendanceButtonTemplate" id="14" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton13" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton15" inherits="AttendanceButtonTemplate" id="15" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton14" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton16" inherits="AttendanceButtonTemplate" id="16" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton15" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton17" inherits="AttendanceButtonTemplate" id="17" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton16" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Button name="AttendanceButton18" inherits="AttendanceButtonTemplate" id="18" hidden="true">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="AttendanceButton17" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="-2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Button>
-					<Scripts>
-						<OnLoad>
-							self:SetBackdropColor(0.1, 0.1, 0.1);
-						</OnLoad>
-					</Scripts>
-				</Frames>
-			</Frame>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
 		</Frames>
 		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
 			<Color r="0" g="0" b="0" />
