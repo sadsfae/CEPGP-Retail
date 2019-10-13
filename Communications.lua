@@ -71,8 +71,6 @@ function CEPGP_IncAddonMsg(message, sender)
 					for x = 1, GetNumGroupMembers() do
 						if GetRaidRosterInfo(x) == sender then
 							_, _, _, _, CEPGP_groupVersion[i][3] = GetRaidRosterInfo(x);
-							print(CEPGP_groupVersion[i][1]);
-							print(CEPGP_groupVersion[i][3]);
 							break;
 						end
 					end

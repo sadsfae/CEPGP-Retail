@@ -602,6 +602,26 @@ function CEPGP_rosterUpdate(event)
 	end
 end
 
+function CEPGP_translateClass(class)
+	if GetLocale() ~= "enUS" then
+		for x = 1, 11 do
+			local t = { C_CreatureInfo.GetClassInfo(x) };
+			for _, v in pairs(t) do
+				for field, value in pairs(v) do
+					if field == "className" and value == class then
+						class = v["classFile"];
+						break;
+					end
+				end
+			end
+		end
+		local temp = string.sub(class, 1, 1);
+		local temp2 = string.sub(class, 2);
+		class = temp .. string.lower(temp2);
+	end
+	return class;
+end
+
 function CEPGP_addToStandby(player)
 	if not player then return; end
 	if not UnitInRaid("player") then
@@ -1307,6 +1327,7 @@ function CEPGP_getPlayerClass(name, index)
 	end
 	if index then
 		_, _, _, _, class = GetGuildRosterInfo(index);
+		class = CEPGP_translateClass(class);
 		return class, RAID_CLASS_COLORS[string.upper(class)];
 	else
 		local id = CEPGP_nameToIndex(name);
@@ -1314,6 +1335,7 @@ function CEPGP_getPlayerClass(name, index)
 			return nil;
 		else
 			_, _, _, _, class = GetGuildRosterInfo(id);
+			class = CEPGP_translateClass(class);
 			return class, RAID_CLASS_COLORS[string.upper(class)];
 		end
 	end

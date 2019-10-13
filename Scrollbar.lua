@@ -42,7 +42,15 @@ function CEPGP_UpdateLootScrollBar()
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
 						iString = CEPGP_getItemString(link);
-						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+						local colour;
+						colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+						if not colour then
+							colour = {
+							r = 1,
+							g = 1,
+							b = 1
+						};
+						end
 						_G["LootDistButton" .. i]:Show();
 						_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 						_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -68,7 +76,15 @@ function CEPGP_UpdateLootScrollBar()
 					end);
 				else
 					iString = CEPGP_getItemString(link);
-					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+					local colour;
+					colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+					if not colour then
+						colour = {
+						r = 1,
+						g = 1,
+						b = 1
+					};
+					end
 					_G["LootDistButton" .. i]:Show();
 					_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 					_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -106,7 +122,15 @@ function CEPGP_UpdateLootScrollBar()
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id)
 						iString2 = CEPGP_getItemString(link);
-						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+						local colour;
+						colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+						if not colour then
+							colour = {
+							r = 1,
+							g = 1,
+							b = 1
+						};
+						end
 						_G["LootDistButton" .. i]:Show();
 						_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 						_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -132,7 +156,15 @@ function CEPGP_UpdateLootScrollBar()
 					end);
 				else
 					iString2 = CEPGP_getItemString(link);
-					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+					local colour;
+					colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+					if not colour then
+						colour = {
+						r = 1,
+						g = 1,
+						b = 1
+					};
+					end
 					_G["LootDistButton" .. i]:Show();
 					_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 					_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -161,7 +193,15 @@ function CEPGP_UpdateLootScrollBar()
 				_G["LootDistButton" .. i .. "Icon2"]:SetTexture(nil);
 			end
 		else --Recipient has no items in the corresponding slots
-			local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+			local colour;
+			colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+			if not colour then
+				colour = {
+				r = 1,
+				g = 1,
+				b = 1
+			};
+			end
 			_G["LootDistButton" .. i]:Show();
 			_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 			_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -221,7 +261,15 @@ function CEPGP_UpdateGuildScrollBar()
 				_G["GuildButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_guild_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
-		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		local colour;
+		colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+		if not colour then
+			colour = {
+			r = 1,
+			g = 1,
+			b = 1
+		};
+		end
 		_G["GuildButton" .. i]:Show();
 		_G["GuildButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 		_G["GuildButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -281,7 +329,15 @@ function CEPGP_UpdateRaidScrollBar()
 				_G["RaidButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_raid_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
-		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		local colour;
+		colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+		if not colour then
+			colour = {
+			r = 1,
+			g = 1,
+			b = 1
+		};
+		end
 		_G["RaidButton" .. i]:Show();
 		_G["RaidButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 		_G["RaidButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -313,7 +369,15 @@ function CEPGP_UpdateVersionScrollBar()
 			end
 			_G["versionButton" .. i]:Show();
 			local name = CEPGP_groupVersion[i][1];
-			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_groupVersion[i][3])];
+			local colour;
+			colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(CEPGP_groupVersion[i][3]))];
+			if not colour then
+				colour = {
+				r = 1,
+				g = 1,
+				b = 1
+			};
+			end
 			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
 			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
@@ -330,7 +394,15 @@ function CEPGP_UpdateVersionScrollBar()
 					class = CEPGP_groupVersion[x][3];
 				--	print(name);
 				--	print(class);
-					local colour = RAID_CLASS_COLORS[string.upper(class)];
+					local colour;
+					colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(class))];
+					if not colour then
+						colour = {
+						r = 1,
+						g = 1,
+						b = 1
+					};
+					end
 					_G["versionButton" .. i .. "name"]:SetText(name);
 					_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 					_G["versionButton" .. i .. "version"]:SetText(version);
@@ -479,7 +551,15 @@ function CEPGP_UpdateStandbyScrollBar()
 			[6] = CEPGP_standbyRoster[i][6], --GP
 			[7] = CEPGP_standbyRoster[i][7] --PR
 		};
-		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		local colour;
+		colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+		if not colour then
+			colour = {
+			r = 1,
+			g = 1,
+			b = 1
+		};
+		end
 		_G["StandbyButton" .. i]:Show();
 		_G["StandbyButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 		_G["StandbyButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -552,7 +632,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 		local avg = tempTable[i][4]/CEPGP_ntgetn(CEPGP_raid_logs);
 		avg = math.floor(avg*100)/100;
 		if tempTable[i][2] then
-			colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+			colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
 		else
 			colour = {
 				r = 0.5,
