@@ -622,7 +622,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 			[9] = tostring(threeMon)
 		}
 	end
-	tempTable = CEPGP_tSort(tempTable, 1);
+	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
 	local totals = {CEPGP_calcAttIntervals()};
 	if #CEPGP_raid_logs then
 		_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. #CEPGP_raid_logs);

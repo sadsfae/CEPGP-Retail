@@ -195,6 +195,7 @@
 							<OnClick>
 								PlaySound(799);
 								CEPGP_attendance:Show();
+								CEPGP_setCriteria(1, "Attendance");
 								CEPGP_UpdateAttendanceScrollBar();
 							</OnClick>
 							<OnEnter>
@@ -5695,7 +5696,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(1, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -5712,7 +5713,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(3, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -5732,7 +5733,7 @@
 						self:SetText("Raids\nAttended");
 					</OnLoad>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(4, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -5752,9 +5753,6 @@
 						local total = CEPGP_ntgetn(CEPGP_raid_logs);
 						self:SetText("Total Snapshots Recorded: " .. total);
 					</OnShow>
-					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
-					</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="CEPGP_attendance_header_interval_7" inherits="CEPGPHeaderButton" text="7">
@@ -5770,7 +5768,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(5, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -5787,7 +5785,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(6, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -5804,7 +5802,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(7, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -5821,7 +5819,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(8, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -5838,7 +5836,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--CEPGP_setCriteria(1, "Guild");
+						CEPGP_setCriteria(9, "Attendance");
 					</OnClick>
 				</Scripts>
 			</Button>

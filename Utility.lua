@@ -1077,6 +1077,7 @@ function CEPGP_setCriteria(x, disp)
 		CEPGP_critReverse = not CEPGP_critReverse
 	end
 	CEPGP_criteria = x;
+	if not disp then return; end
 	if disp == "Raid" then
 		CEPGP_UpdateRaidScrollBar();
 	elseif disp == "Guild" then
@@ -1085,6 +1086,8 @@ function CEPGP_setCriteria(x, disp)
 		CEPGP_UpdateLootScrollBar();
 	elseif disp == "Standby" then
 		CEPGP_UpdateStandbyScrollBar();
+	elseif disp == "Attendance" then
+		CEPGP_UpdateAttendanceScrollBar();
 	end
 end
 
