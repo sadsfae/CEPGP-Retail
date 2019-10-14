@@ -180,6 +180,32 @@
 							</OnClick>
 						</Scripts>
 					</Button>
+					<Button name="CEPGP_button_options_attendance" inherits="GameMenuButtonTemplate" text="Raid Attendance">
+						<Size>
+							<AbsDimension x="125" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="CEPGP_button_guild_export">
+								<Offset>
+									<AbsDimension x="0" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_attendance:Show();
+								CEPGP_UpdateAttendanceScrollBar();
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Measure the attendance of your raid by creating snapshots.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+						</Scripts>
+					</Button>
 					<Button name="CEPGP_button_guild_restore" inherits="GameMenuButtonTemplate" text="Restore Standings">
 						<Size>
 							<AbsDimension x="125" y="21" />
@@ -1200,32 +1226,6 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</Button>
-					<Button name="CEPGP_button_options_attendance" inherits="GameMenuButtonTemplate" text="Raid Attendance">
-						<Size>
-							<AbsDimension x="125" y="21" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="distributing">
-								<Offset>
-									<AbsDimension x="0" y="0" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								PlaySound(799);
-								CEPGP_attendance:Show();
-								CEPGP_UpdateAttendanceScrollBar();
-							</OnClick>
-							<OnEnter>
-								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-								GameTooltip:SetText("Measure the attendance of your raid by creating snapshots.");
-							</OnEnter>
-							<OnLeave>
-								GameTooltip:Hide();
-							</OnLeave>
-						</Scripts>
 					</Button>
 					<EditBox name="CEPGP_options_keyword_edit" inherits="InputBoxTemplate">
 						<Size>
