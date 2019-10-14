@@ -483,7 +483,7 @@ end
 function CEPGP_rosterUpdate(event)
 	--if time() - CEPGP_lastUpdate < 0.05 then return; end
 	--CEPGP_lastUpdate = time();
-	if CEPGP_ignoreUpdates then return; end
+	if CEPGP_ignoreUpdates or not IsInGuild() then return; end
 	if event == "GUILD_ROSTER_UPDATE" then
 		local numGuild = GetNumGuildMembers();
 		CEPGP_roster = {};
@@ -1555,7 +1555,7 @@ function CEPGP_split(msg)
 end
 
 function CEPGP_canEquip(slot)
-	local class = UnitClass("player");
+	local class = CEPGP_translateClass(UnitClass("player"));
 	if CEPGP_tContains(CEPGP_classes[class], slot) then return true; end
 	return false;
 end

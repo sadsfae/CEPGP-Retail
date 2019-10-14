@@ -577,6 +577,7 @@ function CEPGP_UpdateStandbyScrollBar()
 end
 
 function CEPGP_UpdateAttendanceScrollBar()
+	if #CEPGP_raid_logs == 0 then return; end
 	local tempTable = {};
 	local name, class, rank, index, colour, total, week, fn, month, twoMon, threeMon;
 	local kids = {_G["CEPGP_attendance_scrollframe_container"]:GetChildren()};
@@ -633,7 +634,8 @@ function CEPGP_UpdateAttendanceScrollBar()
 		avg = math.floor(avg*100)/100;
 		if tempTable[i][2] then
 			colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
-		else
+		end
+		if not colour then
 			colour = {
 				r = 0.5,
 				g = 0,
@@ -653,14 +655,34 @@ function CEPGP_UpdateAttendanceScrollBar()
 		_G["AttendanceButton" .. i .. "Total"]:SetText(tempTable[i][4] .. " (" .. avg*100 .. "%)");
 		_G["AttendanceButton" .. i .. "Total"]:SetTextColor(1-avg,avg/1,0);
 		_G["AttendanceButton" .. i .. "Int7"]:SetText(tempTable[i][5] .. "/" .. totals[1]);
-		_G["AttendanceButton" .. i .. "Int7"]:SetTextColor(1-(tempTable[i][5]/totals[1]), (tempTable[i][5]/totals[1])/1, 0);
+		if totals[1] == 0 then
+			_G["AttendanceButton" .. i .. "Int7"]:SetTextColor(1-(tempTable[i][5]/totals[1]), 1, 0);
+		else
+			_G["AttendanceButton" .. i .. "Int7"]:SetTextColor(1-(tempTable[i][5]/totals[1]), (tempTable[i][5]/totals[1])/1, 0);
+		end
 		_G["AttendanceButton" .. i .. "Int14"]:SetText(tempTable[i][6] .. "/" .. totals[2]);
-		_G["AttendanceButton" .. i .. "Int14"]:SetTextColor(1-(tempTable[i][6]/totals[2]), (tempTable[i][6]/totals[2])/1, 0);
+		if totals[2] == 0 then
+			_G["AttendanceButton" .. i .. "Int14"]:SetTextColor(1-(tempTable[i][6]/totals[2]), 1, 0);
+		else
+			_G["AttendanceButton" .. i .. "Int14"]:SetTextColor(1-(tempTable[i][6]/totals[2]), (tempTable[i][6]/totals[2])/1, 0);
+		end
 		_G["AttendanceButton" .. i .. "Int30"]:SetText(tempTable[i][7] .. "/" .. totals[3]);
-		_G["AttendanceButton" .. i .. "Int30"]:SetTextColor(1-(tempTable[i][7]/totals[3]), (tempTable[i][7]/totals[3])/1, 0);
+		if totals[3] == 0 then
+			_G["AttendanceButton" .. i .. "Int30"]:SetTextColor(1-(tempTable[i][7]/totals[3]), 1, 0);
+		else
+			_G["AttendanceButton" .. i .. "Int30"]:SetTextColor(1-(tempTable[i][7]/totals[3]), (tempTable[i][7]/totals[3])/1, 0);
+		end		
 		_G["AttendanceButton" .. i .. "Int60"]:SetText(tempTable[i][8] .. "/" .. totals[4]);
-		_G["AttendanceButton" .. i .. "Int60"]:SetTextColor(1-(tempTable[i][8]/totals[4]), (tempTable[i][8]/totals[4])/1, 0);
+		if totals[4] == 0 then
+			_G["AttendanceButton" .. i .. "Int60"]:SetTextColor(1-(tempTable[i][8]/totals[4]), 1, 0);
+		else
+			_G["AttendanceButton" .. i .. "Int60"]:SetTextColor(1-(tempTable[i][8]/totals[4]), (tempTable[i][8]/totals[4])/1, 0);
+		end
 		_G["AttendanceButton" .. i .. "Int90"]:SetText(tempTable[i][9] .. "/" .. totals[5]);
-		_G["AttendanceButton" .. i .. "Int90"]:SetTextColor(1-(tempTable[i][9]/totals[5]), (tempTable[i][9]/totals[5])/1, 0);
+		if totals[5] == 0 then
+			_G["AttendanceButton" .. i .. "Int90"]:SetTextColor(1-(tempTable[i][9]/totals[5]), 1, 0);
+		else
+			_G["AttendanceButton" .. i .. "Int90"]:SetTextColor(1-(tempTable[i][9]/totals[5]), (tempTable[i][9]/totals[5])/1, 0);
+		end
 	end
 end

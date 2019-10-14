@@ -5636,6 +5636,9 @@
 				<Scripts>
 					<OnClick>
 						PlaySound(799);
+						if UIDropDownMenu_GetSelectedValue(CEPGP_attendance_dropdown) == nil then
+							return;
+						end
 						if UIDropDownMenu_GetSelectedValue(CEPGP_attendance_dropdown) == 0 then
 							CEPGP_snapshot = nil;
 							CEPGP_attendance_desc:SetText("Snapshot Summary");
