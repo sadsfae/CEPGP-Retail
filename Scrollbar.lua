@@ -14,7 +14,8 @@ function CEPGP_UpdateLootScrollBar()
 			[6] = GP,
 			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
 			[8] = CEPGP_itemsTable[name][1] or "noitem",
-			[9] = CEPGP_itemsTable[name][2] or "noitem"
+			[9] = CEPGP_itemsTable[name][2] or "noitem",
+			[10] = CEPGP_itemsTable[name][8] --className in English
 		};
 		count = count + 1;
 	end
@@ -42,7 +43,7 @@ function CEPGP_UpdateLootScrollBar()
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
 						iString = CEPGP_getItemString(link);
-						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 						_G["LootDistButton" .. i]:Show();
 						_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 						_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -68,7 +69,7 @@ function CEPGP_UpdateLootScrollBar()
 					end);
 				else
 					iString = CEPGP_getItemString(link);
-					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 					_G["LootDistButton" .. i]:Show();
 					_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 					_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -106,7 +107,7 @@ function CEPGP_UpdateLootScrollBar()
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id)
 						iString2 = CEPGP_getItemString(link);
-						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 						_G["LootDistButton" .. i]:Show();
 						_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 						_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -132,7 +133,7 @@ function CEPGP_UpdateLootScrollBar()
 					end);
 				else
 					iString2 = CEPGP_getItemString(link);
-					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 					_G["LootDistButton" .. i]:Show();
 					_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 					_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -161,7 +162,7 @@ function CEPGP_UpdateLootScrollBar()
 				_G["LootDistButton" .. i .. "Icon2"]:SetTexture(nil);
 			end
 		else --Recipient has no items in the corresponding slots
-			local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+			local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 			_G["LootDistButton" .. i]:Show();
 			_G["LootDistButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 			_G["LootDistButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -204,7 +205,8 @@ function CEPGP_UpdateGuildScrollBar()
 			[4] = v[4], --RankIndex
 			[5] = EP,
 			[6] = GP,
-			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+			[8] = v[7] -- className in English
 		};
 	end
 	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
@@ -221,7 +223,7 @@ function CEPGP_UpdateGuildScrollBar()
 				_G["GuildButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_guild_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
-		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][8])];
 		_G["GuildButton" .. i]:Show();
 		_G["GuildButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 		_G["GuildButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -253,7 +255,8 @@ function CEPGP_UpdateRaidScrollBar()
 				[3] = CEPGP_roster[name][3], --Rank
 				[4] = EP,
 				[5] = GP,
-				[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+				[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+				[7] = CEPGP_roster[name][7] --Class in English
 			};
 		else
 			tempTable[i] = {
@@ -262,7 +265,8 @@ function CEPGP_UpdateRaidScrollBar()
 				[3] = CEPGP_raidRoster[i][3], --Rank
 				[4] = CEPGP_raidRoster[i][4], --EP
 				[5] = CEPGP_raidRoster[i][5], --GP
-				[6] = CEPGP_raidRoster[i][6] --PR
+				[6] = CEPGP_raidRoster[i][6], --PR
+				[7] = CEPGP_raidRoster[i][8]  --Class in English
 			};
 		end
 		
@@ -282,7 +286,7 @@ function CEPGP_UpdateRaidScrollBar()
 				_G["RaidButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_raid_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
-		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][2])];
+		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][7])];
 		_G["RaidButton" .. i]:Show();
 		_G["RaidButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 		_G["RaidButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -314,7 +318,7 @@ function CEPGP_UpdateVersionScrollBar()
 			end
 			_G["versionButton" .. i]:Show();
 			local name = CEPGP_groupVersion[i][1];
-			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_groupVersion[i][3])];
+			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_groupVersion[i][4])];
 			_G["versionButton" .. i .. "name"]:SetText(CEPGP_groupVersion[i][1]);
 			_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 			_G["versionButton" .. i .. "version"]:SetText(CEPGP_groupVersion[i][2]);
@@ -329,9 +333,10 @@ function CEPGP_UpdateVersionScrollBar()
 					name = CEPGP_groupVersion[x][1];
 					version = CEPGP_groupVersion[x][2];
 					class = CEPGP_groupVersion[x][3];
+					classFileName =  CEPGP_groupVersion[x][4];
 				--	print(name);
 				--	print(class);
-					local colour = RAID_CLASS_COLORS[string.upper(class)];
+					local colour = RAID_CLASS_COLORS[string.upper(classFileName)];
 					_G["versionButton" .. i .. "name"]:SetText(name);
 					_G["versionButton" .. i .. "name"]:SetTextColor(colour.r, colour.g, colour.b);
 					_G["versionButton" .. i .. "version"]:SetText(version);
@@ -466,11 +471,12 @@ function CEPGP_UpdateStandbyScrollBar()
 	local GP;
 	local offNote;
 	local colour;
+	local classFileName;
 	t = {};
 	tSize = CEPGP_ntgetn(CEPGP_standbyRoster);
 	for x = 1, tSize do
 		name = CEPGP_standbyRoster[x];
-		index, class, rank, rankIndex, offNote = CEPGP_getGuildInfo(name);
+		index, class, rank, rankIndex, offNote, classFileName = CEPGP_getGuildInfo(name);
 		EP, GP = CEPGP_getEPGP(offNote)
 		t[x] = {
 			[1] = name,
@@ -480,7 +486,8 @@ function CEPGP_UpdateStandbyScrollBar()
 			[5] = EP,
 			[6] = GP,
 			[7] = math.floor((EP/GP)*100)/100,
-			[8] = 0
+			[8] = 0,
+			[9] = classFileName
 		}
 	end
 	t = CEPGP_tSort(t, CEPGP_criteria)
@@ -497,8 +504,9 @@ function CEPGP_UpdateStandbyScrollBar()
 				EP = t[yoffset][5];
 				GP = t[yoffset][6];
 				PR = t[yoffset][7];
+				classFileName = t[yoffset][9]
 				if class then
-					colour = RAID_CLASS_COLORS[string.upper(class)];
+					colour = RAID_CLASS_COLORS[string.upper(classFileName)];
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end
@@ -540,6 +548,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 	local twoMon;
 	local ThreeMon;
 	local avg; --average attendance
+	local classFileName;
 	t = {};
 	if snapshot then
 		tSize = CEPGP_ntgetn(CEPGP_raid_logs[CEPGP_snapshot]);
@@ -552,7 +561,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 		else
 			name = CEPGP_indexToName(x);
 		end
-		index, class, rank = CEPGP_getGuildInfo(name);
+		index, class, rank, _, _, _, classFileName = CEPGP_getGuildInfo(name);
 		if not index then
 			rank = "Non-Guild Member"
 		end
@@ -566,7 +575,8 @@ function CEPGP_UpdateAttendanceScrollBar()
 			[6] = fn,
 			[7] = month,
 			[8] = twoMon,
-			[9] = ThreeMon
+			[9] = ThreeMon,
+			[10] = classFileName
 		}
 	end
 	t = CEPGP_tSort(t, 1)
@@ -586,10 +596,11 @@ function CEPGP_UpdateAttendanceScrollBar()
 				month = t[yoffset][7];
 				twoMon = t[yoffset][8];
 				threeMon = t[yoffset][9];
+				classFileName = t[yoffset][10];
 				avg = total/CEPGP_ntgetn(CEPGP_raid_logs);
 				avg = math.floor(avg*100)/100;
 				if class then
-					colour = RAID_CLASS_COLORS[string.upper(class)];
+					colour = RAID_CLASS_COLORS[string.upper(classFileName)];
 				else
 					colour = RAID_CLASS_COLORS["WARRIOR"];
 				end

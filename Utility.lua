@@ -498,7 +498,7 @@ function CEPGP_rosterUpdate(event)
 			HideUIPanel(CEPGP_button_guild_restore);
 		end
 		for i = 1, numGuild do
-			local name, rank, rankIndex, _, class, _, _, officerNote, online = GetGuildRosterInfo(i);
+			local name, rank, rankIndex, _, class, _, _, officerNote, online, _, classFileName = GetGuildRosterInfo(i);
 			if string.find(name, "-") then
 				name = string.sub(name, 0, string.find(name, "-")-1);
 			end
@@ -511,19 +511,22 @@ function CEPGP_rosterUpdate(event)
 				[3] = rank,
 				[4] = rankIndex,
 				[5] = officerNote,
-				[6] = PR
+				[6] = PR,
+				[7] = classFileName
 				};
 				if online and CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
 						[1] = name,
 						[2] = "Addon not enabled",
-						[3] = class
+						[3] = class,
+						[4] = classFileName
 					};
 				elseif CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
 						[1] = name,
 						[2] = "Offline",
-						[3] = class
+						[3] = class,
+						[4] = classFileName
 					};
 				end
 			end
@@ -554,7 +557,7 @@ function CEPGP_rosterUpdate(event)
 				CEPGP_UpdateStandbyScrollBar();
 			end
 			local rank;
-			local _, _, _, _, class = GetRaidRosterInfo(i);
+			local _, _, _, _, class, classFileName = GetRaidRosterInfo(i);
 			if CEPGP_roster[name] then
 				rank = CEPGP_roster[name][3];
 				local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], _, name);
@@ -566,7 +569,8 @@ function CEPGP_rosterUpdate(event)
 					[4] = rankIndex,
 					[5] = EP,
 					[6] = GP,
-					[7] = tonumber(EP)/tonumber(GP)
+					[7] = tonumber(EP)/tonumber(GP),
+					[8] = classFileName
 				};
 			else
 				rank = "Not in Guild";
@@ -577,7 +581,8 @@ function CEPGP_rosterUpdate(event)
 					[4] = 11,
 					[5] = 0,
 					[6] = 1,
-					[7] = 0
+					[7] = 0,
+					[8] = classFileName
 				};
 			end
 		end
@@ -719,7 +724,7 @@ end
 
 function CEPGP_getGuildInfo(name)
 	if CEPGP_tContains(CEPGP_roster, name, true) then
-		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6];  -- index, class, Rank, RankIndex, OfficerNote, PR
+		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6], CEPGP_roster[name][8];  -- index, class, Rank, RankIndex, OfficerNote, PR, className in English
 	else
 		return nil;
 	end
