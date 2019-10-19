@@ -786,8 +786,8 @@ function CEPGP_getEPGP(offNote, index, name)
 			if not index then return 0, BASEGP; end
 			local EP, GP;
 			--Error with player's EPGP has been detected and will attempt to be salvaged
-			if string.find(offNote, '^[0-9]+,') or string.find(offNote, '^[0-9]+.[0-9]+,') then --EP is assumed in tact
-				if string.find(offNote, ',[0-9]+') or string.find(offNote, ',[0-9]+.[0-9]+$') then
+			if string.find(offNote, '^[0-9]+,') then --EP is assumed in tact
+				if string.find(offNote, ',[0-9]+') then
 					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 					GP = strsub(offNote, string.find(offNote, ',[0-9]+')+1, string.find(offNote, '[^0-9,]')-1);
 					if CanEditOfficerNote() then
@@ -795,6 +795,7 @@ function CEPGP_getEPGP(offNote, index, name)
 						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
 					end
 					return EP,GP;
+					
 				elseif string.find(offNote, '[0-9]+$') then
 					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 					GP = strsub(offNote, string.find(offNote, '[0-9]+$'), string.len(offNote));
@@ -803,6 +804,7 @@ function CEPGP_getEPGP(offNote, index, name)
 						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
 					end
 					return EP,GP;
+					
 				else
 					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 					if CanEditOfficerNote() then
@@ -811,6 +813,7 @@ function CEPGP_getEPGP(offNote, index, name)
 					end
 					return EP, BASEGP;
 				end
+				
 				return EP, BASEGP;
 			elseif string.find(offNote, ',[0-9]+$') then --GP is assumed in tact
 				GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
@@ -846,7 +849,7 @@ function CEPGP_getEPGP(offNote, index, name)
 	end
 	local EP, GP = nil;
 	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
-		return 0, 1;
+		return 0, BASEGP;
 	end
 	EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 	GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
@@ -854,6 +857,9 @@ function CEPGP_getEPGP(offNote, index, name)
 end
 
 function CEPGP_checkEPGP(note)
+	if string.find(note, '[^0-9.,-]') then
+		return false;
+	end
 	if string.find(note, '^[0-9]+,[0-9]+$') or string.find(note, '^[0-9]+.[0-9]+,[0-9]+.[0-9]+$') or
 		string.find(note, '^[0-9]+,[0-9]+.[0-9]+$') or string.find(note, '^[0-9]+.[0-9]+,[0-9]+$') then --EPGP is positive
 		return true;
