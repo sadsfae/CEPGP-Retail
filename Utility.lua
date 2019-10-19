@@ -641,9 +641,12 @@ function CEPGP_addToStandby(player)
 	if not CEPGP_tContains(CEPGP_roster, player, true) then
 		CEPGP_print(player .. " is not a guild member", true);
 		return;
-	elseif CEPGP_tContains(CEPGP_standbyRoster, player) then
-		CEPGP_print(player .. " is already in the standby roster", true);
-		return;
+	end
+	for _, v in pairs(CEPGP_standbyRoster) do
+		if v[1] == player then
+			CEPGP_print(player .. " is already in the standby roster", true);
+			return;
+		end
 	end
 	for _, v in ipairs(CEPGP_raidRoster) do
 		if player == v[1] then
@@ -653,7 +656,7 @@ function CEPGP_addToStandby(player)
 	end	
 	local _, class, rank, rankIndex, oNote, _, classFile = CEPGP_getGuildInfo(player);
 	local EP,GP = CEPGP_getEPGP(oNote);
-	CEPGP_standbyRoster[CEPGP_ntgetn(CEPGP_standbyRoster)+1] = {
+	CEPGP_standbyRoster[#CEPGP_standbyRoster+1] = {
 		[1] = player,
 		[2] = class,
 		[3] = rank,
