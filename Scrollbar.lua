@@ -366,6 +366,7 @@ function CEPGP_UpdateVersionScrollBar()
 			end
 			_G["versionButton" .. i]:Show();
 			local name = CEPGP_groupVersion[i][1];
+			local classFileName = CEPGP_groupVersion[i][4];
 			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_groupVersion[i][4])];
 			if not colour then
 				colour = {

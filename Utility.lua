@@ -607,26 +607,6 @@ function CEPGP_rosterUpdate(event)
 	end
 end
 
-function CEPGP_translateClass(class)
-	if GetLocale() ~= "enUS" then
-		for x = 1, 11 do
-			local t = { C_CreatureInfo.GetClassInfo(x) };
-			for _, v in pairs(t) do
-				for field, value in pairs(v) do
-					if field == "className" and value == class then
-						class = v["classFile"];
-						break;
-					end
-				end
-			end
-		end
-		local temp = string.sub(class, 1, 1);
-		local temp2 = string.sub(class, 2);
-		class = temp .. string.lower(temp2);
-	end
-	return class;
-end
-
 function CEPGP_addToStandby(player)
 	if not player then return; end
 	if not UnitInRaid("player") then
@@ -750,8 +730,6 @@ function CEPGP_toggleStandbyRanks(show)
 		CEPGP_options_standby_ep_list_button:Hide();
 		CEPGP_options_standby_ep_accept_whispers_check:Hide();
 		CEPGP_options_standby_ep_accept_whispers:Hide();
-		CEPGP_options_standby_ep_offline_check:Hide();
-		CEPGP_options_standby_ep_offline:Hide();
 		CEPGP_options_standby_ep_message_val:Hide();
 		CEPGP_options_standby_ep_whisper_message:Hide();
 		CEPGP_options_standby_ep_byrank_check:SetChecked(true);
@@ -764,8 +742,6 @@ function CEPGP_toggleStandbyRanks(show)
 		CEPGP_options_standby_ep_list_button:Show();
 		CEPGP_options_standby_ep_accept_whispers_check:Show();
 		CEPGP_options_standby_ep_accept_whispers:Show();
-		CEPGP_options_standby_ep_offline_check:Show();
-		CEPGP_options_standby_ep_offline:Show();
 		CEPGP_options_standby_ep_message_val:Show();
 		CEPGP_options_standby_ep_byrank_check:SetChecked(false);
 		CEPGP_options_standby_ep_manual_check:SetChecked(true);

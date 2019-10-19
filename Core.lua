@@ -481,7 +481,7 @@ function CEPGP_addStandbyEP(amount, boss, msg)
 				end				
 				for i = 1, table.getn(STANDBYRANKS) do
 					if STANDBYRANKS[i][1] == rank then
-						if STANDBYRANKS[i][2] == true then
+						if STANDBYRANKS[i][2] == true and (online or STANDBYOFFLINE) then
 							if offNote == "" or offNote == "Click here to set an Officer's Note" then
 								GuildRosterSetOfficerNote(CEPGP_roster[name][1], EP .. "," .. BASEGP);
 							else

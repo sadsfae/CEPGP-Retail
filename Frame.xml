@@ -1583,12 +1583,12 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_standby_ep_byrank" inherits="GameFontNormal" text="Award Standby EP by Rank: ">
+								<FontString name="CEPGP_options_standby_ep_offline" inherits="GameFontNormal" text="Award Standby EP to Offline Players: ">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
-										<Anchor point="RIGHT" relativePoint="RIGHT">
+										<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeTo="CEPGP_options_standby_ep_byrank">
 											<Offset>
-												<AbsDimension x="-40" y="-32.5" />
+												<AbsDimension x="0" y="5" />
 											</Offset>
 										</Anchor>
 									</Anchors>
@@ -1603,20 +1603,10 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_standby_ep_offline" inherits="GameFontNormal" text="Award Standby EP to Offline Players: ">
-									<Color r="1" g="1" b="1"/>
-									<Anchors>
-										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_standby_ep_val_percent">
-											<Offset>
-												<AbsDimension x="0" y="-10" />
-											</Offset>
-										</Anchor>
-									</Anchors>
-								</FontString>
 								<FontString name="CEPGP_options_standby_ep_accept_whispers" inherits="GameFontNormal" text="Allow Whispers for Standby EP Designation:">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
-										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_standby_ep_offline">
+										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_standby_ep_val_percent">
 											<Offset>
 												<AbsDimension x="0" y="-8" />
 											</Offset>
@@ -1636,9 +1626,9 @@
 								<FontString name="CEPGP_options_standby_ep_rank_1" inherits="GameFontNormal" text="">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
-										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_standby_ep_offline">
+										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_standby_ep_val_percent">
 											<Offset>
-												<AbsDimension x="0" y="10" />
+												<AbsDimension x="0" y="-15" />
 											</Offset>
 										</Anchor>
 									</Anchors>
@@ -1688,7 +1678,7 @@
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_standby_ep_rank_1">
 											<Offset>
-												<AbsDimension x="80" y="0" />
+												<AbsDimension x="100" y="0" />
 											</Offset>
 										</Anchor>
 									</Anchors>
@@ -3839,7 +3829,7 @@
 						CEPGP_SendAddonMsg("version-check", "GUILD");
 						CEPGP_groupVersion = {};
 						for i = 1, GetNumGuildMembers() do
-							local name, _, _, _, class, _, _, _, online = GetGuildRosterInfo(i);
+							local name, _, _, _, class, _, _, _, online, _, classFileName = GetGuildRosterInfo(i);
 							if string.find(name, "-") then
 								name = string.sub(name, 0, string.find(name, "-")-1);
 							end
@@ -3847,13 +3837,15 @@
 								CEPGP_groupVersion[i] = {
 									[1] = name,
 									[2] = "Addon not enabled",
-									[3] = class
+									[3] = class,
+									[4] = classFileName
 								};
 							else
 								CEPGP_groupVersion[i] = {
 									[1] = name,
 									[2] = "Offline",
-									[3] = class
+									[3] = class,
+									[4] = classFileName
 								};
 							end
 						end
