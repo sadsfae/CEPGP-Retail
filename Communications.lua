@@ -116,7 +116,7 @@ function CEPGP_IncAddonMsg(message, sender)
 	elseif args[1] == "STANDBYEP" and args[2] == UnitName("player") then
 		CEPGP_print(args[3]);
 		
-	elseif args[1] == "StandbyListAdd" and UnitIsGroupAssistant("player") then
+	elseif args[1] == "StandbyListAdd" and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) then
 		if CEPGP_tContains(CEPGP_standbyRoster, args[2]) then
 			return;
 		end

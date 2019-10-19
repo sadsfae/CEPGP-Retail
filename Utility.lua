@@ -501,7 +501,7 @@ function CEPGP_rosterUpdate(event)
 			HideUIPanel(CEPGP_button_guild_restore);
 		end
 		for i = 1, numGuild do
-			local name, rank, rankIndex, _, class, _, _, officerNote, online = GetGuildRosterInfo(i);
+			local name, rank, rankIndex, _, class, _, _, officerNote, online, _, classFileName = GetGuildRosterInfo(i);
 			if string.find(name, "-") then
 				name = string.sub(name, 0, string.find(name, "-")-1);
 			end
@@ -514,19 +514,22 @@ function CEPGP_rosterUpdate(event)
 				[3] = rank,
 				[4] = rankIndex,
 				[5] = officerNote,
-				[6] = PR
+				[6] = PR,
+				[7] = classFileName
 				};
 				if online and CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
 						[1] = name,
 						[2] = "Addon not enabled",
-						[3] = class
+						[3] = class,
+						[4] = classFileName
 					};
 				elseif CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
 						[1] = name,
 						[2] = "Offline",
-						[3] = class
+						[3] = class,
+						[4] = classFileName
 					};
 				end
 			end
@@ -562,7 +565,7 @@ function CEPGP_rosterUpdate(event)
 				CEPGP_UpdateStandbyScrollBar();
 			end
 			local rank;
-			local _, _, _, _, class = GetRaidRosterInfo(i);
+			local _, _, _, _, class, classFileName = GetRaidRosterInfo(i);
 			if CEPGP_roster[name] then
 				rank = CEPGP_roster[name][3];
 				local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], _, name);
@@ -574,7 +577,8 @@ function CEPGP_rosterUpdate(event)
 					[4] = rankIndex,
 					[5] = EP,
 					[6] = GP,
-					[7] = tonumber(EP)/tonumber(GP)
+					[7] = tonumber(EP)/tonumber(GP),
+					[8] = classFileName
 				};
 			else
 				rank = "Not in Guild";
@@ -585,7 +589,8 @@ function CEPGP_rosterUpdate(event)
 					[4] = 11,
 					[5] = 0,
 					[6] = 1,
-					[7] = 0
+					[7] = 0,
+					[8] = classFileName
 				};
 			end
 		end
@@ -646,7 +651,7 @@ function CEPGP_addToStandby(player)
 			return;
 		end
 	end	
-	local _, class, rank, rankIndex, oNote = CEPGP_getGuildInfo(player);
+	local _, class, rank, rankIndex, oNote, _, classFile = CEPGP_getGuildInfo(player);
 	local EP,GP = CEPGP_getEPGP(oNote);
 	CEPGP_standbyRoster[CEPGP_ntgetn(CEPGP_standbyRoster)+1] = {
 		[1] = player,
@@ -655,7 +660,8 @@ function CEPGP_addToStandby(player)
 		[4] = rankIndex,
 		[5] = EP,
 		[6] = GP,
-		[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+		[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+		[8] = classFile
 	};
 	CEPGP_SendAddonMsg("StandbyListAdd;"..player..";"..class..";"..rank..";"..rankIndex..";"..EP..";"..GP, "RAID");
 	CEPGP_UpdateStandbyScrollBar();
@@ -765,7 +771,7 @@ end
 
 function CEPGP_getGuildInfo(name)
 	if CEPGP_tContains(CEPGP_roster, name, true) then
-		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6];  -- index, class, Rank, RankIndex, OfficerNote, PR
+		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6], CEPGP_roster[name][7];  -- index, class, Rank, RankIndex, OfficerNote, PR, className in English
 	else
 		return nil;
 	end
@@ -1329,17 +1335,15 @@ function CEPGP_getPlayerClass(name, index)
 		return _, {r=1, g=0.10, b=0.10};
 	end
 	if index then
-		_, _, _, _, class = GetGuildRosterInfo(index);
-		class = CEPGP_translateClass(class);
-		return class, RAID_CLASS_COLORS[string.upper(class)];
+		_, _, _, _, _, _, _, _, _, _, classFileName = GetGuildRosterInfo(index);
+		return class, RAID_CLASS_COLORS[classFileName];
 	else
 		local id = CEPGP_nameToIndex(name);
 		if not id then
 			return nil;
 		else
-			_, _, _, _, class = GetGuildRosterInfo(id);
-			class = CEPGP_translateClass(class);
-			return class, RAID_CLASS_COLORS[string.upper(class)];
+			_, _, _, _, _, _, _, _, _, _, classFileName = GetGuildRosterInfo(id);
+			return class, RAID_CLASS_COLORS[classFileName];
 		end
 	end
 end
@@ -1354,6 +1358,9 @@ function CEPGP_recordAttendance()
 	};
 	for i = 1, GetNumGroupMembers(), 1 do
 		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][i+1] = GetRaidRosterInfo(i);
+	end
+	for k, v in pairs(CEPGP_standbyRoster) do
+		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][#CEPGP_raid_logs[#CEPGP_raid_logs]+1] = v[1];
 	end
 	CEPGP_print("Snapshot recorded");
 	CEPGP_UpdateAttendanceScrollBar();

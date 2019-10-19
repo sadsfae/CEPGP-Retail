@@ -6382,7 +6382,7 @@
 		<Scripts>
 			<OnLoad>
 				CEPGP_notice_frame:SetWidth(CEPGP_notice_desc:GetStringWidth()+25);
-				CEPGP_notice_desc:SetText("|c00FF0000Classic EPGP Important Notice|r\nVersion 1.12.0 contains major updates which\nrender previous versions of CEPGP incompatible.\n\nPlease ensure that your guild members update to\nversion 1.12.0 to avoid unexpected results.");
+				CEPGP_notice_desc:SetText("|c00FF0000Classic EPGP Important Notice|r\nVersion 1.12.0 contained major updates which\nrender previous versions of CEPGP incompatible.\n\nPlease ensure that your guild members update to\nthe latest version to avoid unexpected results.");
 			</OnLoad>
 		</Scripts>
 	</Frame>

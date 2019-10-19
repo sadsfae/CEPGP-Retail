@@ -14,7 +14,8 @@ function CEPGP_UpdateLootScrollBar()
 			[6] = GP,
 			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
 			[8] = CEPGP_itemsTable[name][1] or "noitem",
-			[9] = CEPGP_itemsTable[name][2] or "noitem"
+			[9] = CEPGP_itemsTable[name][2] or "noitem",
+			[10] = CEPGP_roster[name][7] --className in English
 		};
 		count = count + 1;
 	end
@@ -42,8 +43,7 @@ function CEPGP_UpdateLootScrollBar()
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
 						iString = CEPGP_getItemString(link);
-						local colour;
-						colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 						if not colour then
 							colour = {
 							r = 1,
@@ -76,8 +76,7 @@ function CEPGP_UpdateLootScrollBar()
 					end);
 				else
 					iString = CEPGP_getItemString(link);
-					local colour;
-					colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 					if not colour then
 						colour = {
 						r = 1,
@@ -122,8 +121,7 @@ function CEPGP_UpdateLootScrollBar()
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id)
 						iString2 = CEPGP_getItemString(link);
-						local colour;
-						colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+						local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 						if not colour then
 							colour = {
 							r = 1,
@@ -156,8 +154,7 @@ function CEPGP_UpdateLootScrollBar()
 					end);
 				else
 					iString2 = CEPGP_getItemString(link);
-					local colour;
-					colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+					local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 					if not colour then
 						colour = {
 						r = 1,
@@ -193,8 +190,7 @@ function CEPGP_UpdateLootScrollBar()
 				_G["LootDistButton" .. i .. "Icon2"]:SetTexture(nil);
 			end
 		else --Recipient has no items in the corresponding slots
-			local colour;
-			colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+			local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][10])];
 			if not colour then
 				colour = {
 				r = 1,
@@ -244,7 +240,8 @@ function CEPGP_UpdateGuildScrollBar()
 			[4] = v[4], --RankIndex
 			[5] = EP,
 			[6] = GP,
-			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+			[8] = v[7] -- className in English
 		};
 	end
 	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
@@ -261,8 +258,7 @@ function CEPGP_UpdateGuildScrollBar()
 				_G["GuildButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_guild_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
-		local colour;
-		colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][8])];
 		if not colour then
 			colour = {
 			r = 1,
@@ -301,7 +297,8 @@ function CEPGP_UpdateRaidScrollBar()
 				[3] = CEPGP_roster[name][3], --Rank
 				[4] = EP,
 				[5] = GP,
-				[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100
+				[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+				[7] = CEPGP_roster[name][7] --Class in English
 			};
 		else
 			tempTable[i] = {
@@ -310,7 +307,8 @@ function CEPGP_UpdateRaidScrollBar()
 				[3] = CEPGP_raidRoster[i][3], --Rank
 				[4] = CEPGP_raidRoster[i][4], --EP
 				[5] = CEPGP_raidRoster[i][5], --GP
-				[6] = CEPGP_raidRoster[i][6] --PR
+				[6] = CEPGP_raidRoster[i][6], --PR
+				[7] = CEPGP_raidRoster[i][8]  --Class in English
 			};
 		end
 		
@@ -329,8 +327,7 @@ function CEPGP_UpdateRaidScrollBar()
 				_G["RaidButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_raid_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
-		local colour;
-		colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+		local colour = RAID_CLASS_COLORS[string.upper(tempTable[i][7])];
 		if not colour then
 			colour = {
 			r = 1,
@@ -369,8 +366,7 @@ function CEPGP_UpdateVersionScrollBar()
 			end
 			_G["versionButton" .. i]:Show();
 			local name = CEPGP_groupVersion[i][1];
-			local colour;
-			colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(CEPGP_groupVersion[i][3]))];
+			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_groupVersion[i][4])];
 			if not colour then
 				colour = {
 				r = 1,
@@ -392,10 +388,10 @@ function CEPGP_UpdateVersionScrollBar()
 					name = CEPGP_groupVersion[x][1];
 					version = CEPGP_groupVersion[x][2];
 					class = CEPGP_groupVersion[x][3];
+					classFileName =  CEPGP_groupVersion[x][4];
 				--	print(name);
 				--	print(class);
-					local colour;
-					colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(class))];
+					local colour = RAID_CLASS_COLORS[string.upper(classFileName)];
 					if not colour then
 						colour = {
 						r = 1,
@@ -549,10 +545,10 @@ function CEPGP_UpdateStandbyScrollBar()
 			[4] = CEPGP_standbyRoster[i][4], --rankIndex
 			[5] = CEPGP_standbyRoster[i][5], --EP
 			[6] = CEPGP_standbyRoster[i][6], --GP
-			[7] = CEPGP_standbyRoster[i][7] --PR
+			[7] = CEPGP_standbyRoster[i][7], --PR
+			[8] = CEPGP_standbyRoster[i][8] --ClassFile
 		};
-		local colour;
-		colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+		local colour = RAID_CLASS_COLORS[tempTable[i][8]];
 		if not colour then
 			colour = {
 			r = 1,
@@ -579,7 +575,7 @@ end
 function CEPGP_UpdateAttendanceScrollBar()
 	if #CEPGP_raid_logs == 0 then return; end
 	local tempTable = {};
-	local name, class, rank, index, colour, total, week, fn, month, twoMon, threeMon;
+	local name, class, classFile, rank, index, colour, total, week, fn, month, twoMon, threeMon;
 	local kids = {_G["CEPGP_attendance_scrollframe_container"]:GetChildren()};
 	for _, child in ipairs(kids) do
 		child:Hide();
@@ -605,7 +601,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 			name = CEPGP_indexToName(i);
 		end
 		total, week, fn, month, twoMon, threeMon = CEPGP_calcAttendance(name);
-		index, class, rank = CEPGP_getGuildInfo(name);
+		index, class, rank, _, _, _, classFile = CEPGP_getGuildInfo(name);
 		if not index then
 			rank = "Non-Guild Member";
 		end
@@ -619,7 +615,8 @@ function CEPGP_UpdateAttendanceScrollBar()
 			[6] = tostring(fn),
 			[7] = tostring(month),
 			[8] = tostring(twoMon),
-			[9] = tostring(threeMon)
+			[9] = tostring(threeMon),
+			[10] = classFile
 		}
 	end
 	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
@@ -632,8 +629,8 @@ function CEPGP_UpdateAttendanceScrollBar()
 	for i = 1, size do
 		local avg = tempTable[i][4]/CEPGP_ntgetn(CEPGP_raid_logs);
 		avg = math.floor(avg*100)/100;
-		if tempTable[i][2] then
-			colour = RAID_CLASS_COLORS[string.upper(CEPGP_translateClass(tempTable[i][2]))];
+		if tempTable[i][10] then
+			colour = RAID_CLASS_COLORS[tempTable[i][10]];
 		end
 		if not colour then
 			colour = {
