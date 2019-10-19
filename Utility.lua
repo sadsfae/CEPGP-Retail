@@ -1356,14 +1356,20 @@ function CEPGP_recordAttendance()
 		CEPGP_print("You are not in a raid group", true);
 		return;
 	end
-	CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)+1] = {
+	CEPGP_raid_logs[#CEPGP_raid_logs+1] = {
 		[1] = time()
 	};
 	for i = 1, GetNumGroupMembers(), 1 do
-		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][i+1] = GetRaidRosterInfo(i);
+		CEPGP_raid_logs[#CEPGP_raid_logs][i+1] = {
+			[1] = GetRaidRosterInfo(i),
+			[2] = false --Are they a standby player? Nope.
+		};
 	end
 	for k, v in pairs(CEPGP_standbyRoster) do
-		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][#CEPGP_raid_logs[#CEPGP_raid_logs]+1] = v[1];
+		CEPGP_raid_logs[#CEPGP_raid_logs][#CEPGP_raid_logs[#CEPGP_raid_logs]+1] = { --CEPGP_raid_logs[index][timestamp][1] = player name, [2] = bool
+			[1] = v[1],
+			[2] = true --Are they a standby player? YUP.
+		};
 	end
 	CEPGP_print("Snapshot recorded");
 	CEPGP_UpdateAttendanceScrollBar();
@@ -1421,11 +1427,31 @@ function CEPGP_calcAttendance(name)
 	local cMonth = 0; --count month
 	local cTwoMonth = 0; --count 2 months
 	local cThreeMonth = 0; --count 3 months
-	for k, v in pairs(CEPGP_raid_logs) do
+	for _, v in pairs(CEPGP_raid_logs) do
 		for i = 2, CEPGP_ntgetn(v), 1 do
 			local diff = time() - v[1];
 			diff = diff/60/60/24;
-			if v[i] == name then
+			if v[i] == name then --Accommodates for the old raid attendance structure
+				count = count + 1;
+				if diff <= 90 then
+					cThreeMonth = cThreeMonth + 1;
+					if diff <= 60 then
+						cTwoMonth = cTwoMonth + 1;
+						if diff <= 30 then
+							cMonth = cMonth + 1;
+							if diff <= 14 then
+								cFN = cFN + 1;
+								if diff <= 7 then
+									cWeek = cWeek + 1;
+								end
+							end
+						end
+					end
+				end
+				break;
+			elseif v[i][1] == name then --Accommodates for the new raid attendance structure (i.e. [1] = name, [2] = bool for standby roster
+				local diff = time() - v[1];
+				diff = diff/60/60/24;
 				count = count + 1;
 				if diff <= 90 then
 					cThreeMonth = cThreeMonth + 1;

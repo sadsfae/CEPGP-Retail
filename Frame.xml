@@ -5562,6 +5562,15 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="CEPGP_attendance_standby_text" inherits="GameFontNormal" text="Standby List" hidden="true">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="15" y="-55" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -5867,6 +5876,21 @@
 					<Frame name="CEPGP_attendance_scrollframe_container">
 						<Size>
 							<AbsDimension x="620" y="315" />
+						</Size>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+			<ScrollFrame name="CEPGP_attendance_scrollframe_standby" inherits="UIPanelScrollFrameTemplate" hidden="true">
+				<Size>
+					<AbsDimension x="600" y="100"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_attendance_standby_text" />
+				</Anchors>
+				<ScrollChild>
+					<Frame name="CEPGP_attendance_scrollframe_standby_container">
+						<Size>
+							<AbsDimension x="600" y="100" />
 						</Size>
 					</Frame>
 				</ScrollChild>

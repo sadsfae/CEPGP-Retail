@@ -574,29 +574,33 @@ end
 
 function CEPGP_UpdateAttendanceScrollBar()
 	if #CEPGP_raid_logs == 0 then return; end
-	local tempTable = {};
-	local name, class, classFile, rank, index, colour, total, week, fn, month, twoMon, threeMon;
 	local kids = {_G["CEPGP_attendance_scrollframe_container"]:GetChildren()};
 	for _, child in ipairs(kids) do
 		child:Hide();
 	end
+	kids = {_G["CEPGP_attendance_scrollframe_standby_container"]:GetChildren()};
+	for _, child in ipairs(kids) do
+		child:Hide();
+	end
+	local tempTable, standbyTable = {}, {};
+	local name, class, classFile, rank, index, colour, total, week, fn, month, twoMon, threeMon;
 	local size;
+	local sbCount = 1;
+	local count = 1;
 	if CEPGP_snapshot then 
 		size = #CEPGP_raid_logs[CEPGP_snapshot]-1;
 	else
 		size = CEPGP_ntgetn(CEPGP_roster);
 	end
 	for i = 1, size do
-		if not _G["AttendanceButton" .. i] then
-			local frame = CreateFrame('Button', "AttendanceButton" .. i, _G["CEPGP_attendance_scrollframe_container"], "AttendanceButtonTemplate");
-			if i > 1 then
-				_G["AttendanceButton" .. i]:SetPoint("TOPLEFT", _G["AttendanceButton" .. i-1], "BOTTOMLEFT", 0, -2);
-			else
-				_G["AttendanceButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_attendance_scrollframe_container"], "TOPLEFT", 0, -10);
-			end
-		end
+		local standby = false;
 		if CEPGP_snapshot then
-			name = CEPGP_raid_logs[CEPGP_snapshot][i+1];
+			if type(CEPGP_raid_logs[CEPGP_snapshot][i+1]) == "table" then
+				name = CEPGP_raid_logs[CEPGP_snapshot][i+1][1];
+				standby = CEPGP_raid_logs[CEPGP_snapshot][i+1][2];
+			else
+				name = CEPGP_raid_logs[CEPGP_snapshot][i+1];
+			end
 		else
 			name = CEPGP_indexToName(i);
 		end
@@ -605,29 +609,69 @@ function CEPGP_UpdateAttendanceScrollBar()
 		if not index then
 			rank = "Non-Guild Member";
 		end
-		
-		tempTable[i] = {
-			[1] = name,
-			[2] = class,
-			[3] = rank,
-			[4] = total,
-			[5] = tostring(week),
-			[6] = tostring(fn),
-			[7] = tostring(month),
-			[8] = tostring(twoMon),
-			[9] = tostring(threeMon),
-			[10] = classFile
-		}
+		if standby then
+			standbyTable[sbCount] = {
+				[1] = name,
+				[2] = class,
+				[3] = rank,
+				[4] = total,
+				[5] = tostring(week),
+				[6] = tostring(fn),
+				[7] = tostring(month),
+				[8] = tostring(twoMon),
+				[9] = tostring(threeMon),
+				[10] = classFile,
+				[11] = standby
+			}
+			sbCount = sbCount + 1;
+		else
+			tempTable[count] = {
+				[1] = name,
+				[2] = class,
+				[3] = rank,
+				[4] = total,
+				[5] = tostring(week),
+				[6] = tostring(fn),
+				[7] = tostring(month),
+				[8] = tostring(twoMon),
+				[9] = tostring(threeMon),
+				[10] = classFile,
+				[11] = false
+			}
+			count = count + 1;
+		end
 	end
 	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
+	standbyTable = CEPGP_tSort(standbyTable, CEPGP_criteria);
+	local adjust = false;
+	if #standbyTable > 0 then
+		adjust = true;
+	end
+	if adjust then
+		_G["CEPGP_attendance_scrollframe"]:SetSize(600, 175);
+		_G["CEPGP_attendance_scrollframe_container"]:SetSize(600, 175);
+		_G["CEPGP_attendance_scrollframe"]:SetPoint("TOPLEFT", "CEPGP_attendance_header_name", "BOTTOMLEFT", 10, 0);
+		_G["CEPGP_attendance_scrollframe_standby"]:Show();
+		_G["CEPGP_attendance_scrollframe_standby_container"]:Show();
+		_G["CEPGP_attendance_standby_text"]:Show();
+	else
+		_G["CEPGP_attendance_scrollframe"]:SetSize(600, 315);
+		_G["CEPGP_attendance_scrollframe_container"]:SetSize(600, 315);
+		_G["CEPGP_attendance_scrollframe"]:SetPoint("RIGHT", "CEPGP_attendance", "RIGHT", -35, -20);
+		_G["CEPGP_attendance_scrollframe_standby"]:Hide();
+		_G["CEPGP_attendance_scrollframe_standby_container"]:Hide();
+		_G["CEPGP_attendance_standby_text"]:Hide();
+	end
 	local totals = {CEPGP_calcAttIntervals()};
 	if #CEPGP_raid_logs then
 		_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: " .. #CEPGP_raid_logs);
 	else
 		_G["CEPGP_attendance_header_total"]:SetText("Total Snapshots Recorded: 0");
 	end
+	
+	size = #tempTable;
 	for i = 1, size do
-		local avg = tempTable[i][4]/CEPGP_ntgetn(CEPGP_raid_logs);
+		local avg = tempTable[i][4]/#CEPGP_raid_logs;
 		avg = math.floor(avg*100)/100;
 		if tempTable[i][10] then
 			colour = RAID_CLASS_COLORS[tempTable[i][10]];
@@ -644,6 +688,14 @@ function CEPGP_UpdateAttendanceScrollBar()
 		if tempTable[i][7] == "nil" then tempTable[i][7] = "0"; end;
 		if tempTable[i][8] == "nil" then tempTable[i][8] = "0"; end;
 		if tempTable[i][9] == "nil" then tempTable[i][9] = "0"; end;
+		if not _G["AttendanceButton" .. i] then
+			local frame = CreateFrame('Button', "AttendanceButton" .. i, _G["CEPGP_attendance_scrollframe_container"], "AttendanceButtonTemplate");
+			if i > 1 then
+				_G["AttendanceButton" .. i]:SetPoint("TOPLEFT", _G["AttendanceButton" .. i-1], "BOTTOMLEFT", 0, -2);
+			else
+				_G["AttendanceButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_attendance_scrollframe_container"], "TOPLEFT", 0, -10);
+			end
+		end
 		_G["AttendanceButton" .. i]:Show();
 		_G["AttendanceButton" .. i .. "Info"]:SetText(tempTable[i][1]);
 		_G["AttendanceButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
@@ -680,6 +732,73 @@ function CEPGP_UpdateAttendanceScrollBar()
 			_G["AttendanceButton" .. i .. "Int90"]:SetTextColor(1-(tempTable[i][9]/totals[5]), 1, 0);
 		else
 			_G["AttendanceButton" .. i .. "Int90"]:SetTextColor(1-(tempTable[i][9]/totals[5]), (tempTable[i][9]/totals[5])/1, 0);
+		end
+	end
+	
+			--[[ STANDBY ]]--
+	size = #standbyTable;
+	for i = 1, size do
+		local avg = standbyTable[i][4]/#CEPGP_raid_logs;
+		avg = math.floor(avg*100)/100;
+		if standbyTable[i][10] then
+			colour = RAID_CLASS_COLORS[standbyTable[i][10]];
+		end
+		if not colour then
+			colour = {
+				r = 0.5,
+				g = 0,
+				b = 0
+			};
+		end
+		if standbyTable[i][5] == "nil" then standbyTable[i][5] = "0"; end;
+		if standbyTable[i][6] == "nil" then standbyTable[i][6] = "0"; end;
+		if standbyTable[i][7] == "nil" then standbyTable[i][7] = "0"; end;
+		if standbyTable[i][8] == "nil" then standbyTable[i][8] = "0"; end;
+		if standbyTable[i][9] == "nil" then standbyTable[i][9] = "0"; end;
+		if not _G["StandbyAttendanceButton" .. i] then
+			local frame = CreateFrame('Button', "StandbyAttendanceButton" .. i, _G["CEPGP_attendance_scrollframe_standby_container"], "AttendanceButtonTemplate");
+			if i > 1 then
+				_G["StandbyAttendanceButton" .. i]:SetPoint("TOPLEFT", _G["StandbyAttendanceButton" .. i-1], "BOTTOMLEFT", 0, -2);
+			else
+				_G["StandbyAttendanceButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_attendance_scrollframe_standby_container"], "TOPLEFT", 0, -10);
+			end
+		end
+		_G["StandbyAttendanceButton" .. i]:Show();
+		_G["StandbyAttendanceButton" .. i .. "Info"]:SetText(standbyTable[i][1]);
+		_G["StandbyAttendanceButton" .. i .. "Info"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["StandbyAttendanceButton" .. i .. "Rank"]:SetText(standbyTable[i][3]);
+		_G["StandbyAttendanceButton" .. i .. "Rank"]:SetTextColor(colour.r, colour.g, colour.b);		
+		_G["StandbyAttendanceButton" .. i .. "Total"]:SetText(standbyTable[i][4] .. " (" .. avg*100 .. "%)");
+		_G["StandbyAttendanceButton" .. i .. "Total"]:SetTextColor(1-avg,avg/1,0);
+		_G["StandbyAttendanceButton" .. i .. "Int7"]:SetText(standbyTable[i][5] .. "/" .. totals[1]);
+		if totals[1] == 0 then
+			_G["StandbyAttendanceButton" .. i .. "Int7"]:SetTextColor(1-(standbyTable[i][5]/totals[1]), 1, 0);
+		else
+			_G["StandbyAttendanceButton" .. i .. "Int7"]:SetTextColor(1-(standbyTable[i][5]/totals[1]), (standbyTable[i][5]/totals[1])/1, 0);
+		end
+		_G["StandbyAttendanceButton" .. i .. "Int14"]:SetText(standbyTable[i][6] .. "/" .. totals[2]);
+		if totals[2] == 0 then
+			_G["StandbyAttendanceButton" .. i .. "Int14"]:SetTextColor(1-(standbyTable[i][6]/totals[2]), 1, 0);
+		else
+			_G["StandbyAttendanceButton" .. i .. "Int14"]:SetTextColor(1-(standbyTable[i][6]/totals[2]), (standbyTable[i][6]/totals[2])/1, 0);
+		end
+		_G["StandbyAttendanceButton" .. i .. "Int30"]:SetText(standbyTable[i][7] .. "/" .. totals[3]);
+		if totals[3] == 0 then
+			_G["StandbyAttendanceButton" .. i .. "Int30"]:SetTextColor(1-(standbyTable[i][7]/totals[3]), 1, 0);
+		else
+			_G["StandbyAttendanceButton" .. i .. "Int30"]:SetTextColor(1-(standbyTable[i][7]/totals[3]), (standbyTable[i][7]/totals[3])/1, 0);
+		end		
+		_G["StandbyAttendanceButton" .. i .. "Int60"]:SetText(standbyTable[i][8] .. "/" .. totals[4]);
+		if totals[4] == 0 then
+			_G["StandbyAttendanceButton" .. i .. "Int60"]:SetTextColor(1-(standbyTable[i][8]/totals[4]), 1, 0);
+		else
+			_G["StandbyAttendanceButton" .. i .. "Int60"]:SetTextColor(1-(standbyTable[i][8]/totals[4]), (standbyTable[i][8]/totals[4])/1, 0);
+		end
+		_G["StandbyAttendanceButton" .. i .. "Int90"]:SetText(standbyTable[i][9] .. "/" .. totals[5]);
+		if totals[5] == 0 then
+			_G["StandbyAttendanceButton" .. i .. "Int90"]:SetTextColor(1-(standbyTable[i][9]/totals[5]), 1, 0);
+		else
+			_G["StandbyAttendanceButton" .. i .. "Int90"]:SetTextColor(1-(standbyTable[i][9]/totals[5]), (standbyTable[i][9]/totals[5])/1, 0);
 		end
 	end
 end
