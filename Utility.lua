@@ -108,6 +108,8 @@ function CEPGP_initialise()
 	end
 	
 	CEPGP_updateGuild();
+	hooksecurefunc("GameTooltip_UpdateStyle", CEPGP_addGPTooltip);
+	hooksecurefunc("ChatFrame_OnHyperlinkShow", CEPGP_addGPHyperlink);
 end
 
 function CEPGP_calcGP(link, quantity, id)	
@@ -301,6 +303,22 @@ function CEPGP_calcGP(link, quantity, id)
 			return 0;
 		end
 	end
+end
+
+function CEPGP_addGPTooltip(self)
+	local _, link = self:GetItem();
+	local id = CEPGP_getItemID(CEPGP_getItemString(link));
+	if not id then return; end
+	local gp = CEPGP_calcGP(_, 1, id);
+	GameTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+end
+
+function CEPGP_addGPHyperlink(self, iString)
+	local id = CEPGP_getItemID(iString);
+	if not id then return; end
+	local gp = CEPGP_calcGP(_, 1, id);
+	ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+	ItemRefTooltip:Show();
 end
 
 function CEPGP_populateFrame(CEPGP_criteria, items)
