@@ -121,7 +121,7 @@ function CEPGP_calcGP(link, quantity, id)
 	else
 		return 0;
 	end
-	if not name then 
+	if not name then
 		local item = Item:CreateFromItemID(id);
 		item:ContinueOnItemLoad(function()
 			name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
@@ -306,14 +306,25 @@ function CEPGP_calcGP(link, quantity, id)
 end
 
 function CEPGP_addGPTooltip(self)
+	if not self:GetItem() then return; end
 	local _, link = self:GetItem();
 	local id = CEPGP_getItemID(CEPGP_getItemString(link));
-	if not id then return; end
-	local gp = CEPGP_calcGP(_, 1, id);
-	GameTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+	local name = GetItemInfo(link);
+	if not name then
+		local item = Item:CreateFromItemID(tonumber(id));
+		item:ContinueOnItemLoad(function()
+			local gp = CEPGP_calcGP(_, 1, id);
+			GameTooltip:AddLine("GP Value: " .. gp, {1,1,1});	
+		end);
+	else
+		local gp = CEPGP_calcGP(_, 1, id);
+		GameTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+	end
+	
 end
 
 function CEPGP_addGPHyperlink(self, iString)
+	if not string.find(iString, "item:") then return; end
 	local id = CEPGP_getItemID(iString);
 	if not id then return; end
 	local gp = CEPGP_calcGP(_, 1, id);
@@ -1598,7 +1609,9 @@ function CEPGP_split(msg)
 end
 
 function CEPGP_canEquip(slot)
-	local class = CEPGP_translateClass(UnitClass("player"));
+	local class = CEPGP_roster[UnitName("player")][7];
+	local temp = string.sub(class, 2, string.len(class));
+	class = string.sub(class, 1, 1) .. string.lower(temp);
 	if CEPGP_tContains(CEPGP_classes[class], slot) then return true; end
 	return false;
 end
