@@ -1163,11 +1163,6 @@ function CEPGP_button_options_OnClick()
 	else
 		CEPGP_options_standby_ep_message_val:Show();
 		CEPGP_options_standby_ep_whisper_message:Show();
-	end;
-	if CEPGP_options_standby_ep_check:GetChecked() then
-		CEPGP_options_standby_ep_options:Show();
-	else
-		CEPGP_options_standby_ep_options:Hide();
 	end
 	for k, v in pairs(SLOTWEIGHTS) do
 		if k ~= "ROBE" and k ~= "WEAPON" and k ~= "EXCEPTION" then
