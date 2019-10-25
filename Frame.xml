@@ -1994,6 +1994,7 @@
 									<OnClick>
 										PlaySound(856);
 										CEPGP_toggleFrame("CEPGP_standby");
+										CEPGP_UpdateStandbyScrollBar();
 									</OnClick>
 									<OnEnter>
 										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
@@ -2106,6 +2107,14 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
+						<FontString name="CEPGP_options_gp_tooltips_text" inherits="GameFontNormal" text="Enable GP Values on Tooltips:">
+							<Color r="1" g="1" b="1" />
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_dist_raidwide_text">
+									<AbsDimension x="0" y="-7" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 						<FontString name="CEPGP_options_force_sync" inherits="GameFontNormal" text="Allow Forced Synchronisation from Rank:">
 							<Color r="1" g="1" b="1"/>
 							<Anchors>
@@ -2169,32 +2178,6 @@
 							</OnShow>
 						</Scripts>
 					</EditBox>
-					<Button name="CEPGP_button_options_force_sync" inherits="GameMenuButtonTemplate" text="Force Synchronise">
-						<Size>
-							<AbsDimension x="150" y="21" />
-						</Size>
-						<Anchors>
-							<Anchor point="TOP" relativePoint="TOP">
-								<Offset>
-									<AbsDimension x="0" y="-10" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								PlaySound(799);
-								CEPGP_SendAddonMsg("?forceSync", "GUILD");
-								CEPGP_print("Forced synchronisation with guild members");
-							</OnClick>
-							<OnEnter>
-								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-								GameTooltip:SetText("Forces players below your rank that have the 'Allowed Forced Synchronisation From Rank'\nsetting enabled to use the same settings as your addon.");
-							</OnEnter>
-							<OnLeave>
-								GameTooltip:Hide();
-							</OnLeave>
-						</Scripts>
-					</Button>
 					<CheckButton name="CEPGP_options_allow_forced_sync_check" inherits="UIOptionsCheckButtonTemplate">
 						<HitRectInsets>
 							<AbsInset left="0" right="0" top="0" bottom="0" />
@@ -2387,6 +2370,69 @@
 							</OnShow>
 						</Scripts>
 					</CheckButton>
+					<CheckButton name="CEPGP_options_gp_tooltips_check" inherits="UIOptionsCheckButtonTemplate">
+						<HitRectInsets>
+							<AbsInset left="0" right="0" top="0" bottom="0" />
+						</HitRectInsets>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_gp_tooltips_text">
+								<Offset>
+									<AbsDimension x="-5" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								if self:GetChecked() then
+									CEPPG_gp_tooltips = true;
+									CEPGP_print("Enabled GP values on tooltips.");
+								else
+									CEPPG_gp_tooltips = false;
+									CEPGP_print("Disabled GP values on tooltips");
+								end
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Shows GP values on tooltips based on your current GP formula.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+							<OnShow>
+								if CEPPG_gp_tooltips then
+									self:SetChecked(true);
+								else
+									self:SetChecked(false);
+								end
+							</OnShow>
+						</Scripts>
+					</CheckButton>
+					<Button name="CEPGP_button_options_force_sync" inherits="GameMenuButtonTemplate" text="Force Synchronise">
+						<Size>
+							<AbsDimension x="150" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOM" relativePoint="BOTTOM">
+								<Offset>
+									<AbsDimension x="0" y="25" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_SendAddonMsg("?forceSync", "GUILD");
+								CEPGP_print("Forced synchronisation with guild members");
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Forces players below your rank that have the 'Allowed Forced Synchronisation From Rank'\nsetting enabled to use the same settings as your addon.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 			<Frame name="CEPGP_options_page_3" inherits="CEPGPFrameTemplate">
@@ -3819,23 +3865,26 @@
 						CEPGP_vSearch = "RAID";
 						CEPGP_groupVersion = {};
 						for i = 1, GetNumGroupMembers() do
-							local name, _, _, _, class, _, _, online = GetRaidRosterInfo(i);
+							local name, _, _, _, class, classFile, _, online = GetRaidRosterInfo(i);
 							if online then
 								CEPGP_groupVersion[i] = {
 									[1] = name,
 									[2] = "Addon not enabled",
-									[3] = class
+									[3] = class,
+									[4] = classFile
 								};
 							else
 								CEPGP_groupVersion[i] = {
 									[1] = name,
 									[2] = "Offline",
-									[3] = class
+									[3] = class,
+									[4] = classFile
 								};
 							end
 						end
 						CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
 						CEPGP_UpdateVersionScrollBar();
+
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -4507,6 +4556,26 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+			<Button name="CEPGP_guild_log_restore_delete" inherits="GameMenuButtonTemplate" text="Delete Record">
+				<Size>
+					<AbsDimension x="100" y="30"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset>
+							<AbsDimension x="0" y="16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						local record = UIDropDownMenu_GetSelectedName(CEPGP_restoreDropdown);
+						RECORDS[record] = nil;
+						CEPGP_print("Deleted log: " .. record);
+						CEPGP_UIDropDownMenu_Initialize(self, CEPGP_initRestoreDropdown);
+					</OnClick>
+				</Scripts>
+			</Button>
 			<Button name="CEPGP_guild_log_restore_confirm" inherits="GameMenuButtonTemplate" text="Confirm">
 				<Size>
 					<AbsDimension x="75" y="30"/>
@@ -4765,11 +4834,20 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="CEPGP_override_item_id_string" inherits="GameFontNormal" text="Item ID">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP">
+							<Offset>
+								<AbsDimension x="40" y="-75"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 				<FontString name="CEPGP_override_item_gp_string" inherits="GameFontNormal" text="GP">
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
 							<Offset>
-								<AbsDimension x="-85" y="-75"/>
+								<AbsDimension x="-50" y="-75"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -4779,7 +4857,7 @@
 		<Frames>
 			<EditBox name="CEPGP_override_item_name" inherits="InputBoxTemplate">
 				<Size>
-					<AbsDimension x="200" y="20" />
+					<AbsDimension x="175" y="20" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="CEPGP_override_item_name_string">
@@ -4800,6 +4878,36 @@
 					</OnTabPressed>
 				</Scripts>
 			</EditBox>
+			<EditBox name="CEPGP_override_item_id" inherits="InputBoxTemplate">
+				<Size>
+					<AbsDimension x="75" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="CEPGP_override_item_id_string">
+						<Offset>
+							<AbsDimension x="0" y="-5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:SetAutoFocus(false);
+					</OnLoad>
+					<OnEnterPressed>
+						CEPGP_override_item_gp:SetFocus();
+					</OnEnterPressed>
+					<OnTabPressed>
+						CEPGP_override_item_gp:SetFocus();
+					</OnTabPressed>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:SetText("Item ID can be found by searching for the item on classic.wowhead.com and grabbing it from the URL.\nFor exmaple: https://classic.wowhead.com/item=xxxxx (xxxxx will be the item ID).");
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</EditBox>
 			<EditBox name="CEPGP_override_item_gp" inherits="InputBoxTemplate" numeric="true">
 				<Size>
 					<AbsDimension x="50" y="20" />
@@ -4818,13 +4926,9 @@
 					<OnEnterPressed>
 						self:ClearFocus();
 						PlaySound(799);
-						if CEPGP_override_item_name:GetText() == "" then
-							CEPGP_print("Enter an item name", true);
+						if CEPGP_override_item_name:GetText() == "" and CEPGP_override_item_id:GetText() == "" then
+							CEPGP_print("Enter an item name or ID", true);
 							return;
-						end
-						local item = CEPGP_standardiseString(CEPGP_override_item_name:GetText());
-						if GetItemInfo(item) then
-							_, item = GetItemInfo(item); --Converts the item name to a link
 						end
 						local gp;
 						if CEPGP_override_item_gp:GetText() == "" then
@@ -4832,17 +4936,66 @@
 						else
 							gp = tonumber(CEPGP_override_item_gp:GetText());
 						end
-						if (OVERRIDE_INDEX[item] and overwrite) or not OVERRIDE_INDEX[item] then
-							OVERRIDE_INDEX[item] = gp;
-							CEPGP_print("GP value for " .. item .. " has been overriden to " .. gp);
-							CEPGP_UpdateOverrideScrollBar();
-							CEPGP_override_confirm = false;
-							CEPGP_override_item_name:SetText("");
-							CEPGP_override_item_gp:SetText("");
-							CEPGP_override_item_name:SetFocus();
-						else
-							CEPGP_print(item .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
-							CEPGP_override_confirm = true;
+						if CEPGP_override_item_name:GetText() ~= "" then
+							local item = CEPGP_standardiseString(CEPGP_override_item_name:GetText());
+							if (OVERRIDE_INDEX[item] and CEPGP_override_confirm) or not OVERRIDE_INDEX[item] then
+								OVERRIDE_INDEX[item] = gp;
+								CEPGP_print("GP value for " .. item .. " has been overriden to " .. gp);
+								CEPGP_UpdateOverrideScrollBar();
+								CEPGP_override_confirm = false;
+								CEPGP_override_item_name:SetText("");
+								CEPGP_override_item_name:ClearFocus();
+								CEPGP_override_item_gp:SetText("");
+								CEPGP_override_item_gp:ClearFocus();
+								return;
+							else
+								CEPGP_print(item .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
+								CEPGP_override_confirm = true;
+							end
+						elseif CEPGP_override_item_id:GetText() ~= "" then
+							local id = tonumber(CEPGP_override_item_id:GetText());
+							local _, link = GetItemInfo(id);
+							if not link and CEPGP_itemExists(id) then
+								local item = Item:CreateFromItemID(id);
+								item:ContinueOnItemLoad(function()
+									_, link = GetItemInfo(id);
+									if (OVERRIDE_INDEX[link] and CEPGP_override_confirm) or not OVERRIDE_INDEX[link] then
+										OVERRIDE_INDEX[link] = gp;
+										CEPGP_print("GP value for " .. link .. " |c006969FFhas been overriden to " .. gp);
+										CEPGP_UpdateOverrideScrollBar();
+										CEPGP_override_confirm = false;
+										CEPGP_override_item_id:SetText("");
+										CEPGP_override_item_id:ClearFocus();
+										CEPGP_override_item_name:SetText("");
+										CEPGP_override_item_name:ClearFocus();
+										CEPGP_override_item_gp:SetText("");
+										CEPGP_override_item_gp:ClearFocus();
+										return;
+									else
+										CEPGP_print(link .. " has already been overridden to " .. OVERRIDE_INDEX[link] .. "|c006969FF. Click add again to change self to " .. gp);
+										CEPGP_override_confirm = true;
+									end
+								end);
+							elseif CEPGP_itemExists(id) then
+								if (OVERRIDE_INDEX[link] and CEPGP_override_confirm) or not OVERRIDE_INDEX[link] then
+									OVERRIDE_INDEX[link] = gp;
+									CEPGP_print("GP value for " .. link .. " |c006969FFhas been overriden to " .. gp);
+									CEPGP_UpdateOverrideScrollBar();
+									CEPGP_override_confirm = false;
+									CEPGP_override_item_id:SetText("");
+									CEPGP_override_item_id:ClearFocus();
+									CEPGP_override_item_name:SetText("");
+									CEPGP_override_item_name:ClearFocus();
+									CEPGP_override_item_gp:SetText("");
+									CEPGP_override_item_gp:ClearFocus();
+									return;
+								else
+									CEPGP_print(link .. " has already been overridden to " .. OVERRIDE_INDEX[link] .. "|c006969FF. Click add again to change self to " .. gp);
+									CEPGP_override_confirm = true;
+								end
+							else
+								CEPGP_print("No item exists for item ID " .. id, true);
+							end
 						end
 					</OnEnterPressed>
 					<OnTabPressed>
@@ -4882,29 +5035,76 @@
 				<Scripts>
 					<OnClick>
 						PlaySound(799);
-						if CEPGP_override_item_name:GetText() == "" then
-								CEPGP_print("Enter an item name", true);
+						if CEPGP_override_item_name:GetText() == "" and CEPGP_override_item_id:GetText() == "" then
+							CEPGP_print("Enter an item name or ID", true);
 							return;
 						end
-						local item = CEPGP_standardiseString(CEPGP_override_item_name:GetText());
 						local gp;
 						if CEPGP_override_item_gp:GetText() == "" then
 							gp = 0;
 						else
 							gp = tonumber(CEPGP_override_item_gp:GetText());
 						end
-						if (OVERRIDE_INDEX[item] and CEPGP_override_confirm) or not OVERRIDE_INDEX[item] then
-							OVERRIDE_INDEX[item] = gp;
-							CEPGP_print("GP value for " .. item .. " has been overriden to " .. gp);
-							CEPGP_UpdateOverrideScrollBar();
-							CEPGP_override_confirm = false;
-							CEPGP_override_item_name:SetText("");
-							CEPGP_override_item_name:ClearFocus();
-							CEPGP_override_item_gp:SetText("");
-							CEPGP_override_item_gp:ClearFocus();
-						else
-							CEPGP_print(item .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
-							CEPGP_override_confirm = true;
+						if CEPGP_override_item_name:GetText() ~= "" then
+							local item = CEPGP_standardiseString(CEPGP_override_item_name:GetText());
+							if (OVERRIDE_INDEX[item] and CEPGP_override_confirm) or not OVERRIDE_INDEX[item] then
+								OVERRIDE_INDEX[item] = gp;
+								CEPGP_print("GP value for " .. item .. " has been overriden to " .. gp);
+								CEPGP_UpdateOverrideScrollBar();
+								CEPGP_override_confirm = false;
+								CEPGP_override_item_name:SetText("");
+								CEPGP_override_item_name:ClearFocus();
+								CEPGP_override_item_gp:SetText("");
+								CEPGP_override_item_gp:ClearFocus();
+								return;
+							else
+								CEPGP_print(item .. " has already been overridden to " .. OVERRIDE_INDEX[item] .. ". Click add again to change self to " .. gp);
+								CEPGP_override_confirm = true;
+							end
+						elseif CEPGP_override_item_id:GetText() ~= "" then
+							local id = tonumber(CEPGP_override_item_id:GetText());
+							local _, link = GetItemInfo(id);
+							if not link and CEPGP_itemExists(id) then
+								local item = Item:CreateFromItemID(id);
+								item:ContinueOnItemLoad(function()
+									_, link = GetItemInfo(id);
+									if (OVERRIDE_INDEX[link] and CEPGP_override_confirm) or not OVERRIDE_INDEX[link] then
+										OVERRIDE_INDEX[link] = gp;
+										CEPGP_print("GP value for " .. link .. " |c006969FFhas been overriden to " .. gp);
+										CEPGP_UpdateOverrideScrollBar();
+										CEPGP_override_confirm = false;
+										CEPGP_override_item_id:SetText("");
+										CEPGP_override_item_id:ClearFocus();
+										CEPGP_override_item_name:SetText("");
+										CEPGP_override_item_name:ClearFocus();
+										CEPGP_override_item_gp:SetText("");
+										CEPGP_override_item_gp:ClearFocus();
+										return;
+									else
+										CEPGP_print(link .. " has already been overridden to " .. OVERRIDE_INDEX[link] .. "|c006969FF. Click add again to change self to " .. gp);
+										CEPGP_override_confirm = true;
+									end
+								end);
+							elseif CEPGP_itemExists(id) then
+								if (OVERRIDE_INDEX[link] and CEPGP_override_confirm) or not OVERRIDE_INDEX[link] then
+									OVERRIDE_INDEX[link] = gp;
+									CEPGP_print("GP value for " .. link .. " |c006969FFhas been overriden to " .. gp);
+									CEPGP_UpdateOverrideScrollBar();
+									CEPGP_override_confirm = false;
+									CEPGP_override_item_id:SetText("");
+									CEPGP_override_item_id:ClearFocus();
+									CEPGP_override_item_name:SetText("");
+									CEPGP_override_item_name:ClearFocus();
+									CEPGP_override_item_gp:SetText("");
+									CEPGP_override_item_gp:ClearFocus();
+									return;
+								else
+									CEPGP_print(link .. " has already been overridden to " .. OVERRIDE_INDEX[link] .. "|c006969FF. Click add again to change self to " .. gp);
+									CEPGP_override_confirm = true;
+								end
+							else
+								CEPGP_print("No item exists for item ID " .. id, true);
+							end
 						end
 					</OnClick>
 					<OnHide>
@@ -5119,7 +5319,7 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForDrag("LeftButton");
-				CEPGP_override_desc:SetText("This window allows your to permanently\n(or until the log is removed), override the gp\nvalue of an item to what ever you specify");
+				CEPGP_override_desc:SetText("This window allows you to override the gp value\nof an item to what ever you specify.\n|c00FF0000Only enter either an item name OR an item ID|r");
 			</OnLoad>
 			<OnDragStart>
 				self:StartMoving();
@@ -6422,8 +6622,8 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				CEPGP_notice_frame:SetWidth(CEPGP_notice_desc:GetStringWidth()+25);
 				CEPGP_notice_desc:SetText("|c00FF0000Classic EPGP Important Notice|r\nVersion 1.12.0 contained major updates which\nrender previous versions of CEPGP incompatible.\n\nPlease ensure that your guild members update to\nthe latest version to avoid unexpected results.");
+				self:SetWidth(CEPGP_notice_desc:GetStringWidth()+25);
 			</OnLoad>
 		</Scripts>
 	</Frame>

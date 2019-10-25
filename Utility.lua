@@ -108,7 +108,8 @@ function CEPGP_initialise()
 	end
 	
 	CEPGP_updateGuild();
-	hooksecurefunc("GameTooltip_UpdateStyle", CEPGP_addGPTooltip);
+	GameTooltip:HookScript("OnTooltipSetItem", CEPGP_addGPTooltip);
+	--hooksecurefunc("GameTooltip_UpdateStyle", CEPGP_addGPTooltip);
 	hooksecurefunc("ChatFrame_OnHyperlinkShow", CEPGP_addGPHyperlink);
 end
 
@@ -121,11 +122,14 @@ function CEPGP_calcGP(link, quantity, id)
 	else
 		return 0;
 	end
-	if not name then
+	if not name and CEPGP_itemExists(id) then
 		local item = Item:CreateFromItemID(id);
 		item:ContinueOnItemLoad(function()
 			name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
 			for k, v in pairs(OVERRIDE_INDEX) do
+				if k == link then
+					return v;
+				end
 				local temp = string.lower(string.gsub(name, " ", ""));
 				k = string.lower(string.gsub(k, " ", ""));
 				if string.lower(temp) == string.lower(k) then
@@ -215,6 +219,9 @@ function CEPGP_calcGP(link, quantity, id)
 	else
 		if not ilvl then ilvl = 0; end
 		for k, v in pairs(OVERRIDE_INDEX) do
+			if k == link then
+				return v;
+			end
 			local temp = string.lower(string.gsub(name, " ", ""));
 			k = string.lower(string.gsub(k, " ", ""));
 			if string.lower(temp) == string.lower(k) then
@@ -306,11 +313,12 @@ function CEPGP_calcGP(link, quantity, id)
 end
 
 function CEPGP_addGPTooltip(self)
-	if not self:GetItem() then return; end
+	if not self:GetItem() or not CEPPG_gp_tooltips then return; end
 	local _, link = self:GetItem();
 	local id = CEPGP_getItemID(CEPGP_getItemString(link));
-	local name = GetItemInfo(link);
-	if not name then
+	if not CEPGP_itemExists(tonumber(id)) then return; end
+	local name = GetItemInfo(id);
+	if not name and CEPGP_itemExists(tonumber(id)) then
 		local item = Item:CreateFromItemID(tonumber(id));
 		item:ContinueOnItemLoad(function()
 			local gp = CEPGP_calcGP(_, 1, id);
@@ -324,9 +332,9 @@ function CEPGP_addGPTooltip(self)
 end
 
 function CEPGP_addGPHyperlink(self, iString)
-	if not string.find(iString, "item:") then return; end
+	if not string.find(iString, "item:") or not CEPPG_gp_tooltips then return; end
 	local id = CEPGP_getItemID(iString);
-	if not id then return; end
+	if not CEPGP_itemExists(tonumber(id)) then return; end
 	local gp = CEPGP_calcGP(_, 1, id);
 	ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
 	ItemRefTooltip:Show();
@@ -510,8 +518,6 @@ function CEPGP_toggleFrame(frame)
 end
 
 function CEPGP_rosterUpdate(event)
-	--if time() - CEPGP_lastUpdate < 0.05 then return; end
-	--CEPGP_lastUpdate = time();
 	if CEPGP_ignoreUpdates or not IsInGuild() then return; end
 	if event == "GUILD_ROSTER_UPDATE" then
 		local numGuild = GetNumGuildMembers();
@@ -538,13 +544,13 @@ function CEPGP_rosterUpdate(event)
 				local EP, GP = CEPGP_getEPGP(officerNote, i, name);
 				local PR = math.floor((EP/GP)*100)/100;
 				CEPGP_roster[name] = {
-				[1] = i,
-				[2] = class,
-				[3] = rank,
-				[4] = rankIndex,
-				[5] = officerNote,
-				[6] = PR,
-				[7] = classFileName
+					[1] = i,
+					[2] = class,
+					[3] = rank,
+					[4] = rankIndex,
+					[5] = officerNote,
+					[6] = PR,
+					[7] = classFileName
 				};
 				if online and CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
@@ -564,6 +570,7 @@ function CEPGP_rosterUpdate(event)
 			end
 			name, rank, rankIndex, class, officerNote, EP, GP, PR = nil;
 		end
+		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
 		if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
 			CEPGP_UpdateGuildScrollBar();
 		elseif CEPGP_mode == "raid" and _G["CEPGP_raid"]:IsVisible() then
@@ -585,14 +592,12 @@ function CEPGP_rosterUpdate(event)
 		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
 			if not name then break; end
-			if CEPGP_tContains(CEPGP_standbyRoster, name) then
-				for _, v in ipairs(CEPGP_standbyRoster) do
-					if v == name then
-						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
-					end
+			for k, v in ipairs(CEPGP_standbyRoster) do
+				if v[1] == name then
+					table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
 				end
-				CEPGP_UpdateStandbyScrollBar();
 			end
+			CEPGP_UpdateStandbyScrollBar();
 			local rank;
 			local _, _, _, _, class, classFileName = GetRaidRosterInfo(i);
 			if CEPGP_roster[name] then
@@ -646,19 +651,18 @@ function CEPGP_addToStandby(player)
 		CEPGP_print("You cannot add yourself to the standby list.", true);
 		return;
 	end
-	player = CEPGP_standardiseString(player);
-	if not CEPGP_tContains(CEPGP_roster, player, true) then
+	if not CEPGP_roster[player] then
 		CEPGP_print(player .. " is not a guild member", true);
 		return;
 	end
 	for _, v in pairs(CEPGP_standbyRoster) do
-		if v[1] == player then
+		if string.lower(v[1]) == string.lower(player) then
 			CEPGP_print(player .. " is already in the standby roster", true);
 			return;
 		end
 	end
 	for _, v in ipairs(CEPGP_raidRoster) do
-		if player == v[1] then
+		if string.lower(player) == string.lower(v[1]) then
 			CEPGP_print(player .. " is part of the raid", true);
 			return;
 		end
@@ -682,37 +686,38 @@ end
 function CEPGP_standardiseString(str)
 	--Returns the string with proper nouns capitalised
 	if not str then return; end
-	local result = "";
-	local _, delims = string.gsub(str, " ", ""); --accommodates for spaces
-	local values = CEPGP_split(str, " ", delims);
-	for k, v in pairs(values) do
-		if string.find(v, "%-") then
-			_, delims2 = string.gsub(v, "%-", ""); --accommodates for hyphens
-			values2 = CEPGP_split(v, "%-", delims2);
-			for index, value in pairs(values2) do
-				local first = string.upper(string.sub(value, 1, 1));
-				if index <= delims2 then
-					result = result .. first .. string.sub(value, 2, string.len(value)) .. "-";
-				else
-					result = result .. first .. string.lower(string.sub(value, 2, string.len(value)));
-				end
+	local words = {};
+	
+	local count = 0;
+	for i in (str .. " "):gmatch("([^ ]*) ") do
+		if count == 0 then
+			if string.lower(i) == "the" then
+				count = count + 1;
+				words[count] = "The";
+			else
+				count = count + 1;
+				words[count] = string.upper(string.sub(i, 1, 1)) .. string.lower(string.sub(i, 2, string.len(i)));
 			end
 		else
-			if v == "of" or (v == "the" and k > 1) then
-				result = result .. v .. " ";
+			if string.lower(i) == "the" or string.lower(i) == "of" then
+				count = count + 1;
+				words[count] = string.lower(i);
 			else
-				local first = string.upper(string.sub(v, 1, 1));
-				if k <= delims then
-					result = result .. first .. string.lower(string.sub(v, 2, string.len(v))) .. " ";
-				else
-					result = result .. first .. string.lower(string.sub(v, 2, string.len(v)));
-				end
+				count = count + 1;
+				words[count] = string.upper(string.sub(i, 1, 1)) .. string.lower(string.sub(i, 2, string.len(i)));
 			end
+		end
+	end
+	local result = "";
+	for i = 1, count do
+		if i == 1 then
+			result = words[i];
+		elseif i <= count then
+			result = result .. " " .. words[i];
 		end
 	end
 	
 	return result;
-
 end
 
 function CEPGP_split(str, delim, iters) --String to be split, delimiter, number of iterations
@@ -812,7 +817,7 @@ function CEPGP_getEPGP(offNote, index, name)
 	--if not index then return 0, 1; end --Happens when character logs initiailly
 	if offNote ~= "" then
 		if not CEPGP_checkEPGP(offNote) then
-			if not index then return 0, BASEGP; end
+			if not index then return 0, tonumber(BASEGP); end
 			local EP, GP;
 			--Error with player's EPGP has been detected and will attempt to be salvaged
 			if string.find(offNote, '^[0-9]+,') then --EP is assumed in tact
@@ -877,8 +882,9 @@ function CEPGP_getEPGP(offNote, index, name)
 		end
 	end
 	local EP, GP = nil;
+	
 	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
-		return 0, BASEGP;
+		return 0, tonumber(BASEGP);
 	end
 	EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
 	GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
@@ -1518,7 +1524,7 @@ function CEPGP_callItem(id, gp)
 	id = tonumber(id); -- Must be in a numerical format
 	local name, link, _, _, _, _, _, _, _, tex, _, classID, subClassID = GetItemInfo(id);
 	local iString;
-	if not link then
+	if not link and CEPGP_itemExists(id) then
 		local item = Item:CreateFromItemID(id);
 		item:ContinueOnItemLoad(function()
 				_, link, _, _, _, _, _, _, _, tex, _, classID, subClassID = GetItemInfo(id)
@@ -1609,4 +1615,12 @@ function CEPGP_canEquip(slot)
 	class = string.sub(class, 1, 1) .. string.lower(temp);
 	if CEPGP_tContains(CEPGP_classes[class], slot) then return true; end
 	return false;
+end
+
+function CEPGP_itemExists(id)
+	if C_Item.DoesItemExistByID(id) then
+		return true;
+	else
+		return false;
+	end
 end

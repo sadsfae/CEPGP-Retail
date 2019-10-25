@@ -15,7 +15,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 				CEPGP_print(arg2 .. " registered (" .. CEPGP_keyword .. ")");
 			end
 			local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
-			if not slot then
+			if not slot and CEPGP_itemExists(CEPGP_DistID) then
 				local item = Item:CreateFromItemID(CEPGP_DistID);
 				item:ContinueOnItemLoad(function()
 					local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID)
@@ -126,7 +126,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 							if not CEPGP_vInfo[arg2] then
 								SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 							else
-								CEPGP_SendAddonMsg("!info" .. arg2 .. "EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "GUILD");
+								CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "GUILD");
 							end
 						end
 					end
@@ -178,13 +178,13 @@ function CEPGP_handleComms(event, arg1, arg2)
 									if not CEPGP_vInfo[arg2] then
 										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 									else
-										CEPGP_SendAddonMsg("!info" .. arg2 .. "EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "GUILD");
+										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "GUILD");
 									end
 								else
 									if not CEPGP_vInfo[arg2] then
 										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 									else
-										CEPGP_SendAddonMsg("!info" .. arg2 .. "EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "GUILD");
+										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "GUILD");
 									end
 								end
 							end
@@ -198,13 +198,13 @@ function CEPGP_handleComms(event, arg1, arg2)
 									if not CEPGP_vInfo[arg2] then
 										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 									else
-										CEPGP_SendAddonMsg("!info" .. arg2 .. "EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "GUILD");
+										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "GUILD");
 									end
 								else
 									if not CEPGP_vInfo[arg2] then
 										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 									else
-										CEPGP_SendAddonMsg("!info" .. arg2 .. "EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "GUILD");
+										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "GUILD");
 									end
 								end
 							end

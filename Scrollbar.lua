@@ -38,7 +38,7 @@ function CEPGP_UpdateLootScrollBar()
 				local id = tonumber(tempTable[i][8]);
 				_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
 				local iString;
-				if not link then
+				if not link and CEPGP_itemExists(id) then
 					local item = Item:CreateFromItemID(id);
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
@@ -116,7 +116,7 @@ function CEPGP_UpdateLootScrollBar()
 				local id = tonumber(tempTable[i][9]);
 				_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id);
 				local iString2;
-				if not link then
+				if not link and CEPGP_itemExists(id) then
 					local item = Item:CreateFromItemID(id);
 					item:ContinueOnItemLoad(function()
 						_, link, _, _, _, _, _, _, _, tex2 = GetItemInfo(id)
@@ -350,6 +350,7 @@ function CEPGP_UpdateRaidScrollBar()
 end
 
 function CEPGP_UpdateVersionScrollBar()
+	local name, classFile, class, colour, version;
 	local kids = {_G["CEPGP_version_scrollframe_container"]:GetChildren()};
 	for _, child in ipairs(kids) do
 		child:Hide();
@@ -366,8 +367,8 @@ function CEPGP_UpdateVersionScrollBar()
 			end
 			_G["versionButton" .. i]:Show();
 			local name = CEPGP_groupVersion[i][1];
-			local classFileName = CEPGP_groupVersion[i][4];
-			local colour = RAID_CLASS_COLORS[string.upper(CEPGP_groupVersion[i][4])];
+			local classFile = CEPGP_groupVersion[i][4];
+			local colour = RAID_CLASS_COLORS[classFile];
 			if not colour then
 				colour = {
 				r = 1,
@@ -383,16 +384,15 @@ function CEPGP_UpdateVersionScrollBar()
 	else
 		for i = 1, CEPGP_ntgetn(CEPGP_groupVersion) do
 			_G["versionButton" .. i]:Show();
-			local name, class, version;
 			for x = 1, GetNumGroupMembers() do
 				if CEPGP_groupVersion[x][1] == GetRaidRosterInfo(i) then
 					name = CEPGP_groupVersion[x][1];
 					version = CEPGP_groupVersion[x][2];
 					class = CEPGP_groupVersion[x][3];
-					classFileName =  CEPGP_groupVersion[x][4];
+					classFile = CEPGP_groupVersion[x][4];
 				--	print(name);
 				--	print(class);
-					local colour = RAID_CLASS_COLORS[string.upper(classFileName)];
+					local colour = RAID_CLASS_COLORS[classFile];
 					if not colour then
 						colour = {
 						r = 1,
@@ -469,11 +469,11 @@ function CEPGP_UpdateTrafficScrollBar()
 	for i = #TRAFFIC, 1, -1 do
 		if not _G["TrafficButton" .. i] then
 			local frame = CreateFrame('Button', "TrafficButton" .. i, _G["CEPGP_traffic_scrollframe_container"], "trafficButtonTemplate");
-			if i ~= #TRAFFIC then
-				_G["TrafficButton" .. i]:SetPoint("TOPLEFT", _G["TrafficButton" .. i+1], "BOTTOMLEFT", 0, -2);
-			else
-				_G["TrafficButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_traffic_scrollframe_container"], "TOPLEFT", 7.5, -10);
-			end
+		end
+		if i ~= #TRAFFIC then
+			_G["TrafficButton" .. i]:SetPoint("TOPLEFT", _G["TrafficButton" .. i+1], "BOTTOMLEFT", 0, -2);
+		else
+			_G["TrafficButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_traffic_scrollframe_container"], "TOPLEFT", 7.5, -10);
 		end
 		local name, issuer, action, EPB, EPA, GPB, GPA, item = TRAFFIC[i][1], TRAFFIC[i][2], TRAFFIC[i][3], TRAFFIC[i][4], TRAFFIC[i][5], TRAFFIC[i][6], TRAFFIC[i][7], TRAFFIC[i][8];
 		local _, class = CEPGP_getPlayerClass(name);
@@ -511,11 +511,13 @@ function CEPGP_UpdateTrafficScrollBar()
 			else
 				local id = string.sub(tostring(item), string.find(item, ":")+1);
 				id = tonumber(string.sub(id, 0, string.find(id, ":")-1));
-				local newItem = Item:CreateFromItemID(id);
-				newItem:ContinueOnItemLoad(function()
-					_, link = GetItemInfo(item);
-					_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
-				end);
+				if CEPGP_itemExists(id) then
+					local newItem = Item:CreateFromItemID(id);
+					newItem:ContinueOnItemLoad(function()
+						_, link = GetItemInfo(item);
+						_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
+					end);
+				end
 			end
 		else
 			_G["TrafficButton" .. i .. "ItemName"]:SetText("");
@@ -539,15 +541,17 @@ function CEPGP_UpdateStandbyScrollBar()
 				_G["StandbyButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_standby_scrollframe_container"], "TOPLEFT", 0, -10);
 			end
 		end
+		local _, _, rank, rankIndex, oNote, _, classFile = CEPGP_getGuildInfo(CEPGP_standbyRoster[i][1]);
+		local EP,GP = CEPGP_getEPGP(oNote);
 		tempTable[i] = {
 			[1] = CEPGP_standbyRoster[i][1], --name
 			[2] = CEPGP_standbyRoster[i][2], --class
-			[3] = CEPGP_standbyRoster[i][3], --rank
-			[4] = CEPGP_standbyRoster[i][4], --rankIndex
-			[5] = CEPGP_standbyRoster[i][5], --EP
-			[6] = CEPGP_standbyRoster[i][6], --GP
-			[7] = CEPGP_standbyRoster[i][7], --PR
-			[8] = CEPGP_standbyRoster[i][8] --ClassFile
+			[3] = rank, --rank
+			[4] = rankIndex, --rankIndex
+			[5] = EP, --EP
+			[6] = GP, --GP
+			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+			[8] = classFile --ClassFile
 		};
 		local colour = RAID_CLASS_COLORS[tempTable[i][8]];
 		if not colour then

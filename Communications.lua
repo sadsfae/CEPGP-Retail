@@ -70,7 +70,8 @@ function CEPGP_IncAddonMsg(message, sender)
 				else
 					for x = 1, GetNumGroupMembers() do
 						if GetRaidRosterInfo(x) == sender then
-							_, _, _, _, CEPGP_groupVersion[i][3] = GetRaidRosterInfo(x);
+							_, _, _, _, CEPGP_groupVersion[i][3], CEPGP_groupVersion[i][4] = GetRaidRosterInfo(x);
+							print(CEPGP_groupVersion[i][4]);
 							break;
 						end
 					end
@@ -299,16 +300,33 @@ function CEPGP_IncAddonMsg(message, sender)
 		local GPA = args[8];
 		local itemID = args[9];
 		local itemLink = CEPGP_getItemLink(itemID);
-		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-			[1] = player,
-			[2] = issuer,
-			[3] = action,
-			[4] = EPB,
-			[5] = EPA,
-			[6] = GPB,
-			[7] = GPA,
-			[8] = itemLink
-		};
+		if not itemLink and CEPGP_itemExists(tonumber(itemID)) then
+			local item = Item:CreateFromItemID(tonumber(itemID));
+			item:ContinueOnItemLoad(function()
+				itemLink = CEPGP_getItemLink(itemID);
+				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+				[1] = player,
+				[2] = issuer,
+				[3] = action,
+				[4] = EPB,
+				[5] = EPA,
+				[6] = GPB,
+				[7] = GPA,
+				[8] = itemLink
+			};
+			end);
+		else
+			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+				[1] = player,
+				[2] = issuer,
+				[3] = action,
+				[4] = EPB,
+				[5] = EPA,
+				[6] = GPB,
+				[7] = GPA,
+				[8] = itemLink
+			};
+		end
 		CEPGP_UpdateTrafficScrollBar();
 	end
 end
@@ -346,6 +364,7 @@ function CEPGP_ShareTraffic(player, issuer, action, EPB, EPA, GPB, GPA, itemID)
 		GPA = "";
 	end
 	if CanEditOfficerNote() then
-		CEPGP_SendAddonMsg("CEPGP_TRAFFIC;" .. player .. ";" .. issuer .. ";" .. action .. ";" .. EPB .. ";" .. EPA .. ";" .. GPB .. ";" .. GPA .. ";" .. itemID, "GUILD");
+		--CEPGP_SendAddonMsg("CEPGP_TRAFFIC;" .. player .. ";" .. issuer .. ";" .. action .. ";" .. EPB .. ";" .. EPA .. ";" .. GPB .. ";" .. GPA .. ";" .. itemID, "GUILD");
+		CEPGP_SendAddonMsg("CEPGP_TRAFFIC;" .. player .. ";" .. issuer .. ";" .. action .. ";" .. EPB .. ";" .. EPA .. ";" .. GPB .. ";" .. GPA .. ";" .. itemID, "RAID");
 	end
 end

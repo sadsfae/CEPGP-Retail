@@ -1,5 +1,5 @@
 --[[ Globals ]]--
-CEPGP_VERSION = "1.12.4";
+CEPGP_VERSION = "1.12.5";
 SLASH_CEPGP1 = "/CEPGP";
 SLASH_CEPGP2 = "/cep";
 CEPGP_VERSION_NOTIFIED = false;
@@ -66,6 +66,7 @@ CEPGP_loot_GUI = false;
 CEPGP_auto_pass = false;
 CEPGP_raid_wide_dist = false;
 CEPGP_1120_notice = false;
+CEPPG_gp_tooltips = false;
 STANDBYPERCENT = nil;
 STANDBYRANKS = {};
 SLOTWEIGHTS = {};
@@ -208,26 +209,34 @@ function SlashCmdList.CEPGP(msg, editbox)
 		ShowUIPanel(CEPGP_frame);
 		CEPGP_toggleFrame("");
 		CEPGP_updateGuild();
-		
-	elseif msg == "abc" then
-		local _, link = GetItemInfo(17075);
-		print(link);
-		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-			[1] = "Alorean",
-			[2] = "Alorean",
-			[3] = "TESTING",
-			[4] = 0,
-			[5] = 0,
-			[6] = 0,
-			[7] = 0,
-			[8] = link
-		};
-		CEPGP_UpdateTrafficScrollBar();
 	
 	elseif msg == "version" then
-		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 		CEPGP_vInfo = {};
-		CEPGP_SendAddonMsg("version-check", CEPGP_vSearch);
+		CEPGP_vSearch = "GUILD";
+		CEPGP_SendAddonMsg("version-check", "GUILD");
+		CEPGP_groupVersion = {};
+		for i = 1, GetNumGuildMembers() do
+			local name, _, _, _, class, _, _, _, online, _, classFileName = GetGuildRosterInfo(i);
+			if string.find(name, "-") then
+				name = string.sub(name, 0, string.find(name, "-")-1);
+			end
+			if online then
+				CEPGP_groupVersion[i] = {
+					[1] = name,
+					[2] = "Addon not enabled",
+					[3] = class,
+					[4] = classFileName
+				};
+			else
+				CEPGP_groupVersion[i] = {
+					[1] = name,
+					[2] = "Offline",
+					[3] = class,
+					[4] = classFileName
+				};
+			end
+		end
+		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
 		ShowUIPanel(CEPGP_version);
 		CEPGP_UpdateVersionScrollBar();
 	
@@ -294,7 +303,7 @@ function CEPGP_RaidAssistLootDist(link, gp, raidwide) --raidwide refers to wheth
 		CEPGP_UpdateLootScrollBar();
 		local name, iString, _, _, _, _, _, _, slot, tex = GetItemInfo(CEPGP_DistID);
 		CEPGP_distSlot = slot;
-		if not name then
+		if not name and CEPGP_itemExists(CEPGP_DistID) then
 			local item = Item:CreateFromItemID(tonumber(CEPGP_DistID));
 			item:ContinueOnItemLoad(function()
 				name, iString, _, _, _, _, _, _, slot, tex = GetItemInfo(CEPGP_DistID);	
@@ -366,16 +375,16 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 		if encounter then -- a boss was killed
 			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Add Raid EP +" .. amount .. " - " .. encounter};
 			CEPGP_ShareTraffic("Raid", UnitName("player"), "Add Raid EP +" .. amount .. " - " .. encounter);
-			SendChatMessage(msg, "RAID", CEPGP_LANGUAGE);
+			SendChatMessage(msg, CHANNEL, CEPGP_LANGUAGE);
 		else -- EP was manually given, could be either positive or negative, and a message was written
 			if tonumber(amount) <= 0 then
 				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Subtract Raid EP +" .. amount .. " (" .. msg .. ")"};
 				CEPGP_ShareTraffic("Raid", UnitName("player"), "Subtract Raid EP " .. amount .. " (" .. msg .. ")");
-				SendChatMessage(amount .. " EP taken from all raid members (" .. msg .. ")", "RAID", CEPGP_LANGUAGE);
+				SendChatMessage(amount .. " EP taken from all raid members (" .. msg .. ")", CHANNEL, CEPGP_LANGUAGE);
 			else
 				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Add Raid EP +" .. amount .. " (" .. msg .. ")"};
 				CEPGP_ShareTraffic("Raid", UnitName("player"), "Add Raid EP +" .. amount .. " (" .. msg .. ")");
-				SendChatMessage(amount .. " EP awarded to all raid members (" .. msg .. ")", "RAID", CEPGP_LANGUAGE);
+				SendChatMessage(amount .. " EP awarded to all raid members (" .. msg .. ")", CHANNEL, CEPGP_LANGUAGE);
 			end
 		end
 	else -- no message was written
@@ -383,11 +392,11 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 			amount = string.sub(amount, 2, string.len(amount));
 			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Subtract Raid EP -" .. amount};
 			CEPGP_ShareTraffic("Raid", UnitName("player"), "Subtract Raid EP -" .. amount);	
-			SendChatMessage(amount .. " EP taken from all raid members", "RAID", CEPGP_LANGUAGE);
+			SendChatMessage(amount .. " EP taken from all raid members", CHANNEL, CEPGP_LANGUAGE);
 		else
 			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {"Raid", UnitName("player"), "Add Raid EP +" .. amount};
 			CEPGP_ShareTraffic("Raid", UnitName("player"), "Add Raid EP +" .. amount);
-			SendChatMessage(amount .. " EP awarded to all raid members", "RAID", CEPGP_LANGUAGE);
+			SendChatMessage(amount .. " EP awarded to all raid members", CHANNEL, CEPGP_LANGUAGE);
 		end
 	end
 	CEPGP_UpdateTrafficScrollBar();
@@ -508,7 +517,8 @@ function CEPGP_addStandbyEP(amount, boss, msg)
 			end
 		end
 	elseif CEPGP_standby_manual then
-		for _, name in pairs(CEPGP_standbyRoster) do
+		for _, x in pairs(CEPGP_standbyRoster) do
+			local name = x[1];
 			inRaid = false;
 			for _, v in ipairs(CEPGP_raidRoster) do
 				if name == v[1] then

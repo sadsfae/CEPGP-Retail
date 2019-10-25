@@ -15,7 +15,7 @@ function CEPGP_ListButton_OnClick(obj)
 	if strfind(obj, "Delete") then
 		local name = _G["CEPGP_overrideButton" .. _G[obj]:GetParent():GetID() .. "item"]:GetText();
 		OVERRIDE_INDEX[name] = nil;
-		CEPGP_print(name .. " removed from the GP override list");
+		CEPGP_print(name .. " |c006969FFremoved from the GP override list");
 		CEPGP_UpdateOverrideScrollBar();
 		return;
 	end
