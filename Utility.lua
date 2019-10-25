@@ -313,7 +313,7 @@ function CEPGP_calcGP(link, quantity, id)
 end
 
 function CEPGP_addGPTooltip(self)
-	if not self:GetItem() or not CEPPG_gp_tooltips then return; end
+	if not CEPPG_gp_tooltips or not self:GetItem() or self:GetItem() == nil or self:GetItem() == "" then return; end
 	local _, link = self:GetItem();
 	local id = CEPGP_getItemID(CEPGP_getItemString(link));
 	if not CEPGP_itemExists(tonumber(id)) then return; end
