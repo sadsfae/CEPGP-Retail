@@ -576,6 +576,10 @@ function CEPGP_rosterUpdate(event)
 		elseif CEPGP_mode == "raid" and _G["CEPGP_raid"]:IsVisible() then
 			CEPGP_UpdateRaidScrollBar();
 		end
+		if not UnitInRaid("player") then
+			CEPGP_standbyRoster = {};
+			CEPGP_UpdateStandbyScrollBar();
+		end
 		
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then
@@ -592,12 +596,17 @@ function CEPGP_rosterUpdate(event)
 		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
 			if not name then break; end
-			for k, v in ipairs(CEPGP_standbyRoster) do
-				if v[1] == name then
-					table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
+			if not UnitInRaid("player") then
+				CEPGP_standbyRoster = {};
+				CEPGP_UpdateStandbyScrollBar();
+			else
+				for k, v in ipairs(CEPGP_standbyRoster) do
+					if v[1] == name then
+						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
+						CEPGP_UpdateStandbyScrollBar();
+					end
 				end
 			end
-			CEPGP_UpdateStandbyScrollBar();
 			local rank;
 			local _, _, _, _, class, classFileName = GetRaidRosterInfo(i);
 			if CEPGP_roster[name] then

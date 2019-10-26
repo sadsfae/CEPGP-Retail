@@ -30,7 +30,6 @@ CEPGP_LANGUAGE = GetDefaultLanguage("player");
 CEPGP_responses = {};
 CEPGP_itemsTable = {};
 CEPGP_roster = {};
-CEPGP_standbyRoster = {};
 CEPGP_raidRoster = {};
 CEPGP_vInfo = {};
 CEPGP_vSearch = "GUILD";
@@ -77,6 +76,7 @@ RECORDS = {};
 OVERRIDE_INDEX = {};
 TRAFFIC = {};
 CEPGP_raid_logs = {};
+CEPGP_standbyRoster = {};
 
 
 
