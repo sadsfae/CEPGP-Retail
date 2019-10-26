@@ -299,6 +299,10 @@ function CEPGP_IncAddonMsg(message, sender)
 		local GPB = args[7];
 		local GPA = args[8];
 		local itemID = args[9];
+		local tStamp = args[10];
+		if not tStamp or tStamp == "" then
+			tStamp = time();
+		end
 		local itemLink = CEPGP_getItemLink(itemID);
 		if not itemLink and CEPGP_itemExists(tonumber(itemID)) then
 			local item = Item:CreateFromItemID(tonumber(itemID));
@@ -312,7 +316,8 @@ function CEPGP_IncAddonMsg(message, sender)
 				[5] = EPA,
 				[6] = GPB,
 				[7] = GPA,
-				[8] = itemLink
+				[8] = itemLink,
+				[9] = tStamp
 			};
 			end);
 		else
@@ -324,7 +329,8 @@ function CEPGP_IncAddonMsg(message, sender)
 				[5] = EPA,
 				[6] = GPB,
 				[7] = GPA,
-				[8] = itemLink
+				[8] = itemLink,
+				[9] = tStamp
 			};
 		end
 		CEPGP_UpdateTrafficScrollBar();
@@ -364,7 +370,6 @@ function CEPGP_ShareTraffic(player, issuer, action, EPB, EPA, GPB, GPA, itemID)
 		GPA = "";
 	end
 	if CanEditOfficerNote() then
-		--CEPGP_SendAddonMsg("CEPGP_TRAFFIC;" .. player .. ";" .. issuer .. ";" .. action .. ";" .. EPB .. ";" .. EPA .. ";" .. GPB .. ";" .. GPA .. ";" .. itemID, "GUILD");
-		CEPGP_SendAddonMsg("CEPGP_TRAFFIC;" .. player .. ";" .. issuer .. ";" .. action .. ";" .. EPB .. ";" .. EPA .. ";" .. GPB .. ";" .. GPA .. ";" .. itemID, "RAID");
+		CEPGP_SendAddonMsg("CEPGP_TRAFFIC;" .. player .. ";" .. issuer .. ";" .. action .. ";" .. EPB .. ";" .. EPA .. ";" .. GPB .. ";" .. GPA .. ";" .. itemID, "GUILD");
 	end
 end
