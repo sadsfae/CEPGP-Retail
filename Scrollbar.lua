@@ -551,9 +551,27 @@ function CEPGP_UpdateStandbyScrollBar()
 			[5] = EP, --EP
 			[6] = GP, --GP
 			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
-			[8] = classFile --ClassFile
+			[8] = classFile, --ClassFile
+			[9] = CEPGP_roster[CEPGP_standbyRoster[i][1]][8] --Online
 		};
-		local colour = RAID_CLASS_COLORS[tempTable[i][8]];
+		local colour;
+		if tempTable[i][9] then
+			colour = RAID_CLASS_COLORS[tempTable[i][8]];
+			_G["StandbyButton" .. i]:SetScript('OnEnter', function() end);
+		else
+			colour = {
+				r = 0.62,
+				g = 0.62,
+				b = 0.62
+			};
+			_G["StandbyButton" .. i]:SetScript('OnEnter', function()
+				GameTooltip:SetOwner(_G["StandbyButton" .. i], "ANCHOR_TOPLEFT");
+				GameTooltip:SetText("Player Offline");
+			end);
+			_G["StandbyButton" .. i]:SetScript('OnLeave', function()
+				GameTooltip:Hide()
+			end);
+		end
 		if not colour then
 			colour = {
 			r = 1,

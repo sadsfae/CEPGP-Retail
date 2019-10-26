@@ -549,7 +549,8 @@ function CEPGP_rosterUpdate(event)
 					[4] = rankIndex,
 					[5] = officerNote,
 					[6] = PR,
-					[7] = classFileName
+					[7] = classFileName,
+					[8] = online
 				};
 				if online and CEPGP_vSearch == "GUILD" then
 					CEPGP_groupVersion[i] = {
@@ -577,8 +578,8 @@ function CEPGP_rosterUpdate(event)
 		end
 		if not UnitInRaid("player") then
 			CEPGP_standbyRoster = {};
-			CEPGP_UpdateStandbyScrollBar();
 		end
+		CEPGP_UpdateStandbyScrollBar();
 		
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then
