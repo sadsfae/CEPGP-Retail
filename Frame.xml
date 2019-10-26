@@ -3614,7 +3614,9 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(1, "Guild");
+								CEPGP_setCriteria(1);
+								CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 1);
+								CEPGP_UpdateStandbyScrollBar();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3631,7 +3633,9 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(2, "Guild");
+								CEPGP_setCriteria(2);
+								CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 2);
+								CEPGP_UpdateStandbyScrollBar();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3648,7 +3652,9 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(4, "Guild");
+								CEPGP_setCriteria(4);
+								CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 4);
+								CEPGP_UpdateStandbyScrollBar();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3665,7 +3671,9 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(5, "Guild");
+								CEPGP_setCriteria(5);
+								CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 5);
+								CEPGP_UpdateStandbyScrollBar();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3682,7 +3690,9 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(6, "Guild");
+								CEPGP_setCriteria(6);
+								CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 6);
+								CEPGP_UpdateStandbyScrollBar();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3699,7 +3709,9 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								CEPGP_setCriteria(7, "Guild");
+								CEPGP_setCriteria(7);
+								CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 7);
+								CEPGP_UpdateStandbyScrollBar();
 							</OnClick>
 						</Scripts>
 					</Button>

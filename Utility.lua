@@ -602,7 +602,7 @@ function CEPGP_rosterUpdate(event)
 				for k, v in ipairs(CEPGP_standbyRoster) do
 					if v[1] == name then
 						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid
-						CEPGP_SendAddonMsg("StandbyRemoved;" .. name .. ";You have been removed from the standby list because you joined the raid.", "RAID");
+						CEPGP_SendAddonMsg("StandbyRemoved;" .. name .. ";You have been removed from the standby list because you have joined the raid.", "RAID");
 						CEPGP_UpdateStandbyScrollBar();
 					end
 				end
@@ -690,6 +690,7 @@ function CEPGP_addToStandby(player)
 	};
 	CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 1);
 	CEPGP_SendAddonMsg("StandbyListAdd;"..player..";"..class..";"..rank..";"..rankIndex..";"..EP..";"..GP, "RAID");
+	CEPGP_SendAddonMsg("StandbyAdded;" .. player .. ";You have been added to the standby list.", "GUILD");
 	CEPGP_UpdateStandbyScrollBar();
 end
 
