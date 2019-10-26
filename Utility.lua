@@ -109,7 +109,6 @@ function CEPGP_initialise()
 	
 	CEPGP_updateGuild();
 	GameTooltip:HookScript("OnTooltipSetItem", CEPGP_addGPTooltip);
-	--hooksecurefunc("GameTooltip_UpdateStyle", CEPGP_addGPTooltip);
 	hooksecurefunc("ChatFrame_OnHyperlinkShow", CEPGP_addGPHyperlink);
 end
 
@@ -602,7 +601,8 @@ function CEPGP_rosterUpdate(event)
 			else
 				for k, v in ipairs(CEPGP_standbyRoster) do
 					if v[1] == name then
-						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
+						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid
+						CEPGP_SendAddonMsg("StandbyRemoved;" .. name .. ";You have been removed from the standby list because you joined the raid.", "RAID");
 						CEPGP_UpdateStandbyScrollBar();
 					end
 				end
@@ -688,6 +688,7 @@ function CEPGP_addToStandby(player)
 		[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
 		[8] = classFile
 	};
+	CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 1);
 	CEPGP_SendAddonMsg("StandbyListAdd;"..player..";"..class..";"..rank..";"..rankIndex..";"..EP..";"..GP, "RAID");
 	CEPGP_UpdateStandbyScrollBar();
 end

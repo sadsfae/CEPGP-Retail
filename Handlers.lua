@@ -93,8 +93,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 			CEPGP_updateGuild();
 			local gRoster = {};
 			local rRoster = {};
-			local name, unitClass, class, oNote, EP, GP;
-			unitClass = CEPGP_roster[arg2][2];
+			local name, _, class, oNote, EP, GP;
 			for i = 1, GetNumGuildMembers() do
 				gRoster[i] = {};
 				name , _, _, _, class, _, _, oNote = GetGuildRosterInfo(i);
@@ -102,114 +101,133 @@ function CEPGP_handleComms(event, arg1, arg2)
 				if string.find(name, "-") then
 					name = string.sub(name, 0, string.find(name, "-")-1);
 				end
-				gRoster[i][1] = name;
-				gRoster[i][2] = math.floor((EP/GP)*100)/100;
-				gRoster[i][3] = class;
+				gRoster[i] = {
+					[1] = name,
+					[2] = EP,
+					[3] = GP,
+					[4] = math.floor((EP/GP)*100)/100,
+					[5] = class
+				};
 			end
 			if string.lower(arg1) == "!infoguild" then
 				if CEPGP_critReverse then
-					gRoster = CEPGP_tSort(gRoster, 2);
+					gRoster = CEPGP_tSort(gRoster, 4);
 					for i = 1, CEPGP_ntgetn(gRoster) do
 						if gRoster[i][1] == arg2 then
 							if not CEPGP_vInfo[arg2] then
-								SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
+								SendChatMessage("EP: " .. gRoster[i][2] .. " / GP: " .. gRoster[i][3] .. " / PR: " .. gRoster[i][4] .. " / PR rank in guild: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 							else
-								CEPGP_SendAddonMsg("!info" .. arg2 .. "EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "GUILD");
+								CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. gRoster[i][2] .. " / GP: " .. gRoster[i][3] .. " / PR: " .. gRoster[i][4] .. " / PR rank in guild: #" .. i, "GUILD");
 							end
 						end
 					end
 				else
 					CEPGP_critReverse = true;
-					gRoster = CEPGP_tSort(gRoster, 2);
+					gRoster = CEPGP_tSort(gRoster, 4);
 					for i = 1, table.getn(gRoster) do
 						if gRoster[i][1] == arg2 then
 							if not CEPGP_vInfo[arg2] then
-								SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
+								SendChatMessage("EP: " .. gRoster[i][2] .. " / GP: " .. gRoster[i][3] .. " / PR: " .. gRoster[i][4] .. " / PR rank in guild: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 							else
-								CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in guild: #" .. i, "GUILD");
+								CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. gRoster[i][2] .. " / GP: " .. gRoster[i][3] .. " / PR: " .. gRoster[i][4] .. " / PR rank in guild: #" .. i, "GUILD");
 							end
 						end
 					end
 					CEPGP_critReverse = false;
 				end
 			else
-				local count = 1;
+				local count = 0;
+				local compClass; -- Comparative Class
 				if string.lower(arg1) == "!infoclass" then
+					local name;
+					count = 1;
 					for i = 1, GetNumGroupMembers() do
-						local name = GetRaidRosterInfo(i);
+						if GetRaidRosterInfo(i) == arg2 then
+							name = GetRaidRosterInfo(i);
+							compClass = UnitClass("raid"..i);
+							break;
+						end
+					end
+					EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+					class = CEPGP_roster[name][2];
+					rRoster[count] = {
+						[1] = arg2,
+						[2] = EP,
+						[3] = GP,
+						[4] = math.floor((EP/GP))*100/100,
+						[5] = compClass
+					};
+					for i = 1, GetNumGroupMembers() do
+						name = GetRaidRosterInfo(i);
 						if string.find(name, "-") then
 							name = string.sub(name, 0, string.find(name, "-")-1);
 						end
-						for x = 1, table.getn(gRoster) do
-							if gRoster[x][1] == name and gRoster[x][3] == unitClass then
-								rRoster[count] = {};
-								rRoster[count][1] = name;
-								_, _ ,_, class, oNote = CEPGP_getGuildInfo(name);
-								EP, GP = CEPGP_getEPGP(oNote);
-								rRoster[count][2] = math.floor((EP/GP)*100)/100;
-								count = count + 1;
-							end
+						if not CEPGP_roster[name] then
+							EP, GP = 0, BASEGP;
+							class = UnitClass("raid"..i);
+						else
+							EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+							class = CEPGP_roster[name][2];
+						end
+						if class == compClass and name ~= arg2 then
+							count = count + 1;
+							rRoster[count] = {
+								[1] = name,
+								[2] = EP,
+								[3] = GP,
+								[4] = math.floor((EP/GP)*100)/100,
+								[5] = class
+							};
 						end
 					end
 				else --Raid
 					for i = 1, GetNumGroupMembers() do
-						local name = GetRaidRosterInfo(i);
+						name = GetRaidRosterInfo(i);
 						if string.find(name, "-") then
 							name = string.sub(name, 0, string.find(name, "-")-1);
 						end
-						for x = 1, CEPGP_ntgetn(gRoster) do
-							if gRoster[x][1] == name then
-								rRoster[count] = {};
-								rRoster[count][1] = name;
-								_, _ ,_, class, oNote = CEPGP_getGuildInfo(name);
-								EP, GP = CEPGP_getEPGP(oNote);
-								rRoster[count][2] = math.floor((EP/GP)*100)/100;
-								count = count + 1;
-							end
+						if not CEPGP_roster[name] then
+							EP, GP = 0, BASEGP;
+							class = UnitClass("raid"..i);
+						else
+							EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+							class = CEPGP_roster[name][2];
 						end
+						count = count + 1;
+						rRoster[count] = {
+							[1] = name,
+							[2] = EP,
+							[3] = GP,
+							[4] = math.floor((EP/GP)*100)/100,
+							[5] = class
+						};
 					end
 				end
-				if count > 1 then
-					if CEPGP_critReverse then
-						rRoster = CEPGP_tSort(rRoster, 2);
-						for i = 1, table.getn(rRoster) do
-							if rRoster[i][1] == arg2 then
-								if string.lower(arg1) == "!infoclass" then
-									if not CEPGP_vInfo[arg2] then
-										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
-									else
-										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "GUILD");
-									end
+				print(#rRoster);
+				if CEPGP_critReverse then
+					rRoster = CEPGP_tSort(rRoster, 4);
+				else
+					CEPGP_critReverse = true;
+					rRoster = CEPGP_tSort(rRoster, 4);
+					CEPGP_critReverse = false;
+				end
+				if count >= 1 then
+					for i = 1, #rRoster do
+						if rRoster[i][1] == arg2 then
+							if string.lower(arg1) == "!infoclass" then
+								if not CEPGP_vInfo[arg2] then
+									SendChatMessage("EP: " .. rRoster[i][2] .. " / GP: " .. rRoster[i][3] .. " / PR: " .. rRoster[i][4] .. " / PR rank among " .. compClass .. "s in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
 								else
-									if not CEPGP_vInfo[arg2] then
-										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
-									else
-										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "GUILD");
-									end
+									CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. rRoster[i][2] .. " / GP: " .. rRoster[i][3] .. " / PR: " .. rRoster[i][4] .. " / PR rank among " .. compClass .. "s in raid: #" .. i, "GUILD");
+								end
+							else
+								if not CEPGP_vInfo[arg2] then
+									SendChatMessage("EP: " .. rRoster[i][2] .. " / GP: " .. rRoster[i][3] .. " / PR: " .. rRoster[i][4] .. " / PR rank in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
+								else
+									CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. rRoster[i][2] .. " / GP: " .. rRoster[i][3] .. " / PR: " .. rRoster[i][4] .. " / PR rank in raid: #" .. i, "GUILD");
 								end
 							end
 						end
-					else
-						CEPGP_critReverse = true;
-						rRoster = CEPGP_tSort(rRoster, 2);
-						for i = 1, table.getn(rRoster) do
-							if rRoster[i][1] == arg2 then
-								if string.lower(arg1) == "!infoclass" then
-									if not CEPGP_vInfo[arg2] then
-										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
-									else
-										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank among " .. unitClass .. "s in raid: #" .. i, "GUILD");
-									end
-								else
-									if not CEPGP_vInfo[arg2] then
-										SendChatMessage("EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "WHISPER", CEPGP_LANGUAGE, arg2);
-									else
-										CEPGP_SendAddonMsg("!info;" .. arg2 .. ";EP: " .. EP .. " / GP: " .. GP .. " / PR: " .. math.floor((EP/GP)*100)/100 .. " / PR rank in raid: #" .. i, "GUILD");
-									end
-								end
-							end
-						end
-						CEPGP_critReverse = false;
 					end
 				end
 			end

@@ -3563,9 +3563,9 @@
 			</Frame>
 			<Frame name="CEPGP_standby" inherits="CEPGPFrameTemplate">
 				<Frames>
-					<ScrollFrame name="CEPGP_standby_scrollframe">
+					<ScrollFrame name="CEPGP_standby_scrollframe" inherits="UIPanelScrollFrameTemplate">
 						<Size>
-							<AbsDimension x="410" y="300"/>
+							<AbsDimension x="405" y="300"/>
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CEPGP_standby" relativePoint="TOPLEFT">

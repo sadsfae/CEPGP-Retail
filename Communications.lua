@@ -128,7 +128,9 @@ function CEPGP_IncAddonMsg(message, sender)
 		end
 		table.insert(CEPGP_standbyRoster, args[2]);
 		CEPGP_UpdateStandbyScrollBar();
-		
+	
+	elseif args[1] == "StandbyRemoved" and args[2] == UnitName("player") then
+		CEPGP_print(args3);	
 		
 	elseif args[1] == "!info" and args[2] == UnitName("player") then--strfind(message, "!info"..UnitName("player")) then
 		CEPGP_print(args[3]);
