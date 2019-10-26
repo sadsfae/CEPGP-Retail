@@ -66,6 +66,7 @@ CEPGP_auto_pass = false;
 CEPGP_raid_wide_dist = false;
 CEPGP_1120_notice = false;
 CEPPG_gp_tooltips = false;
+CEPGP_suppress_announcements = false;
 STANDBYPERCENT = nil;
 STANDBYRANKS = {};
 SLOTWEIGHTS = {};

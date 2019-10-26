@@ -28,17 +28,17 @@ function CEPGP_handleComms(event, arg1, arg2)
 						inGuild = true;
 					end
 					if CEPGP_distributing then
-						if inGuild then
+						if inGuild and not CEPGP_suppress_announcements then
 							SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
 							
-						else
+						elseif not CEPGP_suppress_announcements then
 							local total = GetNumGroupMembers();
 							for i = 1, total do
 								if arg2 == GetRaidRosterInfo(i) then
 									_, _, _, _, class = GetRaidRosterInfo(i);
 								end
 							end
-							SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
+								SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
 						end
 						if CEPGP_isML() == 0 then --If you are the master looter
 							CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
@@ -59,9 +59,9 @@ function CEPGP_handleComms(event, arg1, arg2)
 					inGuild = true;
 				end
 				if CEPGP_distributing then
-					if inGuild then
+					if inGuild and not CEPGP_suppress_announcements then
 						SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
-					else
+					elseif not CEPGP_suppress_announcements then
 						local total = GetNumGroupMembers();
 						for i = 1, total do
 							if arg2 == GetRaidRosterInfo(i) then
