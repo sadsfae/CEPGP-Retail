@@ -301,27 +301,42 @@ function CEPGP_IncAddonMsg(message, sender)
 		local GPB = args[7];
 		local GPA = args[8];
 		local itemID = args[9];
+		if itemID == "" then itemID = 0; end
 		local tStamp = args[10];
 		if not tStamp or tStamp == "" then
 			tStamp = time();
 		end
-		local itemLink = CEPGP_getItemLink(itemID);
-		if not itemLink and CEPGP_itemExists(tonumber(itemID)) then
-			local item = Item:CreateFromItemID(tonumber(itemID));
-			item:ContinueOnItemLoad(function()
-				itemLink = CEPGP_getItemLink(itemID);
+		if CEPGP_itemExists(tonumber(itemID)) then
+			local itemLink = CEPGP_getItemLink(itemID);
+			if not itemLink then
+				local item = Item:CreateFromItemID(tonumber(itemID));
+				item:ContinueOnItemLoad(function()
+					itemLink = CEPGP_getItemLink(itemID);
+					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+					[1] = player,
+					[2] = issuer,
+					[3] = action,
+					[4] = EPB,
+					[5] = EPA,
+					[6] = GPB,
+					[7] = GPA,
+					[8] = itemLink,
+					[9] = tStamp
+				};
+				end);
+			elseif itemLink then
 				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-				[1] = player,
-				[2] = issuer,
-				[3] = action,
-				[4] = EPB,
-				[5] = EPA,
-				[6] = GPB,
-				[7] = GPA,
-				[8] = itemLink,
-				[9] = tStamp
-			};
-			end);
+					[1] = player,
+					[2] = issuer,
+					[3] = action,
+					[4] = EPB,
+					[5] = EPA,
+					[6] = GPB,
+					[7] = GPA,
+					[8] = itemLink,
+					[9] = tStamp
+				};
+			end
 		else
 			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 				[1] = player,
@@ -331,7 +346,6 @@ function CEPGP_IncAddonMsg(message, sender)
 				[5] = EPA,
 				[6] = GPB,
 				[7] = GPA,
-				[8] = itemLink,
 				[9] = tStamp
 			};
 		end
