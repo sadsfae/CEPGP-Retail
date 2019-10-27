@@ -4670,7 +4670,7 @@
 							end
 						end);
 						C_Timer.After(1, function()
-							CEPGP_ignoreUpdates = true;
+							CEPGP_ignoreUpdates = false;
 							CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 						end);
 					</OnClick>
