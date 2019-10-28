@@ -1,3 +1,5 @@
+local L = CEPGP_Locale:GetLocale("CEPGP")
+
 function CEPGP_initialise()
 	_, _, _, CEPGP_ElvUI = GetAddOnInfo("ElvUI");
 	if not CEPGP_ElvUI then CEPGP_ElvUI = GetAddOnInfo("TukUI"); end
@@ -39,6 +41,11 @@ function CEPGP_initialise()
 		for k, v in pairs(bossNameIndex) do
 			EPVALS[k] = v;
 		end
+	end
+	-- Localize boss names on the config UI
+	local bossNames = _G["CEPGP_options_page_3_mc"].bosses
+	for k, entity in pairs(bossNames) do
+		entity:SetText(L[entity:GetText()])
 	end
 	if CEPGP_ntgetn(SLOTWEIGHTS) == 0 then
 		SLOTWEIGHTS = {

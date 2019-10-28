@@ -79,6 +79,7 @@ TRAFFIC = {};
 CEPGP_raid_logs = {};
 CEPGP_standbyRoster = {};
 
+local L = CEPGP_Locale:GetLocale("CEPGP")
 
 
 --[[ EVENT AND COMMAND HANDLER ]]--
@@ -148,11 +149,11 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 			local name;
 			if action == "UNIT_DIED" then
 				_, _, _, _, _, _, _, _, name = CombatLogGetCurrentEventInfo();
-				if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
+				if name == L["Zealot Zath"] or name == L["Zealot Lor'Khan"] then
 					CEPGP_handleCombat(name);
 					return;
 				end
-				if name == "Flamewaker Elite" or name == "Flamewaker Healer" then
+				if name == L["Flamewaker Elite"] or name == L["Flamewaker Healer"] then
 					CEPGP_handleCombat(name, true);
 				end
 				if bossNameIndex[name] then
@@ -161,25 +162,25 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 			elseif action == "SPELL_CAST_SUCCESS" then
 				local spellID, spellName;
 				_, _, _, _, name, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo();
-				if name == "Razorgore the Untamed" and spellID == 19873 then --Razorgore casts destroy egg
+				if name == L["Razorgore the Untamed"] and spellID == 19873 then --Razorgore casts destroy egg
 					CEPGP_kills = CEPGP_kills + 1;
 				end
 			end
 			
 		elseif event == "CHAT_MSG_MONSTER_EMOTE" then
-			if arg1 == "%s is resurrected by a nearby ally!" then
-				if arg2 == "Zealot Lor'Khan" then
+			if arg1 == L["%s is resurrected by a nearby ally!"] then
+				if arg2 == L["Zealot Lor'Khan"] then
 					CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] = false;
-				elseif arg2 == "Zealot Zath" then
+				elseif arg2 == L["Zealot Zath"] then
 					CEPGP_THEKAL_PARAMS["ZATH_DEAD"] = false;
-				elseif arg2 == "High Priest Thekal" and not (CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] or CEPGP_THEKAL_PARAMS["ZATH_DEAD"]) then
+				elseif arg2 == L["High Priest Thekal"] and not (CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] or CEPGP_THEKAL_PARAMS["ZATH_DEAD"]) then
 					CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] = false;
 				end
 			end
 			
 		elseif event == "CHAT_MSG_MONSTER_YELL" then
-			if arg2 == "The Prophet Skeram" then
-				if arg1 == "You only delay... the inevetable." then
+			if arg2 == L["The Prophet Skeram"] then
+				if arg1 == L["You only delay... the inevetable."] then
 					CEPGP_handleCombat(arg2, true);
 				end
 			end

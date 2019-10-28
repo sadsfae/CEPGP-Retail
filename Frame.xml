@@ -2621,7 +2621,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="OVERLAY">
-								<FontString name="CEPGP_options_Lucifron_val" inherits="GameFontNormal" text="Lucifron: ">
+								<FontString name="CEPGP_options_Lucifron_val" inherits="GameFontNormal" parentArray="bosses" text="Lucifron">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
@@ -2631,7 +2631,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Magmadar_val" inherits="GameFontNormal" text="Magmadar: ">
+								<FontString name="CEPGP_options_Magmadar_val" inherits="GameFontNormal" parentArray="bosses" text="Magmadar">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Lucifron_val">
@@ -2641,7 +2641,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Gehennas_val" inherits="GameFontNormal" text="Gehennas: ">
+								<FontString name="CEPGP_options_Gehennas_val" inherits="GameFontNormal" parentArray="bosses" text="Gehennas">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Magmadar_val">
@@ -2651,7 +2651,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Garr_val" inherits="GameFontNormal" text="Garr: ">
+								<FontString name="CEPGP_options_Garr_val" inherits="GameFontNormal" parentArray="bosses" text="Garr">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Gehennas_val">
@@ -2661,7 +2661,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Baron Geddon_val" inherits="GameFontNormal" text="Baron Geddon: ">
+								<FontString name="CEPGP_options_Baron Geddon_val" inherits="GameFontNormal" parentArray="bosses" text="Baron Geddon">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Garr_val">
@@ -2671,7 +2671,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Shazzrah_val" inherits="GameFontNormal" text="Shazzrah: ">
+								<FontString name="CEPGP_options_Shazzrah_val" inherits="GameFontNormal" parentArray="bosses" text="Shazzrah">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Baron Geddon_val">
@@ -2681,7 +2681,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Sulfuron Harbinger_val" inherits="GameFontNormal" text="Sulfuron Harbinger: ">
+								<FontString name="CEPGP_options_Sulfuron Harbinger_val" inherits="GameFontNormal" parentArray="bosses" text="Sulfuron Harbinger">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Shazzrah_val">
@@ -2691,7 +2691,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Golemagg the Incinerator_val" inherits="GameFontNormal" text="Golemagg the Incinerator: ">
+								<FontString name="CEPGP_options_Golemagg the Incinerator_val" inherits="GameFontNormal" parentArray="bosses" text="Golemagg the Incinerator">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Sulfuron Harbinger_val">
@@ -2701,7 +2701,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Majordomo Executus_val" inherits="GameFontNormal" text="Majordomo Executus: ">
+								<FontString name="CEPGP_options_Majordomo Executus_val" inherits="GameFontNormal" parentArray="bosses" text="Majordomo Executus">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Golemagg the Incinerator_val">
@@ -2711,7 +2711,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Ragnaros_val" inherits="GameFontNormal" text="Ragnaros: ">
+								<FontString name="CEPGP_options_Ragnaros_val" inherits="GameFontNormal" parentArray="bosses" text="Ragnaros">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Majordomo Executus_val">
@@ -2721,7 +2721,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="CEPGP_options_Onyxia_val" inherits="GameFontNormal" text="Onyxia: ">
+								<FontString name="CEPGP_options_Onyxia_val" inherits="GameFontNormal" parentArray="bosses" text="Onyxia">
 									<Color r="1" g="1" b="1"/>
 									<Anchors>
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_Ragnaros_val">

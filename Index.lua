@@ -1,96 +1,98 @@
+local L = CEPGP_Locale:GetLocale("CEPGP")
+
 --The item level of each item
 bossNameIndex = {
-					["Onyxia"] = 5,
-					
-					-- molten core --
-					["Lucifron"] = 5,
-					["Magmadar"] = 5,
-					["Gehennas"] = 5,
-					["Garr"] = 5,
-					["Baron Geddon"] = 5,
-					["Shazzrah"] = 5,
-					["Sulfuron Harbinger"] = 5,
-					["Golemagg the Incinerator"] = 5,
-					["Majordomo Executus"] = 5,
-					["Ragnaros"] = 7,
-					
-					-- blackwing lair --
-					["Razorgore the Untamed"] = 7,
-					["Vaelastrasz the Corrupt"] = 7,
-					["Broodlord Lashlayer"] = 7,
-					["Firemaw"] = 7,
-					["Ebonroc"] = 7,
-					["Flamegor"] = 7,
-					["Chromaggus"] = 7,
-					["Nefarian"] = 10,
+    [L["Onyxia"]] = 5,
 
-					-- zul'gurub --
-					["High Priest Venoxis"] = 2,
-					["High Priestess Jeklik"] = 2,
-					["High Priestess Mar'li"] = 2,
-					["High Priest Thekal"] = 2,
-					["High Priestess Arlokk"] = 2,
-					["Gri'lek"] = 2,
-					["Hazza'rah"] = 2,
-					["Renataki"] = 2,
-					["Wushoolay"] = 2,
-					["Bloodlord Mandokir"] = 2,
-					["Jin'do the Hexxer"] = 2,
-					["Gahz'ranka"] = 2,
-					["Hakkar"] = 3,
-					
-					-- aq20 --
-					["Kurinnaxx"] = 3,
-					["General Rajaxx"] = 3,
-					["Moam"] = 3,
-					["Buru the Gorger"] = 3,
-					["Ayamiss the Hunter"] = 3,
-					["Ossirian the Unscarred"] = 4,
-					
-					-- aq40 --
-					["The Prophet Skeram"] = 10,
-					["Battleguard Sartura"] = 10,
-					["Fankriss the Unyielding"] = 10,
-					["Princess Huhuran"] = 10,
-					["Princess Yauj"] = 10,
-					["Vem"] = 10,
-					["Lord Kri"] = 10,
-					["Viscidus"] = 10,
-					["Ouro"] = 10,
-					["Emperor Vek'lor"] = 10,
-					["Emperor Vek'nilash"] = 10,
-					["C'Thun"] = 12,
-					
-					-- naxxramas --
-					["Anub'Rekhan"] = 12,
-					["Grand Widow Faerlina"] = 12,
-					["Maexxna"] = 15,
+    -- molten core --
+    [L["Lucifron"]] = 5,
+    [L["Magmadar"]] = 5,
+    [L["Gehennas"]] = 5,
+    [L["Garr"]] = 5,
+    [L["Baron Geddon"]] = 5,
+    [L["Shazzrah"]] = 5,
+    [L["Sulfuron Harbinger"]] = 5,
+    [L["Golemagg the Incinerator"]] = 5,
+    [L["Majordomo Executus"]] = 5,
+    [L["Ragnaros"]] = 7,
 
-					["Noth the Plaguebringer"] = 12,
-					["Heigan the Unclean"] = 12,
-					["Loatheb"] = 15,
+    -- blackwing lair --
+    [L["Razorgore the Untamed"]] = 7,
+    [L["Vaelastrasz the Corrupt"]] = 7,
+    [L["Broodlord Lashlayer"]] = 7,
+    [L["Firemaw"]] = 7,
+    [L["Ebonroc"]] = 7,
+    [L["Flamegor"]] = 7,
+    [L["Chromaggus"]] = 7,
+    [L["Nefarian"]] = 10,
 
-					["Instructor Razuvious"] = 12,
-					["Gothik the Harvester"] = 12,
-					["Highlord Mograine"] = 15,
-					["Thane Korth'azz"] = 15,
-					["Lady Blaumeux"] = 15,
-					["Sir Zeliek"] = 15,
+    -- zul'gurub --
+    [L["High Priest Venoxis"]] = 2,
+    [L["High Priestess Jeklik"]] = 2,
+    [L["High Priestess Mar'li"]] = 2,
+    [L["High Priest Thekal"]] = 2,
+    [L["High Priestess Arlokk"]] = 2,
+    [L["Gri'lek"]] = 2,
+    [L["Hazza'rah"]] = 2,
+    [L["Renataki"]] = 2,
+    [L["Wushoolay"]] = 2,
+    [L["Bloodlord Mandokir"]] = 2,
+    [L["Jin'do the Hexxer"]] = 2,
+    [L["Gahz'ranka"]] = 2,
+    [L["Hakkar"]] = 3,
 
-					["Patchwerk"] = 12,
-					["Grobbulus"] = 12,
-					["Gluth"] = 12,
-					["Thaddius"] = 15,
+    -- aq20 --
+    [L["Kurinnaxx"]] = 3,
+    [L["General Rajaxx"]] = 3,
+    [L["Moam"]] = 3,
+    [L["Buru the Gorger"]] = 3,
+    [L["Ayamiss the Hunter"]] = 3,
+    [L["Ossirian the Unscarred"]] = 4,
 
-					["Sapphiron"] = 15,
-					["Kel'Thuzad"] = 15,
-					
-					-- world bosses --
-					["Doom Lord Kazzak"] = 7,
-					["Azuregos"] = 7,
-					["Teremus the Devourer"] = 7,
-					["Emeriss"] = 7,
-					["Lethon"] = 7,
-					["Ysondre"] = 7,
-					["Taerar"] = 7
-				}
+    -- aq40 --
+    [L["The Prophet Skeram"]] = 10,
+    [L["Battleguard Sartura"]] = 10,
+    [L["Fankriss the Unyielding"]] = 10,
+    [L["Princess Huhuran"]] = 10,
+    [L["Princess Yauj"]] = 10,
+    [L["Vem"]] = 10,
+    [L["Lord Kri"]] = 10,
+    [L["Viscidus"]] = 10,
+    [L["Ouro"]] = 10,
+    [L["Emperor Vek'lor"]] = 10,
+    [L["Emperor Vek'nilash"]] = 10,
+    [L["C'Thun"]] = 12,
+
+    -- naxxramas --
+    [L["Anub'Rekhan"]] = 12,
+    [L["Grand Widow Faerlina"]] = 12,
+    [L["Maexxna"]] = 15,
+
+    [L["Noth the Plaguebringer"]] = 12,
+    [L["Heigan the Unclean"]] = 12,
+    [L["Loatheb"]] = 15,
+
+    [L["Instructor Razuvious"]] = 12,
+    [L["Gothik the Harvester"]] = 12,
+    [L["Highlord Mograine"]] = 15,
+    [L["Thane Korth'azz"]] = 15,
+    [L["Lady Blaumeux"]] = 15,
+    [L["Sir Zeliek"]] = 15,
+
+    [L["Patchwerk"]] = 12,
+    [L["Grobbulus"]] = 12,
+    [L["Gluth"]] = 12,
+    [L["Thaddius"]] = 15,
+
+    [L["Sapphiron"]] = 15,
+    [L["Kel'Thuzad"]] = 15,
+
+    -- world bosses --
+    [L["Doom Lord Kazzak"]] = 7,
+    [L["Azuregos"]] = 7,
+    [L["Teremus the Devourer"]] = 7,
+    [L["Emeriss"]] = 7,
+    [L["Lethon"]] = 7,
+    [L["Ysondre"]] = 7,
+    [L["Taerar"]] = 7
+}
