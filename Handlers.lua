@@ -254,16 +254,12 @@ function CEPGP_handleCombat(name, except)
 			name = L["Majordomo Executus"];
 		end
 		EP = tonumber(EPVALS[name]);
-		if AUTOEP[name] and EP > 0 then
-			if success then
-				if CEPGP_combatModule == L["The Four Horsemen"] or CEPGP_combatModule == L["The Bug Trio"] or CEPGP_combatModule == L["The Twin Emperors"] then
-					CEPGP_AddRaidEP(EP, CEPGP_combatModule .. " have been defeated! " .. EP .. " EP has been awarded to the raid", CEPGP_combatModule);
-				else
-					CEPGP_AddRaidEP(EP, CEPGP_combatModule .. " has been defeated! " .. EP .. " EP has been awarded to the raid", CEPGP_combatModule);
-				end
-				if STANDBYEP and tonumber(STANDBYPERCENT) > 0 then
-					CEPGP_addStandbyEP(EP*(tonumber(STANDBYPERCENT)/100), CEPGP_combatModule);
-				end
+		if AUTOEP[name] and EP > 0 and success then
+			local plurals = CEPGP_combatModule == L["The Four Horsemen"] or CEPGP_combatModule == L["The Bug Trio"] or CEPGP_combatModule == L["The Twin Emperors"]
+			local message = format(L["%s " .. (plurals and "have" or "has") .. " been defeated! %d EP has been awarded to the raid"], CEPGP_combatModule, EP);
+			CEPGP_AddRaidEP(EP, message, CEPGP_combatModule);
+			if STANDBYEP and tonumber(STANDBYPERCENT) > 0 then
+				CEPGP_addStandbyEP(EP*(tonumber(STANDBYPERCENT)/100), CEPGP_combatModule);
 			end
 		end
 		CEPGP_UpdateStandbyScrollBar();

@@ -75,3 +75,5 @@ L["Emeriss"] = true
 L["Lethon"] = true
 L["Ysondre"] = true
 L["Taerar"] = true
+L["%s have been defeated! %d EP has been awarded to the raid"] = true
+L["%s has been defeated! %d EP has been awarded to the raid"] = true
