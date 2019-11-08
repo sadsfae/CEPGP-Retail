@@ -118,15 +118,30 @@ function CEPGP_IncAddonMsg(message, sender)
 		CEPGP_print(args[3]);
 		
 	elseif args[1] == "StandbyListAdd" and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and sender ~= UnitName("player") then
-		if CEPGP_tContains(CEPGP_standbyRoster, args[2]) then
-			return;
+		for _, t in pairs(CEPGP_standbyRoster) do -- Is the player already in the standby roster?
+			if t[1] == args[2] then
+				return;
+			end
 		end
-		for _, v in ipairs(CEPGP_raidRoster) do
+		for _, v in ipairs(CEPGP_raidRoster) do -- Is the player part of your raid group?
 			if args[2] == v[1] then
 				return;
 			end
 		end
-		table.insert(CEPGP_standbyRoster, args[2]);
+		if not CEPGP_roster[args[2]] then -- Player might not be part of your guild. This could happen if you're pugging with another guild and they use CEPGP
+			return;
+		end
+		local player, class, rank, rankIndex, EP, GP, classFile = args[2], args[3], args[4], args[5], args[6], args[7], args[8];
+		CEPGP_standbyRoster[#CEPGP_standbyRoster+1] = {
+			[1] = player,
+			[2] = class,
+			[3] = rank,
+			[4] = rankIndex,
+			[5] = EP,
+			[6] = GP,
+			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+			[8] = classFile
+		};
 		CEPGP_UpdateStandbyScrollBar();
 	
 	elseif (args[1] == "StandbyRemoved" or args[1] == "StandbyAdded") and args[2] == UnitName("player") then
@@ -135,16 +150,15 @@ function CEPGP_IncAddonMsg(message, sender)
 	elseif args[1] == "!info" and args[2] == UnitName("player") then--strfind(message, "!info"..UnitName("player")) then
 		CEPGP_print(args[3]);
 		
-	elseif message == "?forceSync" and ALLOW_FORCED_SYNC and sender ~= UnitName("player") then
-		local _, _, _, rIndex = CEPGP_getGuildInfo(sender); --rank index
-		if not rIndex then return; end
-		if rIndex + 1 <= CEPGP_force_sync_rank then --Index obtained by GetGuildRosterInfo starts at 0 whereas GuildControlGetRankName starts at 1 for some reason
-			CEPGP_print(sender .. " is synchronising your settings with theirs");
-			CEPGP_SendAddonMsg(sender..";import", "GUILD");
-		end
-		
-	elseif args[1] == UnitName("player") and args[2] == "import" then
+	elseif (args[1] == UnitName("player") or args[1] == "?forceSync") and args[2] == "import" then
 		local lane = "GUILD";
+		if args[1] == "?forceSync" then
+			local _, _, _, rIndex = CEPGP_getGuildInfo(sender); --rank index
+			if not rIndex then return; end
+			if rIndex + 1 <= CEPGP_force_sync_rank then --Index obtained by GetGuildRosterInfo starts at 0 whereas GuildControlGetRankName starts at 1 for some reason
+				CEPGP_print(sender .. " is synchronising your settings with theirs");
+			end
+		end
 		CEPGP_SendAddonMsg(sender..";impresponse;CHANNEL;"..CHANNEL, lane);
 		CEPGP_SendAddonMsg(sender..";impresponse;MOD;"..MOD, lane);
 		CEPGP_SendAddonMsg(sender..";impresponse;COEF;"..COEF, lane);
@@ -280,6 +294,14 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		CEPGP_button_options_OnClick();
 		
+	elseif args[1] == "?IgnoreUpdates" and sender ~= UnitName("player") then
+		if args[2] == "true" then
+			CEPGP_ignoreUpdates = true;
+		else
+			CEPGP_ignoreUpdates = false;
+			CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+		end
+	
 	elseif args[1] == "CallItem" and sender ~= UnitName("player") then
 		local id = args[2];
 		local gp = args[3];
@@ -287,6 +309,7 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 	elseif strfind(message, "MainSpec") then
 		CEPGP_handleComms("CHAT_MSG_WHISPER", CEPGP_keyword, sender);
+		
 	
 	elseif args[1] == "CEPGP_TRAFFIC" then
 		if string.find(sender, "-") then

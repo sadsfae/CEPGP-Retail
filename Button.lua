@@ -155,7 +155,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_desc:SetText("Decays/Inflates EPGP standings by a percentage");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
-															if string.find(CEPGP_context_amount:GetText(), '[^0-9%-]') then
+															if string.find(CEPGP_context_amount:GetText(), '^[0-9]$') or string.find(CEPGP_context_amount:GetText(), '^[0-9.0-9]$') then
 																CEPGP_print("Enter a valid number", true);
 															else
 																PlaySound(799);
@@ -271,9 +271,11 @@ function CEPGP_distribute_popup_OnEvent(event, msg, name)
 		if event == "UI_ERROR_MESSAGE" and arg1 == "Inventory is full." and CEPGP_distPlayer ~= "" then
 			CEPGP_print(CEPGP_distPlayer .. "'s inventory is full", 1);
 			CEPGP_distribute_popup:Hide();
+			CEPGP_award = false;
 		elseif event == "UI_ERROR_MESSAGE" and arg1 == "You can't carry any more of those items." and CEPGP_distPlayer ~= "" then
 			CEPGP_print(CEPGP_distPlayer .. " can't carry any more of this unique item", 1);
 			CEPGP_distribute_popup:Hide();
+			CEPGP_award = false;
 		end
 	end
 end
@@ -361,4 +363,41 @@ function CEPGP_minThresholdChange(self, value)
 	UIDropDownMenu_SetSelectedValue(CEPGP_min_threshold_dropdown, self.value);
 	CEPGP_min_threshold = self.value;
 	CEPGP_print("Minimum auto show threshold is now set to " .. self:GetText());
+end
+
+		--[[ Default Channel DropDown ]]--
+		
+function CEPGP_defChannelDropdown(frame, level, menuList)
+	local channels = {
+		[1] = "Say",
+		[2] = "Yell",
+		[3] = "Party",
+		[4] = "Raid",
+		[5] = "Guild",
+		[6] = "Officer",
+	};
+	for i = 4, C_ChatInfo.GetNumActiveChannels() do
+		channels[i+3] = select(2, GetChannelName(i));
+	end
+	for index, value in ipairs(channels) do
+		local info = {
+			text = value,
+			value = index,
+			func = CEPGP_defChannelChange
+		};
+		local entry = UIDropDownMenu_AddButton(info);
+	end
+	for i = 1, #channels do
+		if string.lower(CHANNEL) == string.lower(channels[i]) then
+			UIDropDownMenu_SetSelectedName(CEPGP_def_channel_dropdown, channels[i]);
+			UIDropDownMenu_SetSelectedValue(CEPGP_def_channel_dropdown, i);
+		end
+	end
+end
+
+function CEPGP_defChannelChange(self, value)
+	UIDropDownMenu_SetSelectedName(CEPGP_def_channel_dropdown, self:GetText());
+	UIDropDownMenu_SetSelectedValue(CEPGP_def_channel_dropdown, self.value);
+	CHANNEL = self:GetText();
+	CEPGP_print("Default reporting channel changed to \"" .. CHANNEL .. "\".");
 end

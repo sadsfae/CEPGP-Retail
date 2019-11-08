@@ -21,17 +21,21 @@ function CEPGP_handleComms(event, arg1, arg2)
 				local item = Item:CreateFromItemID(CEPGP_DistID);
 				item:ContinueOnItemLoad(function()
 					local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID)
-					CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 					local EP, GP = nil;
 					local inGuild = false;
 					if CEPGP_tContains(CEPGP_roster, arg2, true) then
 						EP, GP = CEPGP_getEPGP(CEPGP_roster[arg2][5]);
+						if CEPGP_minEP[1] and CEPGP_minEP[2] > EP then
+							CEPGP_print(arg2 .. " is interested in this item but doesn't have enough EP.");
+							return;
+						end
 						class = CEPGP_roster[arg2][2];
 						inGuild = true;
 					end
+					CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 					if CEPGP_distributing then
 						if inGuild and not CEPGP_suppress_announcements then
-							SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
+							SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", "RAID", CEPGP_LANGUAGE);
 							
 						elseif not CEPGP_suppress_announcements then
 							local total = GetNumGroupMembers();
@@ -40,7 +44,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 									_, _, _, _, class = GetRaidRosterInfo(i);
 								end
 							end
-								SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
+								SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", "RAID", CEPGP_LANGUAGE);
 						end
 						if CEPGP_isML() == 0 then --If you are the master looter
 							CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
@@ -52,17 +56,21 @@ function CEPGP_handleComms(event, arg1, arg2)
 			else
 				--	Sends an addon message to the person who whispered !need to me
 				--	See Communications.lua:2 to continue this chain
-				CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 				local EP, GP = nil;
 				local inGuild = false;
 				if CEPGP_tContains(CEPGP_roster, arg2, true) then
 					EP, GP = CEPGP_getEPGP(CEPGP_roster[arg2][5]);
+					if CEPGP_minEP[1] and CEPGP_minEP[2] > EP then
+						CEPGP_print(arg2 .. " is interested in this item but doesn't have enough EP.");
+						return;
+					end
 					class = CEPGP_roster[arg2][2];
 					inGuild = true;
 				end
+				CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 				if CEPGP_distributing then
 					if inGuild and not CEPGP_suppress_announcements then
-						SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", RAID, CEPGP_LANGUAGE);
+						SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", "RAID", CEPGP_LANGUAGE);
 					elseif not CEPGP_suppress_announcements then
 						local total = GetNumGroupMembers();
 						for i = 1, total do
@@ -70,7 +78,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 								_, _, _, _, class = GetRaidRosterInfo(i);
 							end
 						end
-						SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", RAID, CEPGP_LANGUAGE);
+						SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", "RAID", CEPGP_LANGUAGE);
 					end
 					if CEPGP_isML() == 0 then --If you are the master looter
 						CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
@@ -205,7 +213,6 @@ function CEPGP_handleComms(event, arg1, arg2)
 						};
 					end
 				end
-				print(#rRoster);
 				if CEPGP_critReverse then
 					rRoster = CEPGP_tSort(rRoster, 4);
 				else
@@ -395,7 +402,7 @@ function CEPGP_handleLoot(event, arg1, arg2)
 			CEPGP_SendAddonMsg("RaidAssistLootClosed", "RAID");
 		end
 		if CEPGP_distributing and arg1 == CEPGP_lootSlot then --Confirms that an item is currently being distributed and that the item taken is the one in question
-			if CEPGP_distPlayer ~= "" then
+			if CEPGP_distPlayer ~= "" and CEPGP_award then
 				CEPGP_distributing = false;
 				if CEPGP_distGP then
 					SendChatMessage("Awarded " .. _G["CEPGP_distribute_item_name"]:GetText() .. " to ".. CEPGP_distPlayer .. " for " .. CEPGP_distribute_GP_value:GetText() .. " GP", CHANNEL, CEPGP_LANGUAGE);

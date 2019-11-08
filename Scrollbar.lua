@@ -475,7 +475,10 @@ function CEPGP_UpdateTrafficScrollBar()
 		else
 			_G["TrafficButton" .. i]:SetPoint("TOPLEFT", _G["CEPGP_traffic_scrollframe_container"], "TOPLEFT", 7.5, -10);
 		end
-		local name, issuer, action, EPB, EPA, GPB, GPA, item = TRAFFIC[i][1], TRAFFIC[i][2], TRAFFIC[i][3], TRAFFIC[i][4], TRAFFIC[i][5], TRAFFIC[i][6], TRAFFIC[i][7], TRAFFIC[i][8];
+		local name, issuer, action, EPB, EPA, GPB, GPA, item, tStamp = TRAFFIC[i][1], TRAFFIC[i][2], TRAFFIC[i][3], TRAFFIC[i][4], TRAFFIC[i][5], TRAFFIC[i][6], TRAFFIC[i][7], TRAFFIC[i][8], TRAFFIC[i][9];
+		if tStamp then
+			tStamp = date("Time: %I:%M%p\nDate: %a, %d %B %Y", tStamp);
+		end
 		local _, class = CEPGP_getPlayerClass(name);
 		local _, issuerClass = CEPGP_getPlayerClass(issuer);
 		local colour, issuerColour = class, issuerClass;
@@ -503,20 +506,37 @@ function CEPGP_UpdateTrafficScrollBar()
 		_G["TrafficButton" .. i .. "EPAfter"]:SetText(EPA);
 		_G["TrafficButton" .. i .. "GPBefore"]:SetText(GPB);
 		_G["TrafficButton" .. i .. "GPAfter"]:SetText(GPA);
-		if item and strfind(item, "item") then --Accommodates for earlier versions when malformed information may be stored in the item index of the traffic log
+		if tStamp then
+			_G["TrafficButton" .. i]:SetScript('OnEnter', function()
+				GameTooltip:SetOwner(_G["TrafficButton" .. i], "ANCHOR_TOPLEFT");
+				GameTooltip:SetText(tStamp);
+			end);
+			_G["TrafficButton" .. i]:SetScript('OnLeave', function()
+				GameTooltip:Hide();
+			end);
+		else
+			_G["TrafficButton" .. i]:SetScript('OnEnter', function() end);
+		end
+		if (item and strfind(item, "item")) or tonumber(item) then --Accommodates for earlier versions when malformed information may be stored in the item index of the traffic log
 			_G["TrafficButton" .. i .. "ItemName"]:SetText(item);
 			local _, link = GetItemInfo(item);
 			if link then
 				_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
 			else
-				local id = string.sub(tostring(item), string.find(item, ":")+1);
-				id = tonumber(string.sub(id, 0, string.find(id, ":")-1));
+				local id;
+				if string.find(tostring(item), "item:") then
+					id = string.sub(tostring(item), string.find(item, ":")+1);
+					id = tonumber(string.sub(id, 0, string.find(id, ":")-1));
+				end
 				if CEPGP_itemExists(id) then
 					local newItem = Item:CreateFromItemID(id);
 					newItem:ContinueOnItemLoad(function()
 						_, link = GetItemInfo(item);
 						_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() SetItemRef(link) end);
 					end);
+				else
+					_G["TrafficButton" .. i .. "ItemName"]:SetText("");
+					_G["TrafficButton" .. i .. "Item"]:SetScript('OnClick', function() end);
 				end
 			end
 		else
@@ -542,17 +562,17 @@ function CEPGP_UpdateStandbyScrollBar()
 			end
 		end
 		local _, _, rank, rankIndex, oNote, _, classFile = CEPGP_getGuildInfo(CEPGP_standbyRoster[i][1]);
-		local EP,GP = CEPGP_getEPGP(oNote);
+		local _, _, _, _, _, _, _, _, online = GetGuildRosterInfo(CEPGP_getIndex(CEPGP_standbyRoster[i][1]));
 		tempTable[i] = {
 			[1] = CEPGP_standbyRoster[i][1], --name
 			[2] = CEPGP_standbyRoster[i][2], --class
-			[3] = rank, --rank
-			[4] = rankIndex, --rankIndex
-			[5] = EP, --EP
-			[6] = GP, --GP
-			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
-			[8] = classFile, --ClassFile
-			[9] = CEPGP_roster[CEPGP_standbyRoster[i][1]][8] --Online
+			[3] = CEPGP_standbyRoster[i][3], --rank
+			[4] = CEPGP_standbyRoster[i][4], --rankIndex
+			[5] = CEPGP_standbyRoster[i][5], --EP
+			[6] = CEPGP_standbyRoster[i][6], --GP
+			[7] = CEPGP_standbyRoster[i][7],
+			[8] = CEPGP_standbyRoster[i][8], --ClassFile
+			[9] = online --Online
 		};
 		local colour;
 		if tempTable[i][9] then
@@ -605,7 +625,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 		child:Hide();
 	end
 	local tempTable, standbyTable = {}, {};
-	local name, class, classFile, rank, index, colour, total, week, fn, month, twoMon, threeMon;
+	local name, class, classFile, rank, index, total, week, fn, month, twoMon, threeMon;
 	local size;
 	local sbCount = 1;
 	local count = 1;
@@ -693,7 +713,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 	
 	size = #tempTable;
 	for i = 1, size do
-		local avg;
+		local avg, colour;
 		if #CEPGP_raid_logs == 0 then
 			avg = 1;
 		else
@@ -770,6 +790,7 @@ function CEPGP_UpdateAttendanceScrollBar()
 			--[[ STANDBY ]]--
 	size = #standbyTable;
 	for i = 1, size do
+		local colour;
 		local avg = standbyTable[i][4]/#CEPGP_raid_logs;
 		avg = math.floor(avg*100)/100;
 		if standbyTable[i][10] then
