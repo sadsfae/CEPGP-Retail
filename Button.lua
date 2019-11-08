@@ -152,7 +152,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
 		CEPGP_context_popup_title:SetText("Decay Guild EPGP");
-		CEPGP_context_popup_desc:SetText("Decays/Inflates EPGP standings by a percentage");
+		CEPGP_context_popup_desc:SetText("Positive numbers decay | Negative numbers inflate");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															if string.find(CEPGP_context_amount:GetText(), '^[0-9]$') or string.find(CEPGP_context_amount:GetText(), '^[0-9.0-9]$') then

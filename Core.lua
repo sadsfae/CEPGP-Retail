@@ -580,7 +580,7 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 		if EP < 0 then
 			EP = 0;
 		end
-		--GuildRosterSetOfficerNote(index, EP .. "," .. GP);
+		GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 		if not itemID then
 			if tonumber(amount) <= 0 then
 				amount = string.sub(amount, 2, string.len(amount));
