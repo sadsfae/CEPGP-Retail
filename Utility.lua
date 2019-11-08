@@ -27,9 +27,6 @@ function CEPGP_initialise()
 	if CEPGP_keyword == nil then
 		CEPGP_keyword = "!need";
 	end
-	if CEPGP_GP_decs == nil then
-		CEPGP_GP_decs = "0";
-	end
 	if CEPGP_ntgetn(AUTOEP) == 0 then
 		for k, v in pairs(bossNameIndex) do
 			AUTOEP[k] = true;
@@ -206,11 +203,7 @@ function CEPGP_calcGP(link, quantity, id)
 			slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 			slot = SLOTWEIGHTS[slot];
 			if ilvl and rarity and slot then
-				if tonumber(CEPGP_GP_decs) > 0 then
-					return math.floor(1*(10*tonumber(CEPGP_GP_decs))*(((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity))/(1*(10*tonumber(CEPGP_GP_decs)));
-				else
-					return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
-				end
+				return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
 			else
 				return 0;
 			end
@@ -300,11 +293,7 @@ function CEPGP_calcGP(link, quantity, id)
 		slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 		slot = SLOTWEIGHTS[slot];
 		if ilvl and rarity and slot then
-			if tonumber(CEPGP_GP_decs) > 0 then
-				return math.floor(1*(10*tonumber(CEPGP_GP_decs))*(((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity))/(1*(10*tonumber(CEPGP_GP_decs)));
-			else
-				return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
-			end
+			return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
 		else
 			return 0;
 		end
@@ -568,7 +557,6 @@ function CEPGP_rosterUpdate(event)
 					};
 				end
 			end
-			name, rank, rankIndex, class, officerNote, EP, GP, PR = nil;
 		end
 		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
 		if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
@@ -690,7 +678,7 @@ function CEPGP_addToStandby(player)
 		[8] = classFile
 	};
 	CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 1);
-	CEPGP_SendAddonMsg("StandbyListAdd;"..player..";"..class..";"..rank..";"..rankIndex..";"..EP..";"..GP, "RAID");
+	if CEPGP_standby_share then CEPGP_SendAddonMsg("StandbyListAdd;"..player..";"..class..";"..rank..";"..rankIndex..";"..EP..";"..GP..";"..classFile, "RAID"); end
 	CEPGP_SendAddonMsg("StandbyAdded;" .. player .. ";You have been added to the standby list.", "GUILD");
 	CEPGP_UpdateStandbyScrollBar();
 end
@@ -808,6 +796,29 @@ function CEPGP_getVal(str)
 	return val;
 end
 
+function CEPGP_getIndex(name, index)
+	if index then
+		local temp = string.sub(GetGuildRosterInfo(index), 0, string.find(GetGuildRosterInfo(index), "-")-1);
+		if temp == name then
+			return index;
+		else
+			for i = 1, GetNumGuildMembers() do
+				local temp = string.sub(GetGuildRosterInfo(i), 0, string.find(GetGuildRosterInfo(i), "-")-1);
+				if temp == name then
+					return i;
+				end
+			end
+		end
+	else
+		for i = 1, GetNumGuildMembers() do
+			local temp = string.sub(GetGuildRosterInfo(i), 0, string.find(GetGuildRosterInfo(i), "-")-1);
+			if temp == name then
+				return i;
+			end
+		end
+	end
+end
+
 function CEPGP_indexToName(index)
 	for name,value in pairs(CEPGP_roster) do
 		if value[1] == index then
@@ -904,6 +915,7 @@ function CEPGP_getEPGP(offNote, index, name)
 end
 
 function CEPGP_checkEPGP(note)
+	--if not note then return; end
 	if string.find(note, '[^0-9.,-]') then
 		return false;
 	end
@@ -1198,6 +1210,13 @@ function CEPGP_button_options_OnClick()
 		_G["CEPGP_sync_rank"]:Hide();
 		_G["CEPGP_button_options_force_sync"]:Hide();
 	end
+	if CEPGP_minEP[1] then
+		CEPGP_options_min_EP_check:SetChecked(true);
+		_G["CEPGP_options_min_EP_amount"]:Show();
+	else
+		CEPGP_options_min_EP_check:SetChecked(false);
+		_G["CEPGP_options_min_EP_amount"]:Hide();
+	end
 	if CEPGP_loot_GUI then
 		_G["CEPGP_options_response_gui_checkbox"]:SetChecked(true);
 		_G["CEPGP_options_keyword"]:Hide();
@@ -1265,6 +1284,7 @@ end
 function CEPGP_getDebugInfo()
 	local info = "<details><summary>Debug Info</summary><br />\n";
 	info = info .. "Version: " .. CEPGP_VERSION .. "<br />\n";
+	info = info .. "Locale: " .. GetLocale() .. "<br />\n";
 	info = info .. "GP Formula: (" .. COEF .. "x(" .. MOD_COEF .. "^<sup>((ilvl/26)+(rarity-4))</sup>)xSlot Modifier)x" .. MOD .. "<br />";
 	info = info .. "Base GP: " .. BASEGP .. "<br />\n";
 	if STANDBYEP then
@@ -1622,7 +1642,7 @@ function CEPGP_split(msg)
 end
 
 function CEPGP_canEquip(slot)
-	local class = CEPGP_roster[UnitName("player")][7];
+	local _, class = UnitClass("player");
 	local temp = string.sub(class, 2, string.len(class));
 	class = string.sub(class, 1, 1) .. string.lower(temp);
 	if CEPGP_tContains(CEPGP_classes[class], slot) then return true; end
@@ -1630,9 +1650,34 @@ function CEPGP_canEquip(slot)
 end
 
 function CEPGP_itemExists(id)
-	if C_Item.DoesItemExistByID(id) then
+	if not id or not tonumber(id) then return false; end
+	if C_Item.DoesItemExistByID(tonumber(id)) then
 		return true;
 	else
 		return false;
+	end
+end
+
+function CEPGP_getReportChannel()
+	local channels = {"SAY","YELL","PARTY","RAID","GUILD","OFFICER"};
+	for k, v in pairs(channels) do
+		if string.upper(CHANNEL) == v then
+			return string.upper(CHANNEL);
+		end
+	end
+	for i = 4, C_ChatInfo.GetNumActiveChannels() do
+		if select(2, GetChannelName(i)) == CHANNEL then
+			return i;
+		end
+	end
+	CEPGP_print("Couldn't post to channel \"" .. CHANNEL .. "\". Please update your reporting channel in CEPGP options.");
+end
+
+function CEPGP_sendChatMessage(msg)
+	if not msg then return; end
+	if tonumber(CEPGP_getReportChannel()) then
+		SendChatMessage(msg, "CHANNEL", CEPGP_LANGUAGE, CEPGP_getReportChannel());
+	else
+		SendChatMessage(msg, CHANNEL, CEPGP_LANGUAGE);
 	end
 end

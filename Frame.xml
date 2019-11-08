@@ -1763,8 +1763,8 @@
 									<OnClick>
 										if self:GetChecked() then
 											CEPGP_standby_share = true;
-											for name, _ in pairs(CEPGP_standbyRoster) do
-												CEPGP_SendAddonMsg("StandbyListAdd;"..name, "RAID");
+											for _, t in pairs(CEPGP_standbyRoster) do
+												CEPGP_SendAddonMsg("StandbyListAdd;"..t[1]..";"..t[2]..";"..t[3]..";"..t[4]..";"..t[5]..";"..t[6]..";"..t[8], "RAID");
 											end
 										else
 											CEPGP_standby_share = false;
@@ -2083,19 +2083,11 @@
 			<Frame name="CEPGP_options_page_2" inherits="CEPGPFrameTemplate">
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString name="CEPGP_options_dec_text" inherits="GameFontNormal" text="GP Decimal Places:">
+						<FontString name="CEPGP_options_auto_pass" inherits="GameFontNormal" text="Auto Pass on Ineligible Items:">
 							<Color r="1" g="1" b="1" />
 							<Anchors>
 								<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
 									<AbsDimension x="15" y="-50" />
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="CEPGP_options_auto_pass" inherits="GameFontNormal" text="Auto Pass on Ineligible Items:">
-							<Color r="1" g="1" b="1" />
-							<Anchors>
-								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_dec_text">
-									<AbsDimension x="0" y="-7" />
 								</Anchor>
 							</Anchors>
 						</FontString>
@@ -2123,6 +2115,14 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
+						<FontString name="CEPGP_options_min_EP_text" inherits="GameFontNormal" text="Require Minimum EP for Loot: ">
+							<Color r="1" g="1" b="1" />
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_announcement_suppression">
+									<AbsDimension x="0" y="-7" />
+								</Anchor>
+							</Anchors>
+						</FontString>
 						<FontString name="CEPGP_options_force_sync" inherits="GameFontNormal" text="Allow Forced Synchronisation from Rank:">
 							<Color r="1" g="1" b="1"/>
 							<Anchors>
@@ -2138,7 +2138,17 @@
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="CEPGP_options_force_sync">
 									<Offset>
-										<AbsDimension x="0" y="10" />
+										<AbsDimension x="0" y="15" />
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="CEPGP_options_def_channel_text" inherits="GameFontNormal" text="Reporting Channel:">
+							<Color r="1" g="1" b="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="CEPGP_options_min_threshold_text">
+									<Offset>
+										<AbsDimension x="0" y="15" />
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -2146,46 +2156,6 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<EditBox name="CEPGP_options_dec_edit" inherits="InputBoxTemplate">
-						<Size>
-							<AbsDimension x="40" y="20" />
-						</Size>
-						<Anchors>
-							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_dec_text">
-								<AbsDimension x="10" y="0" />
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								self:SetAutoFocus(false);
-							</OnLoad>
-							<OnEnterPressed>
-								self:ClearFocus();
-							</OnEnterPressed>
-							<OnEnter>
-								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-								GameTooltip:SetText("Loot Master Feature\nAdjust the number of decimal places item GP values round to.\nValid range: 0-2");
-							</OnEnter>
-							<OnLeave>
-								GameTooltip:Hide();
-							</OnLeave>
-							<OnEditFocusLost>
-								local value = self:GetText();
-								if value == "" or not value or tonumber(value) > 2 or tonumber(value) % 1 ~= 0 then
-									CEPGP_print("Enter a valid number", true);
-									self:SetText(CEPGP_GP_decs);
-									return;
-								elseif value == CEPGP_GP_decs then
-									return;
-								end
-								CEPGP_GP_decs = value;
-								CEPGP_print("Updated item GP decimal places");
-							</OnEditFocusLost>
-							<OnShow>
-								self:SetText(CEPGP_GP_decs);
-							</OnShow>
-						</Scripts>
-					</EditBox>
 					<CheckButton name="CEPGP_options_allow_forced_sync_check" inherits="UIOptionsCheckButtonTemplate">
 						<HitRectInsets>
 							<AbsInset left="0" right="0" top="0" bottom="0" />
@@ -2220,11 +2190,80 @@
 							</OnLeave>
 						</Scripts>
 					</CheckButton>
+					<CheckButton name="CEPGP_options_min_EP_check" inherits="UIOptionsCheckButtonTemplate">
+						<HitRectInsets>
+							<AbsInset left="0" right="0" top="0" bottom="0" />
+						</HitRectInsets>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_min_EP_text">
+								<Offset>
+									<AbsDimension x="-5" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								if self:GetChecked() then
+									CEPGP_minEP[1] = true;
+									CEPGP_print("Now requiring a minimum EP to request loot.");
+									CEPGP_options_min_EP_amount:Show();
+								else
+									CEPGP_minEP[1] = false;
+									CEPGP_print("No longer requiring a minimum EP to request loot.");
+									CEPGP_options_min_EP_amount:Hide();
+								end
+							</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Loot Master Feature\nRequire players to have a certain amount of EP before their loot responses are recognised.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+						</Scripts>
+					</CheckButton>
+					<EditBox name="CEPGP_options_min_EP_amount" inherits="InputBoxTemplate">
+						<Size>
+							<AbsDimension x="60" y="20" />
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_min_EP_check">
+								<AbsDimension x="10" y="0" />
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								self:SetAutoFocus(false);
+							</OnLoad>
+							<OnEnterPressed>
+								self:ClearFocus();
+							</OnEnterPressed>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Specify the minimum amount of EP that is required to request loot.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+							<OnEditFocusLost>
+								local value = self:GetText();
+								if not tonumber(value) or tonumber(value) == CEPGP_minEP[2] then
+									self:SetText(tostring(CEPGP_minEP[2]));
+									return;
+								end
+								CEPGP_minEP[2] = tonumber(self:GetText());
+								CEPGP_print("Players now require at least " .. CEPGP_minEP[2] .. " EP to request loot.");
+							</OnEditFocusLost>
+							<OnShow>
+								self:SetText(CEPGP_minEP[2]);
+							</OnShow>
+						</Scripts>
+					</EditBox>
 					<Button name="CEPGP_sync_rank" inherits="UIDropDownMenuTemplate">
 						<Anchors>
 							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_allow_forced_sync_check">
 								<Offset>
-									<AbsDimension x="-15" y="-5" />
+									<AbsDimension x="0" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -2233,13 +2272,20 @@
 								CEPGP_UIDropDownMenu_Initialize(self, CEPGP_syncRankDropdown);
 								UIDropDownMenu_SetWidth(self, 140);
 							</OnShow>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Allows any player that is the rank " .. GuildControlGetRankName(CEPGP_force_sync_rank) .. " or higher to update your addon settings to reflect theirs.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_min_threshold_dropdown" inherits="UIDropDownMenuTemplate">
 						<Anchors>
-							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_min_threshold_text">
+							<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="CEPGP_sync_rank">
 								<Offset>
-									<AbsDimension x="-15" y="0" />
+									<AbsDimension x="0" y="-5" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -2251,6 +2297,28 @@
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
 								GameTooltip:SetText("Personal Feature\nSet the minimum item rarity for the CEPGP loot window to automatically show in raids.\nRequires that you are the master looter and are in a raid group.");
+							</OnEnter>
+							<OnLeave>
+								GameTooltip:Hide();
+							</OnLeave>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_def_channel_dropdown" inherits="UIDropDownMenuTemplate">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="CEPGP_min_threshold_dropdown">
+								<Offset>
+									<AbsDimension x="0" y="-5" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnShow>
+								CEPGP_UIDropDownMenu_Initialize(self, CEPGP_defChannelDropdown);
+								UIDropDownMenu_SetWidth(self, 140);
+							</OnShow>
+							<OnEnter>
+								GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+								GameTooltip:SetText("Sets the channel that EPGP modifications are sent to.");
 							</OnEnter>
 							<OnLeave>
 								GameTooltip:Hide();
@@ -2415,7 +2483,7 @@
 							</OnShow>
 						</Scripts>
 					</CheckButton>
-										<CheckButton name="CEPGP_options_gp_tooltips_check" inherits="UIOptionsCheckButtonTemplate">
+					<CheckButton name="CEPGP_options_gp_tooltips_check" inherits="UIOptionsCheckButtonTemplate">
 						<HitRectInsets>
 							<AbsInset left="0" right="0" top="0" bottom="0" />
 						</HitRectInsets>
@@ -4110,6 +4178,7 @@
 				<Scripts>
 					<OnClick>
 						CEPGP_distGP = true;
+						CEPGP_award = true;
 						PlaySound(799);
 						CEPGP_distribute_popup_give();
 					</OnClick>
@@ -4129,6 +4198,7 @@
 				<Scripts>
 					<OnClick>
 						CEPGP_distGP = false;
+						CEPGP_award = true;
 						PlaySound(799);
 						CEPGP_distribute_popup_give();
 					</OnClick>
