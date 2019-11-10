@@ -49,6 +49,9 @@ function CEPGP_ListButton_OnClick(obj)
 		for i = 1, CEPGP_ntgetn(CEPGP_standbyRoster) do
 			if CEPGP_standbyRoster[i][1] == name then
 				table.remove(CEPGP_standbyRoster, i);
+				if CEPGP_isML() == 0 and CEPGP_standby_share then
+					CEPGP_SendAddonMsg("StandbyListRemove;" .. CEPGP_standbyRoster[i][1]);
+				end
 				break;
 			end
 		end

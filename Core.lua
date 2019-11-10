@@ -582,15 +582,15 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 		end
 		GuildRosterSetOfficerNote(index, EP .. "," .. GP);
 		if not itemID then
-			if tonumber(amount) <= 0 then
+			if tonumber(amount) <= 0 then -- Number is negative or 0
 				amount = string.sub(amount, 2, string.len(amount));
 				if msg ~= "" and msg ~= nil then
 					CEPGP_sendChatMessage(amount .. " GP taken from " .. player .. "(" .. msg .. ")");
-					CEPGP_ShareTraffic(player, UnitName("player"), "Subtract GP -" .. amount .. " (" .. msg .. ")", EP, EP, GP - amount, GPB);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Subtract GP " .. amount .. " (" .. msg .. ")", EP, EP, GP - amount, GPB);
 					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 						[1] = player,
 						[2] = UnitName("player"),
-						[3] = "Subtract GP -" .. amount .. " (" .. msg .. ")",
+						[3] = "Subtract GP " .. amount .. " (" .. msg .. ")",
 						[4] = EP,
 						[5] = EP,
 						[6] = GPB,
@@ -599,11 +599,11 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 					};
 				else
 					CEPGP_sendChatMessage(amount .. " GP taken from " .. player);
-					CEPGP_ShareTraffic(player, UnitName("player"), "Subtract GP -" .. amount, EP, EP, GP - amount, GPB);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Subtract GP " .. amount, EP, EP, GP - amount, GPB);
 					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 						[1] = player,
 						[2] = UnitName("player"),
-						[3] = "Subtract GP -" .. amount,
+						[3] = "Subtract GP " .. amount,
 						[4] = EP,
 						[5] = EP,
 						[6] = GPB,
@@ -611,14 +611,14 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 						[9] = time()
 					};
 				end
-			else
+			else -- Number is positive
 				if msg ~= "" and msg ~= nil then
 					CEPGP_sendChatMessage(amount .. " GP added to " .. player .. " (" .. msg .. ")");
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP " .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP);
 					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 						[1] = player,
 						[2] = UnitName("player"),
-						[3] = "Add GP +" .. amount .. " (" .. msg .. ")",
+						[3] = "Add GP " .. amount .. " (" .. msg .. ")",
 						[4] = EP,
 						[5] = EP,
 						[6] = GPB,
@@ -627,11 +627,11 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 					};
 				else
 					CEPGP_sendChatMessage(amount .. " GP added to " .. player);
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount, EP, EP, GPB, GP);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP " .. amount, EP, EP, GPB, GP);
 					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 						[1] = player,
 						[2] = UnitName("player"),
-						[3] = "Add GP +" .. amount,
+						[3] = "Add GP " .. amount,
 						[4] = EP,
 						[5] = EP,
 						[6] = GPB,
@@ -640,7 +640,7 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 					};
 				end
 			end
-		else
+		else -- If an item is associated with the message then the number cannot be negative
 			if not itemLink then
 				_, itemLink = GetItemInfo(tonumber(itemID));
 			end
@@ -648,7 +648,7 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 					[1] = player,
 					[2] = UnitName("player"),
-					[3] = "Add GP +" .. amount .. " (" .. msg .. ")",
+					[3] = "Add GP " .. amount .. " (" .. msg .. ")",
 					[4] = EP,
 					[5] = EP,
 					[6] = GPB,
@@ -660,7 +660,7 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
 					[1] = player,
 					[2] = UnitName("player"),
-					[3] = "Add GP +" .. amount,
+					[3] = "Add GP " .. amount,
 					[4] = EP,
 					[5] = EP,
 					[6] = GPB,
@@ -672,15 +672,15 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 			if itemLink then
 				if msg ~= "" and msg ~= nil then
 					TRAFFIC[CEPGP_ntgetn(TRAFFIC)][8] = itemLink;
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP, itemID);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP " .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP, itemID);
 				else
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount, EP, EP, GPB, GP, itemID);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP " .. amount, EP, EP, GPB, GP, itemID);
 				end
 			else
 				if msg ~= "" and msg ~= nil then
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP " .. amount .. " (" .. msg .. ")", EP, EP, GPB, GP);
 				else
-					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP +" .. amount, EP, EP, GPB, GP);
+					CEPGP_ShareTraffic(player, UnitName("player"), "Add GP " .. amount, EP, EP, GPB, GP);
 				end
 				
 			end
@@ -800,7 +800,11 @@ function CEPGP_decay(amount, msg)
 				EP,GP = CEPGP_getEPGP(offNote);
 			else]]
 				EP = math.floor(tonumber(EP)*(1-(amount/100)));
-				GP = math.floor((tonumber((GP-BASEGP))*(1-(amount/100)))+BASEGP);
+				if CEPGP_minGPDecayFactor then
+					GP = math.floor((tonumber((GP-BASEGP))*(1-(amount/100)))+BASEGP);
+				else
+					GP = math.floor((tonumber(GP)*(1-(amount/100))));
+				end
 				if GP < BASEGP then
 					GP = BASEGP;
 				end

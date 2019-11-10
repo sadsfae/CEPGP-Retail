@@ -143,6 +143,14 @@ function CEPGP_IncAddonMsg(message, sender)
 			[8] = classFile
 		};
 		CEPGP_UpdateStandbyScrollBar();
+		
+	elseif args[1] == "StandbyListRemove" and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and sender ~= UnitName("player") then
+		for i, v in ipairs(CEPGP_standbyRoster) do
+			if v[1] == args[2] then
+				table.remove(CEPGP_standbyRoster, i);
+			end
+			break;
+		end
 	
 	elseif (args[1] == "StandbyRemoved" or args[1] == "StandbyAdded") and args[2] == UnitName("player") then
 		CEPGP_print(args[3]);	

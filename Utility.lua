@@ -119,7 +119,7 @@ function CEPGP_calcGP(link, quantity, id)
 		return 0;
 	end
 	if not name and CEPGP_itemExists(id) then
-		local item = Item:CreateFromItemID(id);
+		local item = Item:CreateFromItemID(tonumber(id));
 		item:ContinueOnItemLoad(function()
 			name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
 			for k, v in pairs(OVERRIDE_INDEX) do
@@ -1465,6 +1465,28 @@ function CEPGP_formatExport(form)
 		temp = nil;
 		text = nil;
 		size = nil;
+	elseif form == "JSON" then
+		local temp = {};
+		local text = "";
+		text = "{\n";
+		text = text .. "\"roster\": [\n";
+		for name, values in pairs(CEPGP_roster) do
+			local EP, GP = CEPGP_getEPGP(values[5]);
+			temp[#temp+1] = {
+				[1] = name,
+				[2] = EP,
+				[3] = GP
+			};
+		end
+		temp = CEPGP_tSort(temp, 1);
+		for i = 1, #temp do
+			text = text .. "[\"" .. temp[i][1] .. "\"," .. temp[i][2] .. "," .. temp[i][3] .. "],\n";
+		end
+		text = text .. "],\n";
+		text = text .. "\"timestamp\":" .. time() .. "\n";
+		text = text .. "}";
+		_G["CEPGP_export_dump"]:SetText(text);
+		_G["CEPGP_export_dump"]:HighlightText();
 	end
 end
 

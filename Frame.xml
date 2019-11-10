@@ -950,7 +950,7 @@
 					</Button>
 					<Frame name="CEPGP_options_gp_container">
 						<Size>
-							<AbsDimension x="450" y="100" />
+							<AbsDimension x="450" y="110" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_button_options_CEPGP_override" />
@@ -996,6 +996,16 @@
 										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_formula_desc">
 											<Offset>
 												<AbsDimension x="0" y="-5" />
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+								<FontString name="CEPGP_options_gp_base_decay_factor" inherits="GameFontNormal" text="Factor Base GP Into Decay: ">
+									<Color r="1" g="1" b="1"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_options_gp_base">
+											<Offset>
+												<AbsDimension x="0" y="-7" />
 											</Offset>
 										</Anchor>
 									</Anchors>
@@ -1241,6 +1251,36 @@
 									</OnEditFocusLost>
 								</Scripts>
 							</EditBox>
+							<CheckButton name="CEPGP_options_gp_base_decay_check" inherits="UIOptionsCheckButtonTemplate">
+								<HitRectInsets>
+									<AbsInset left="0" right="0" top="0" bottom="0" />
+								</HitRectInsets>
+								<Anchors>
+									<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_options_gp_base_decay_factor">
+										<Offset>
+											<AbsDimension x="-5" y="0" />
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										if self:GetChecked() then
+											CEPGP_minGPDecayFactor = true;
+											CEPGP_print("Now subtracting minimum GP from calculation when decaying guild EPGP standings.");
+										else
+											CEPGP_minGPDecayFactor = false;
+											CEPGP_print("No longer subtracting minimum GP from calculation when decaying guild EPGP standings.");
+										end
+									</OnClick>
+									<OnEnter>
+										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+										GameTooltip:SetText("Factor in your base GP amount when decaying guild EPGP standings.");
+									</OnEnter>
+									<OnLeave>
+										GameTooltip:Hide();
+									</OnLeave>
+								</Scripts>
+							</CheckButton>
 						</Frames>
 					</Frame>
 					<Frame name="CEPGP_options_slots_container">
@@ -6565,7 +6605,7 @@
 					</OnLoad>
 				</Scripts>
 			</ScrollFrame>
-			<Button name="CEPGP_export_csv" inherits="GameMenuButtonTemplate" text="Export to CSV">
+			<Button name="CEPGP_export_csv" inherits="GameMenuButtonTemplate" text="Format to CSV">
 				<Size>
 					<AbsDimension x="150" y="21" />
 				</Size>
@@ -6582,7 +6622,31 @@
 					</OnClick>
 					<OnEnter>
 						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-						GameTooltip:SetText("Exports guild EPGP standings in a CSV format.");
+						GameTooltip:SetText("Changes export format to CSV");
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="CEPGP_export_json" inherits="GameMenuButtonTemplate" text="Format to JSON">
+				<Size>
+					<AbsDimension x="150" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="CEPGP_export_scrollframe">
+						<Offset>
+							<AbsDimension x="-5" y="-5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CEPGP_formatExport("JSON");
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:SetText("Changes export format to JSON.");
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide();

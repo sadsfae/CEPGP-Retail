@@ -2,7 +2,7 @@
 ## Title: Classic EPGP
 ## Author: Alumian
 ## Notes: Classic EPGP handles your guild's EPGP and master loot distribution. Usage: /CEPGP or /cep for options
-## SavedVariables: CHANNEL, COEF, MOD_COEF, MOD, AUTOEP, EPVALS, BASEGP, STANDBYEP, STANDBYOFFLINE, STANDBYPERCENT, STANDBYRANKS, SLOTWEIGHTS, RECORDS, OVERRIDE_INDEX, TRAFFIC, CEPGP_raid_logs, CEPGP_standby_accept_whispers, CEPGP_standby_byrank, CEPGP_standby_manual, CEPGP_standby_whisper_msg, CEPGP_notice, CEPGP_keyword, ALLOW_FORCED_SYNC, CEPGP_force_sync_rank, CEPGP_loot_GUI, CEPGP_auto_pass, CEPGP_raid_wide_dist, CEPGP_standby_share, CEPGP_1120_notice, CEPGP_min_threshold, CEPPG_gp_tooltips, CEPGP_standbyRoster, CEPGP_suppress_announcements, CEPGP_minEP
+## SavedVariables: CHANNEL, COEF, MOD_COEF, MOD, AUTOEP, EPVALS, BASEGP, STANDBYEP, STANDBYOFFLINE, STANDBYPERCENT, STANDBYRANKS, SLOTWEIGHTS, RECORDS, OVERRIDE_INDEX, TRAFFIC, CEPGP_raid_logs, CEPGP_standby_accept_whispers, CEPGP_standby_byrank, CEPGP_standby_manual, CEPGP_standby_whisper_msg, CEPGP_notice, CEPGP_keyword, ALLOW_FORCED_SYNC, CEPGP_force_sync_rank, CEPGP_loot_GUI, CEPGP_auto_pass, CEPGP_raid_wide_dist, CEPGP_standby_share, CEPGP_1120_notice, CEPGP_min_threshold, CEPPG_gp_tooltips, CEPGP_standbyRoster, CEPGP_suppress_announcements, CEPGP_minEP, CEPGP_minGPDecayFactor
 
 Virtual.xml
 Frame.xml
