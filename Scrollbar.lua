@@ -230,7 +230,7 @@ end
 function CEPGP_UpdateGuildScrollBar()
 	local tempTable = {};
 	for name, v in pairs(CEPGP_roster) do
-		local EP, GP = CEPGP_getEPGP(v[5], v[1], name)
+		local EP, GP, BP = CEPGP_getEPGPBP(v[5], v[1], name)
 		if not EP then EP = 0; end
 		if not GP then GP = BASEGP; end
 		tempTable[v[1]] = {
@@ -241,7 +241,8 @@ function CEPGP_UpdateGuildScrollBar()
 			[5] = EP,
 			[6] = GP,
 			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
-			[8] = v[7] -- className in English
+			[8] = v[7], -- className in English
+            [9] = BP
 		};
 	end
 	tempTable = CEPGP_tSort(tempTable, CEPGP_criteria);
@@ -279,6 +280,8 @@ function CEPGP_UpdateGuildScrollBar()
 		_G["GuildButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
 		_G["GuildButton" .. i .. "PR"]:SetText(tempTable[i][7]);
 		_G["GuildButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["GuildButton" .. i .. "BP"]:SetText(tempTable[i][9]);
+		_G["GuildButton" .. i .. "BP"]:SetTextColor(colour.r, colour.g, colour.b);
 	end
 end
 
@@ -286,9 +289,9 @@ function CEPGP_UpdateRaidScrollBar()
 	local tempTable = {};
 	for i = 1, CEPGP_ntgetn(CEPGP_raidRoster) do
 		local name = CEPGP_raidRoster[i][1];
-		local EP, GP;
+		local EP, GP, BP;
 		if CEPGP_roster[name] then
-			EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], CEPGP_roster[name][1], name);
+			EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5], CEPGP_roster[name][1], name);
 			if not EP then EP = 0; end
 			if not GP then GP = BASEGP; end
 			tempTable[i] = {
@@ -298,7 +301,8 @@ function CEPGP_UpdateRaidScrollBar()
 				[4] = EP,
 				[5] = GP,
 				[6] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
-				[7] = CEPGP_roster[name][7] --Class in English
+				[7] = CEPGP_roster[name][7], --Class in English
+				[8] = BP
 			};
 		else
 			tempTable[i] = {
@@ -308,7 +312,8 @@ function CEPGP_UpdateRaidScrollBar()
 				[4] = CEPGP_raidRoster[i][4], --EP
 				[5] = CEPGP_raidRoster[i][5], --GP
 				[6] = CEPGP_raidRoster[i][6], --PR
-				[7] = CEPGP_raidRoster[i][8]  --Class in English
+				[7] = CEPGP_raidRoster[i][8], --Class in English
+				[8] = CEPGP_raidRoster[i][9]  -- BP
 			};
 		end
 		
@@ -346,6 +351,8 @@ function CEPGP_UpdateRaidScrollBar()
 		_G["RaidButton" .. i .. "GP"]:SetTextColor(colour.r, colour.g, colour.b);
 		_G["RaidButton" .. i .. "PR"]:SetText(tempTable[i][6]);
 		_G["RaidButton" .. i .. "PR"]:SetTextColor(colour.r, colour.g, colour.b);
+		_G["RaidButton" .. i .. "BP"]:SetText(tempTable[i][8]);
+		_G["RaidButton" .. i .. "BP"]:SetTextColor(colour.r, colour.g, colour.b);
 	end
 end
 

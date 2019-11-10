@@ -600,7 +600,7 @@ function CEPGP_rosterUpdate(event)
 			local _, _, _, _, class, classFileName = GetRaidRosterInfo(i);
 			if CEPGP_roster[name] then
 				rank = CEPGP_roster[name][3];
-				local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], _, name);
+				local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5], _, name);
 				local rankIndex = CEPGP_roster[name][4];
 				CEPGP_raidRoster[i] = {
 					[1] = name,
@@ -610,7 +610,8 @@ function CEPGP_rosterUpdate(event)
 					[5] = EP,
 					[6] = GP,
 					[7] = tonumber(EP)/tonumber(GP),
-					[8] = classFileName
+					[8] = classFileName,
+					[9] = BP
 				};
 			else
 				rank = "Not in Guild";
@@ -622,7 +623,8 @@ function CEPGP_rosterUpdate(event)
 					[5] = 0,
 					[6] = 1,
 					[7] = 0,
-					[8] = classFileName
+					[8] = classFileName,
+					[9] = BP
 				};
 			end
 		end
@@ -834,106 +836,72 @@ function CEPGP_nameToIndex(name)
 		end
 	end
 end
+function CEPGP_checkEPGPBP(offNote)
+
+	local data = {};
+	for i in offNote:gmatch("([^,%s]+)") do
+		data[#data + 1] = i
+	end
+
+	local EP = tonumber(data[1]);
+	local GP = tonumber(data[2]);
+	local BP = tonumber(data[3]);
+
+	if EP ~= nil and GP ~= nil and BP ~= nil then
+		return true;
+	end
+	return false;
+end
 
 function CEPGP_getEPGP(offNote, index, name)
 	if not name then index = CEPGP_nameToIndex(name); end
-	--if not index then return 0, 1; end --Happens when character logs initiailly
-	if offNote ~= "" then
-		if not CEPGP_checkEPGP(offNote) then
-			if not index then return 0, tonumber(BASEGP); end
-			local EP, GP;
-			--Error with player's EPGP has been detected and will attempt to be salvaged
-			if string.find(offNote, '^[0-9]+,') then --EP is assumed in tact
-				if string.find(offNote, ',[0-9]+') then
-					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-					GP = strsub(offNote, string.find(offNote, ',[0-9]+')+1, string.find(offNote, '[^0-9,]')-1);
-					if CanEditOfficerNote() then
-						--GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP,GP;
-					
-				elseif string.find(offNote, '[0-9]+$') then
-					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-					GP = strsub(offNote, string.find(offNote, '[0-9]+$'), string.len(offNote));
-					if CanEditOfficerNote() then
-						--GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP,GP;
-					
-				else
-					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-					if CanEditOfficerNote() then
-						--GuildRosterSetOfficerNote(index, EP .. "," .. BASEGP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EP has been retained as " .. EP .. " but their GP will need to be manually set if known.");
-					end
-					return EP, BASEGP;
-				end
-				
-				return EP, BASEGP;
-			elseif string.find(offNote, ',[0-9]+$') then --GP is assumed in tact
-				GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
-				
-				if string.find(offNote, '[^0-9]+,[0-9]+$') then --EP might still be intact, but characters might be padding between EP and the comma
-					EP = strsub(offNote, 1, string.find(offNote, '[^0-9]+,')-1);
-					if CanEditOfficerNote() then
-						--GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP, GP;
-					
-				elseif string.find(offNote, '^[^0-9]+[0-9]+,[0-9]+$') then --or pheraps the error is at the start of the string?
-					EP = strsub(offNote, string.find(offNote, '[0-9]+,'), string.find(offNote, ',[0-9]+$')-1);
-					if CanEditOfficerNote() then
-						--GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP, GP;
-					
-				else --EP cannot be salvaged
-					if CanEditOfficerNote() then
-						--GuildRosterSetOfficerNote(index, "0," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their GP has been retained as " .. GP .. " but their EP will need to be manually set if known. For now, their EP has defaulted to 0.");
-					end
-					return 0, GP;
-				end
-			else --Neither are in tact
-				--GuildRosterSetOfficerNote(index, "0," .. BASEGP);
-				return 0, BASEGP;
-			end
-		end
+
+	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
+		return 0, tonumber(BASEGP);
 	end
-	local EP, GP = nil;
+
+	local data = {};
+	for i in offNote:gmatch("([^,%s]+)") do
+		data[#data + 1] = i
+	end
+
+	local EP = tonumber(data[1]);
+	local GP = tonumber(data[2]);
+
+	if EP == nil or GP == nil then
+		CEPGP_print("An error was found with " .. name .. "'s EPGP. Their officer note has been set to " .. offNote);
+		return 0, tonumber(BASEGP);
+	end
+
+	return EP, GP;
+end
+
+function CEPGP_getEPGPBP(offNote, index, name)
+	if not name then index = CEPGP_nameToIndex(name); end
 	
 	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
 		return 0, tonumber(BASEGP);
 	end
-	EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-	GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
-	return EP, GP;
-end
 
-function CEPGP_checkEPGP(note)
-	--if not note then return; end
-	if string.find(note, '[^0-9.,-]') then
-		return false;
+	local data = {};
+	for i in offNote:gmatch("([^,%s]+)") do
+		data[#data + 1] = i
 	end
-	if string.find(note, '^[0-9]+,[0-9]+$') or string.find(note, '^[0-9]+.[0-9]+,[0-9]+.[0-9]+$') or
-		string.find(note, '^[0-9]+,[0-9]+.[0-9]+$') or string.find(note, '^[0-9]+.[0-9]+,[0-9]+$') then --EPGP is positive
-		return true;
-	elseif string.find(note, '^%-[0-9]+,[0-9]+$') or string.find(note, '^%-[0-9]+.[0-9]+,[0-9]+.[0-9]+$') or
-		string.find(note, '^%-[0-9]+,[0-9]+.[0-9]+$') or string.find(note, '^%-[0-9]+.[0-9]+,[0-9]+$') then --EP is negative
-		return true;
-	elseif string.find(note, '^[0-9]+,%-[0-9]+$') or string.find(note, '^[0-9]+.[0-9]+,%-[0-9]+.[0-9]+$') or
-		string.find(note, '^[0-9]+,%-[0-9]+.[0-9]+$') or string.find(note, '^[0-9]+.[0-9]+,%-[0-9]+$') then --GP is negative
-		return true;
-	elseif string.find(note, '^%-[0-9]+,%-[0-9]+$') or string.find(note, '^%-[0-9]+.[0-9]+,%-[0-9]+.[0-9]+$') or
-		string.find(note, '^%-[0-9]+,%-[0-9]+.[0-9]+$') or string.find(note, '^%-[0-9]+.[0-9]+,%-[0-9]+$') then --EPGP is negative
-		return true;
-	else
-		return false;
+
+	local EP = tonumber(data[1]);
+	local GP = tonumber(data[2]);
+	local BP = tonumber(data[3]);
+
+	if BP == nil then
+		BP = 0;
 	end
+
+	if EP == nil or GP == nil or BP == nil then
+		CEPGP_print("An error was found with " .. name .. "'s EPGP. Their officer note has been set to " .. offNote);
+		return 0, tonumber(BASEGP);
+	end
+
+	return EP, GP, BP;
 end
 
 function CEPGP_getItemString(link)

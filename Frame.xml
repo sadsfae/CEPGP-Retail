@@ -296,7 +296,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_class">
 								<Offset>
-									<AbsDimension x="80" y="0" />
+									<AbsDimension x="70" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -308,12 +308,12 @@
 					</Button>
 					<Button name="CEPGP_guild_EP" inherits="CEPGPHeaderButton" text="EP">
 						<Size>
-							<AbsDimension x="50" y="20" />
+							<AbsDimension x="40" y="20" />
 						</Size>
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_rank">
 								<Offset>
-									<AbsDimension x="110" y="0" />
+									<AbsDimension x="95" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -321,21 +321,16 @@
 							<OnClick>
 								CEPGP_setCriteria(5, "Guild");
 							</OnClick>
-							<OnShow>
-								if CEPGP_ElvUI then
-									self:SetPoint("RIGHT", "CEPGP_guild_rank", 105, 0);
-								end
-							</OnShow>
 						</Scripts>
 					</Button>
 					<Button name="CEPGP_guild_GP" inherits="CEPGPHeaderButton" text="GP">
 						<Size>
-							<AbsDimension x="50" y="20" />
+							<AbsDimension x="40" y="20" />
 						</Size>
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_EP">
 								<Offset>
-									<AbsDimension x="47.5" y="0" />
+									<AbsDimension x="32.5" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -347,18 +342,35 @@
 					</Button>
 					<Button name="CEPGP_guild_PR" inherits="CEPGPHeaderButton" text="PR">
 						<Size>
-							<AbsDimension x="50" y="20" />
+							<AbsDimension x="40" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="TOPRIGHT">
+							<Anchor point="RIGHT" relativeTo="CEPGP_guild_GP">
 								<Offset>
-									<AbsDimension x="-20" y="-50" />
+									<AbsDimension x="32.5" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
 							<OnClick>
 								CEPGP_setCriteria(7, "Guild");
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_guild_BP" inherits="CEPGPHeaderButton" text="BP">
+						<Size>
+							<AbsDimension x="40" y="20" />
+						</Size>
+						<Anchors>
+							<Anchor point="RIGHT" relativeTo="CEPGP_guild_PR">
+								<Offset>
+									<AbsDimension x="32.5" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								CEPGP_setCriteria(9, "Guild");
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -1222,9 +1234,9 @@
 											for i = 1, GetNumGuildMembers() do
 												local name, rank, rankIndex, _, class, _, _, officerNote = GetGuildRosterInfo(i);
 												if officerNote then
-													local EP, GP = CEPGP_getEPGP(officerNote);
+													local EP, GP = CEPGP_getEPGPBP(officerNote);
 													if BASEGP > GP then
-														GuildRosterSetOfficerNote(i, EP .. "," .. BASEGP);
+														CEPGP_SetEPGPBP(i, EP, BASEGP, BP);
 													end
 												end
 												--[[if name then
@@ -4723,7 +4735,7 @@
 							if RECORDS[name] ~= nil and CEPGP_confirmrestore then
 								for i = 1, GetNumGuildMembers(), 1 do
 									if RECORDS[name][GetGuildRosterInfo(i)] == nil then
-										GuildRosterSetOfficerNote(i, "0,"..BASEGP);
+										CEPGP_SetEPGPBP(i, 0);
 									else
 										GuildRosterSetOfficerNote(i, RECORDS[name][GetGuildRosterInfo(i)]);
 									end

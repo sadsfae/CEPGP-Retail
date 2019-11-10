@@ -81,6 +81,21 @@ CEPGP_standbyRoster = {};
 CEPGP_minEP = {false, 0};
 
 
+function CEPGP_SetEPGPBP(index, EP, GP, BP)
+	if EP == nil then
+		EP = 0;
+	end
+	if GP == nil then
+		GP = tonumber(BASEGP);
+	end
+	if BP == nil then
+		BP = 0;
+	end
+
+	GuildRosterSetOfficerNote(index, EP .. "," .. GP .. "," .. BP);
+end
+
+
 
 --[[ EVENT AND COMMAND HANDLER ]]--
 function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
@@ -254,7 +269,7 @@ function SlashCmdList.CEPGP(msg, editbox)
 		
 	elseif strfind(msg, "debug") then
 		CEPGP_debuginfo:Show();
-	
+
 	else
 		CEPGP_print("|cFF80FF80" .. msg .. "|r |cFFFF8080is not a valid request. Type /CEPGP to check addon usage|r", true);
 	end
@@ -330,9 +345,9 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 			if CEPGP_tContains(CEPGP_roster, name, true) then
 				local index = CEPGP_getIndex(name, CEPGP_roster[name][1]);
 				if not CEPGP_checkEPGP(CEPGP_roster[name][5]) then
-					GuildRosterSetOfficerNote(index, amount .. "," .. BASEGP);
+					CEPGP_SetEPGPBP(index, amount);
 				else
-					EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+					local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5]);
 					EP = tonumber(EP);
 					GP = tonumber(GP);
 					EP = EP + amount;
@@ -342,7 +357,7 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 					if EP < 0 then
 						EP = 0;
 					end
-					GuildRosterSetOfficerNote(index, EP .. "," .. GP);
+					CEPGP_SetEPGPBP(index, EP, GP, BP);
 				end
 			end
 		end
@@ -384,29 +399,24 @@ function CEPGP_addGuildEP(amount, msg)
 		return;
 	end
 	local total = CEPGP_ntgetn(CEPGP_roster);
-	local EP, GP = nil;
 	amount = math.floor(amount);
 	CEPGP_ignoreUpdates = true;
 	CEPGP_SendAddonMsg("?IgnoreUpdates;true");
 	C_Timer.After(0.1, function()
 		if total > 0 then
 			for name,_ in pairs(CEPGP_roster)do
-				offNote = CEPGP_roster[name][5];
+				local offNote = CEPGP_roster[name][5];
 				local index = CEPGP_getIndex(name, CEPGP_roster[name][1]);
-				if offNote == "" or offNote == "Click here to set an Officer's Note" then
-					GuildRosterSetOfficerNote(index, amount .. "," .. BASEGP);
-				else
-					EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
-					EP = tonumber(EP) + tonumber(amount);
-					GP = tonumber(GP);
-					if GP < BASEGP then
-						GP = BASEGP;
-					end
-					if EP < 0 then
-						EP = 0;
-					end
-					GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-				end
+                local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5]);
+                EP = tonumber(EP) + tonumber(amount);
+                GP = tonumber(GP);
+                if GP < BASEGP then
+                    GP = BASEGP;
+                end
+                if EP < 0 then
+                    EP = 0;
+                end
+				CEPGP_SetEPGPBP(index, EP, GP, BP);
 			end
 		end
 	end);
@@ -457,7 +467,7 @@ function CEPGP_addStandbyEP(amount, boss, msg)
 			end
 			if not inRaid then
 				local _, rank, _, _, offNote, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[name][1]);
-				local EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+				local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5]);
 				EP = tonumber(EP) + amount;
 				GP = tonumber(GP);
 				if GP < BASEGP then
@@ -470,11 +480,7 @@ function CEPGP_addStandbyEP(amount, boss, msg)
 					if STANDBYRANKS[i][1] == rank then
 						if STANDBYRANKS[i][2] == true and (online or STANDBYOFFLINE) then
 							local index = CEPGP_getIndex(name, CEPGP_roster[name][1]);
-							if offNote == "" or offNote == "Click here to set an Officer's Note" then
-								GuildRosterSetOfficerNote(index, EP .. "," .. BASEGP);
-							else
-								GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-							end
+							CEPGP_SetEPGPBP(index, EP, GP, BP);
 							if boss then
 								CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
 							elseif msg ~= "" and msg ~= nil then
@@ -508,7 +514,7 @@ function CEPGP_addStandbyEP(amount, boss, msg)
 			if not inRaid then
 				local _, rank, _, _, offNote, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[name][1]);
 				if online or STANDBYOFFLINE then
-					local EP,GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+					local EP, GP, BP = CEPGP_getEPGP(CEPGP_roster[name][5]);
 					EP = tonumber(EP) + amount;
 					GP = tonumber(GP);
 					if GP < BASEGP then
@@ -518,11 +524,7 @@ function CEPGP_addStandbyEP(amount, boss, msg)
 						EP = 0;
 					end
 					local index = CEPGP_getIndex(name, CEPGP_roster[name][1]);
-					if offNote == "" or offNote == "Click here to set an Officer's Note" then
-						GuildRosterSetOfficerNote(index, EP .. "," .. BASEGP);
-					else
-						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-					end
+					CEPGP_SetEPGPBP(index, EP, GP, BP);
 					if boss then
 						CEPGP_SendAddonMsg("STANDBYEP;"..name..";You have been awarded "..amount.." standby EP for encounter " .. boss, "GUILD");
 					elseif msg ~= "" and msg ~= nil then
@@ -561,17 +563,12 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 		CEPGP_print("Please enter a valid number", 1);
 		return;
 	end
-	local EP, GP = nil;
 	amount = math.floor(amount);
 	if CEPGP_tContains(CEPGP_roster, player, true) then
-		offNote = CEPGP_roster[player][5];
+		local offNote = CEPGP_roster[player][5];
 		local index = CEPGP_getIndex(player, CEPGP_roster[player][1]);
-		if offNote == "" or offNote == "Click here to set an Officer's Note" then
-			GuildRosterSetOfficerNote(index, "0," .. BASEGP);
-			offNote = "0," .. BASEGP;
-		end
-		EP,GP = CEPGP_getEPGP(offNote);
-		GPB = GP;
+		local EP, GP, BP = CEPGP_getEPGPBP(offNote);
+		local GPB = GP;
 		GP = tonumber(GP) + amount;
 		EP = tonumber(EP);
 		if GP < BASEGP then
@@ -580,7 +577,7 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 		if EP < 0 then
 			EP = 0;
 		end
-		GuildRosterSetOfficerNote(index, EP .. "," .. GP);
+		CEPGP_SetEPGPBP(index, EP, GP, BP);
 		if not itemID then
 			if tonumber(amount) <= 0 then
 				amount = string.sub(amount, 2, string.len(amount));
@@ -698,16 +695,11 @@ function CEPGP_addEP(player, amount, msg)
 		return;
 	end
 	amount = math.floor(amount);
-	local EP, GP = nil;
 	if CEPGP_tContains(CEPGP_roster, player, true) then
-		offNote = CEPGP_roster[player][5];
+		local offNote = CEPGP_roster[player][5];
 		local index = CEPGP_getIndex(player, CEPGP_roster[player][1]);
-		if offNote == "" or offNote == "Click here to set an Officer's Note" then
-			GuildRosterSetOfficerNote(index, "0," .. BASEGP);
-			offNote = "0," .. BASEGP;
-		end
-		EP,GP = CEPGP_getEPGP(offNote);
-		EPB = EP;
+		local EP, GP, BP = CEPGP_getEPGPBP(offNote);
+		local EPB = EP;
 		EP = tonumber(EP) + amount;
 		GP = tonumber(GP);
 		if GP < BASEGP then
@@ -716,7 +708,7 @@ function CEPGP_addEP(player, amount, msg)
 		if EP < 0 then
 			EP = 0;
 		end
-		GuildRosterSetOfficerNote(index, EP .. "," .. GP);
+		CEPGP_SetEPGPBP(index, EP, GP, BP);
 		if tonumber(amount) <= 0 then
 			if msg ~= "" and msg ~= nil then
 				amount = string.sub(amount, 2, string.len(amount));
@@ -788,27 +780,21 @@ function CEPGP_decay(amount, msg)
 		return;
 	end
 	CEPGP_updateGuild();
-	local EP, GP = nil;
 	CEPGP_ignoreUpdates = true;
 	CEPGP_SendAddonMsg("?IgnoreUpdates;true");
 	C_Timer.After(0.1, function()
 		for name,_ in pairs(CEPGP_roster)do
-			EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+			local EP, GP, BP = CEPGP_getEPGP(CEPGP_roster[name][5]);
 			local index = CEPGP_getIndex(name, CEPGP_roster[name][1]);
-			--[[if offNote == "" or offNote == "Click here to set an Officer's Note" then
-				GuildRosterSetOfficerNote(index, 0 .. "," .. BASEGP);
-				EP,GP = CEPGP_getEPGP(offNote);
-			else]]
-				EP = math.floor(tonumber(EP)*(1-(amount/100)));
-				GP = math.floor((tonumber((GP-BASEGP))*(1-(amount/100)))+BASEGP);
-				if GP < BASEGP then
-					GP = BASEGP;
-				end
-				if EP < 0 then
-					EP = 0;
-				end
-				GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-			--end
+            local EP = math.floor(tonumber(EP)*(1-(amount/100)));
+            local GP = math.floor((tonumber((GP-BASEGP))*(1-(amount/100)))+BASEGP);
+            if GP < BASEGP then
+                GP = BASEGP;
+            end
+            if EP < 0 then
+                EP = 0;
+            end
+			CEPGP_SetEPGPBP(index, EP, GP, BP);
 		end
 	end);
 	C_Timer.After(1, function()
@@ -848,7 +834,7 @@ function CEPGP_resetAll(msg)
 	C_Timer.After(0.1, function()
 		if total > 0 then
 			for i = 1, total, 1 do
-				GuildRosterSetOfficerNote(i, "0,"..BASEGP);
+				CEPGP_SetEPGPBP(i);
 			end
 		end
 	end);
