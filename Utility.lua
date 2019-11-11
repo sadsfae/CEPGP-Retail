@@ -471,6 +471,12 @@ function CEPGP_print(str, err)
 	end
 end
 
+function CEPGP_debugMsg(message)
+	if CEPGP_debugMode then
+		CEPGP_print(message)
+	end
+end
+
 function CEPGP_cleanTable()
 	local i = 1;
 	while _G[CEPGP_mode..'member_name'..i] ~= nil do
@@ -515,12 +521,14 @@ function CEPGP_rosterUpdate(event)
 			ShowUIPanel(CEPGP_guild_decay);
 			ShowUIPanel(CEPGP_guild_reset);
 			ShowUIPanel(CEPGP_raid_add_EP);
+			ShowUIPanel(CEPGP_raid_add_pull_EP);
 			ShowUIPanel(CEPGP_button_guild_restore);
 		else --[[ Hides context sensitive options if player cannot edit officer notes ]]--
 			HideUIPanel(CEPGP_guild_add_EP);
 			HideUIPanel(CEPGP_guild_decay);
 			HideUIPanel(CEPGP_guild_reset);
 			HideUIPanel(CEPGP_raid_add_EP);
+			ShowUIPanel(CEPGP_raid_add_pull_EP);
 			HideUIPanel(CEPGP_button_guild_restore);
 		end
 		for i = 1, numGuild do
@@ -624,7 +632,7 @@ function CEPGP_rosterUpdate(event)
 					[6] = 1,
 					[7] = 0,
 					[8] = classFileName,
-					[9] = BP
+					[9] = 0
 				};
 			end
 		end

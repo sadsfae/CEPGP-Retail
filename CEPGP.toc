@@ -6,6 +6,7 @@
 
 Virtual.xml
 Frame.xml
+Data.lua
 Class.lua
 Button.lua
 Utility.lua

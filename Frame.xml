@@ -620,6 +620,29 @@
 							</OnClick>
 						</Scripts>
 					</Button>
+					<Button name="CEPGP_raid_add_pull_EP" inherits="GameMenuButtonTemplate" text="Add EP on Pull">
+						<Size>
+							<AbsDimension x="100" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="120" y="25" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if not CanEditOfficerNote() then
+									self:Hide();
+								end
+							</OnLoad>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_ListButton_OnClick(self:GetName());
+							</OnClick>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 			<Frame name="CEPGP_loot" inherits="CEPGPFrameTemplate">

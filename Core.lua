@@ -854,3 +854,47 @@ function CEPGP_resetAll(msg)
 		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 	end);
 end
+
+
+local function CEPGP_getPlayerEPBeforePull(name)
+	if not name then
+		return nil
+	end
+
+	local FLASK_EP = 25;
+	local FOOD_EP = 10;
+
+	local bonus_EP = 0;
+
+	for i=1,40 do
+		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i,"HELPFUL")
+		if not spellId then
+			break
+		elseif db.tableFlask[spellId] then
+			bonus_EP = bonus_EP + FLASK_EP
+		elseif db.tableFood[spellId] then
+			bonus_EP = bonus_EP + FOOD_EP
+		end
+	end
+	return bonus_EP;
+end
+
+
+function CEPGP_AddEPBeforePull()
+	CEPGP_ignoreUpdates = true;
+	for i, data in pairs(CEPGP_raidRoster) do
+		local name = data[1]
+		local bonus_ep = CEPGP_getPlayerEPBeforePull(name);
+		if bonus_ep then
+			local index = CEPGP_getIndex(name);  -- data[1] == guild index
+			if index then
+				local EP = data[5];
+				local GP = data[6];
+				local BP = data[9];
+				CEPGP_SetEPGPBP(index, EP + bonus_ep, GP, BP);
+			end
+		end
+	end
+
+	CEPGP_ignoreUpdates = false;
+end

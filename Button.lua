@@ -241,6 +241,29 @@ function CEPGP_ListButton_OnClick(obj)
 															end
 														end);
 		return;
+	elseif strfind(obj, "CEPGP_raid_add_pull_EP") then
+		ShowUIPanel(CEPGP_context_popup);
+		HideUIPanel(CEPGP_context_popup_EP_check);
+		HideUIPanel(CEPGP_context_popup_GP_check);
+		HideUIPanel(CEPGP_context_amount);
+		HideUIPanel(CEPGP_context_reason);
+		_G["CEPGP_context_popup_EP_check_text"]:Hide();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
+		_G["CEPGP_context_amount"]:Hide();
+		_G["CEPGP_context_popup_reason"]:Hide();
+		CEPGP_context_popup_EP_check:SetChecked(nil);
+		CEPGP_context_popup_GP_check:SetChecked(nil);
+		CEPGP_context_popup_header:SetText("Raid Moderation");
+		CEPGP_context_popup_title:SetText("Modify Raid EP");
+		CEPGP_context_popup_desc:SetText("Add EP for flasks and food?");
+		CEPGP_context_popup_confirm:SetScript(
+			'OnClick',
+			function()
+				PlaySound(799);
+				HideUIPanel(CEPGP_context_popup);
+				CEPGP_AddEPBeforePull();
+			end
+		);
 	end
 end
 
