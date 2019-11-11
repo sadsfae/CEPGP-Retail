@@ -568,7 +568,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_raid_EP">
 								<Offset>
-									<AbsDimension x="75" y="0" />
+									<AbsDimension x="60" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -584,9 +584,9 @@
 							<AbsDimension x="50" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="TOPRIGHT">
+							<Anchor point="RIGHT" relativeTo="CEPGP_raid_GP">
 								<Offset>
-									<AbsDimension x="-20" y="-50" />
+									<AbsDimension x="60" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
