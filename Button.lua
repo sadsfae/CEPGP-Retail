@@ -179,7 +179,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
 		CEPGP_context_popup_title:SetText("Reset Guild EPGP");
-		CEPGP_context_popup_desc:SetText("Resets the Guild EPGP standings\n|c00FF0000Are you sure that is what you want to do?\nthis cannot be reversed!\nNote: this will report to Guild chat|r");
+		CEPGP_context_popup_desc:SetText("Resets the Guild EPGP standings\n|c00FF0000Are you sure that is what you want to do?\nthis cannot be reversed!|r");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															PlaySound(799);
 															HideUIPanel(CEPGP_context_popup);
@@ -402,5 +402,42 @@ function CEPGP_defChannelChange(self, value)
 	UIDropDownMenu_SetSelectedName(CEPGP_def_channel_dropdown, self:GetText());
 	UIDropDownMenu_SetSelectedValue(CEPGP_def_channel_dropdown, self.value);
 	CHANNEL = self:GetText();
-	CEPGP_print("Default reporting channel changed to \"" .. CHANNEL .. "\".");
+	CEPGP_print("Reporting channel set to \"" .. CHANNEL .. "\".");
+end
+
+		--[[ Loot Response Channel DropDown ]]--
+		
+function CEPGP_lootChannelDropdown(frame, level, menuList)
+	local channels = {
+		[1] = "Say",
+		[2] = "Yell",
+		[3] = "Party",
+		[4] = "Raid",
+		[5] = "Guild",
+		[6] = "Officer",
+	};
+	for i = 4, C_ChatInfo.GetNumActiveChannels() do
+		channels[i+3] = select(2, GetChannelName(i));
+	end
+	for index, value in ipairs(channels) do
+		local info = {
+			text = value,
+			value = index,
+			func = CEPGP_lootChannelChange
+		};
+		local entry = UIDropDownMenu_AddButton(info);
+	end
+	for i = 1, #channels do
+		if string.lower(CEPGP_lootChannel) == string.lower(channels[i]) then
+			UIDropDownMenu_SetSelectedName(CEPGP_loot_channel_dropdown, channels[i]);
+			UIDropDownMenu_SetSelectedValue(CEPGP_loot_channel_dropdown, i);
+		end
+	end
+end
+
+function CEPGP_lootChannelChange(self, value)
+	UIDropDownMenu_SetSelectedName(CEPGP_loot_channel_dropdown, self:GetText());
+	UIDropDownMenu_SetSelectedValue(CEPGP_loot_channel_dropdown, self.value);
+	CEPGP_lootChannel = self:GetText();
+	CEPGP_print("Loot response channel set to \"" .. CEPGP_lootChannel .. "\".");
 end

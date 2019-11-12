@@ -33,7 +33,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 					CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 					if CEPGP_distributing then
 						if inGuild and not CEPGP_suppress_announcements then
-							SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", "RAID", CEPGP_LANGUAGE);
+							CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", CEPGP_lootChannel);
 							
 						elseif not CEPGP_suppress_announcements then
 							local total = GetNumGroupMembers();
@@ -42,7 +42,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 									_, _, _, _, class = GetRaidRosterInfo(i);
 								end
 							end
-								SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", "RAID", CEPGP_LANGUAGE);
+								CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", CEPGP_lootChannel);
 						end
 						if CEPGP_isML() == 0 then --If you are the master looter
 							CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
@@ -68,7 +68,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 				CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 				if CEPGP_distributing then
 					if inGuild and not CEPGP_suppress_announcements then
-						SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", "RAID", CEPGP_LANGUAGE);
+						CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", CEPGP_lootChannel);
 					elseif not CEPGP_suppress_announcements then
 						local total = GetNumGroupMembers();
 						for i = 1, total do
@@ -76,7 +76,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 								_, _, _, _, class = GetRaidRosterInfo(i);
 							end
 						end
-						SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", "RAID", CEPGP_LANGUAGE);
+						CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", CEPGP_lootChannel);
 					end
 					if CEPGP_isML() == 0 then --If you are the master looter
 						CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist

@@ -9,6 +9,9 @@ function CEPGP_initialise()
 	if CHANNEL == nil then
 		CHANNEL = "GUILD";
 	end
+	if CEPGP_lootChannel == nil then
+		CEPGP_lootChannel = "RAID";
+	end
 	if MOD == nil then
 		MOD = 1;
 	end
@@ -1440,50 +1443,61 @@ function CEPGP_deleteAttendance()
 	CEPGP_UpdateAttendanceScrollBar();
 end
 
-function CEPGP_formatExport(form)
+function CEPGP_formatExport()
 	--form is the export format
+	local temp = {};
+	local text = "";
+	for k, v in pairs(CEPGP_roster) do
+		temp[#temp+1] = {
+			[1] = k; -- Player Name
+			[2] = v[2]; -- Class
+			[3] = v[3]; -- Guild Rank
+			[4] = v[5]; -- Officer Note (Doesn't need to be broken down into EP and GP separately)
+			[5] = v[6]; -- Priority
+		};
+	end
+	temp = CEPGP_tSort(temp, 1);
+	local form = _G["CEPGP_export"]:GetAttribute("format");
+	
+	
 	if form == "CSV" then
-		local temp = {};
-		local text = "";
-		local size = CEPGP_ntgetn(CEPGP_roster);
-		for k, v in pairs(CEPGP_roster) do
-			temp[CEPGP_ntgetn(temp)+1] = {
-				[1] = k,
-				[2] = v[2],
-				[3] = v[3],
-				[4] = v[4],
-				[5] = v[5],
-				[6] = v[6]
-			};
-		end
-		temp = CEPGP_tSort(temp, 1);
-		for i = 1, size do
-			text = text .. temp[i][1] .. "," .. temp[i][2] .. "," .. temp[i][3] .. "," .. temp[i][5] .. "," .. temp[i][6] .. "\n"; --Line 16
+		for i = 1, #temp do
+			text = text .. temp[i][1];
+			if CEPGP_export_class_check:GetChecked() then
+				text = text .. "," .. temp[i][2]; -- Class
+			end
+			if CEPGP_export_rank_check:GetChecked() then
+				text = text .. "," .. temp[i][3];
+			end
+			text = text .. "," .. temp[i][4];
+			text = text .. "," .. temp[i][5];
+			text = text .. "\n";
 		end
 		_G["CEPGP_export_dump"]:SetText(text);
 		_G["CEPGP_export_dump"]:HighlightText();
-		temp = nil;
-		text = nil;
-		size = nil;
+		
+		
 	elseif form == "JSON" then
-		local temp = {};
-		local text = "";
-		text = "{\n";
-		text = text .. "\"roster\": [\n";
-		for name, values in pairs(CEPGP_roster) do
-			local EP, GP = CEPGP_getEPGP(values[5]);
-			temp[#temp+1] = {
-				[1] = name,
-				[2] = EP,
-				[3] = GP
-			};
-		end
-		temp = CEPGP_tSort(temp, 1);
+		text = "{";
+		text = text .. "\"roster\": [";
 		for i = 1, #temp do
-			text = text .. "[\"" .. temp[i][1] .. "\"," .. temp[i][2] .. "," .. temp[i][3] .. "],\n";
+			text = text .. "[\"" .. temp[i][1] .. "\""; -- Player Name
+			if CEPGP_export_class_check:GetChecked() then
+				text = text .. ",\"" .. temp[i][2] .. "\""; -- Class
+			end
+			if CEPGP_export_rank_check:GetChecked() then
+				text = text .. ",\"" .. temp[i][3] .. "\""; -- Guild Rank
+			end
+			text = text .. "," .. temp[i][4];
+			text = text .. "," .. temp[i][5];
+			if i+1 <= #temp then
+				text = text .. "],";
+			else
+				text = text .. "]";
+			end
 		end
-		text = text .. "],\n";
-		text = text .. "\"timestamp\":" .. time() .. "\n";
+		text = text .. "],";
+		text = text .. "\"timestamp\":" .. time() .. "";
 		text = text .. "}";
 		_G["CEPGP_export_dump"]:SetText(text);
 		_G["CEPGP_export_dump"]:HighlightText();
@@ -1680,26 +1694,26 @@ function CEPGP_itemExists(id)
 	end
 end
 
-function CEPGP_getReportChannel()
+function CEPGP_getReportChannel(channel)
 	local channels = {"SAY","YELL","PARTY","RAID","GUILD","OFFICER"};
 	for k, v in pairs(channels) do
-		if string.upper(CHANNEL) == v then
-			return string.upper(CHANNEL);
+		if string.upper(channel) == v then
+			return string.upper(channel);
 		end
 	end
 	for i = 4, C_ChatInfo.GetNumActiveChannels() do
-		if select(2, GetChannelName(i)) == CHANNEL then
+		if select(2, GetChannelName(i)) == channel then
 			return i;
 		end
 	end
-	CEPGP_print("Couldn't post to channel \"" .. CHANNEL .. "\". Please update your reporting channel in CEPGP options.");
+	CEPGP_print("Couldn't post to channel \"" .. channel .. "\". Please update your reporting channel in CEPGP options.");
 end
 
-function CEPGP_sendChatMessage(msg)
+function CEPGP_sendChatMessage(msg, channel)
 	if not msg then return; end
 	if tonumber(CEPGP_getReportChannel()) then
-		SendChatMessage(msg, "CHANNEL", CEPGP_LANGUAGE, CEPGP_getReportChannel());
+		SendChatMessage(msg, "CHANNEL", CEPGP_LANGUAGE, CEPGP_getReportChannel(channel));
 	else
-		SendChatMessage(msg, CHANNEL, CEPGP_LANGUAGE);
+		SendChatMessage(msg, channel, CEPGP_LANGUAGE);
 	end
 end
