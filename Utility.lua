@@ -888,7 +888,7 @@ function CEPGP_getEPGPBP(offNote, index, name)
 	if not name then index = CEPGP_nameToIndex(name); end
 	
 	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
-		return 0, tonumber(BASEGP);
+		return 0, tonumber(BASEGP), 0;
 	end
 
 	local data = {};
@@ -906,7 +906,7 @@ function CEPGP_getEPGPBP(offNote, index, name)
 
 	if EP == nil or GP == nil or BP == nil then
 		CEPGP_print("An error was found with " .. name .. "'s EPGP. Their officer note has been set to " .. offNote);
-		return 0, tonumber(BASEGP);
+		return 0, tonumber(BASEGP), 0;
 	end
 
 	return EP, GP, BP;

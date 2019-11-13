@@ -689,89 +689,125 @@ function CEPGP_addGP(player, amount, itemID, itemLink, msg)
 	end
 end
 
+function CEPGP_addBP(player, amount, msg)
+	if amount == nil then
+		CEPGP_print("Please enter a valid number", 1);
+		return;
+	end
+	amount = math.floor(amount);
+	if not CEPGP_tContains(CEPGP_roster, player, true) then
+		CEPGP_print("Player not found in guild CEPGP_roster.", true);
+        return;
+    end
+
+    local offNote = CEPGP_roster[player][5];
+    local index = CEPGP_getIndex(player, CEPGP_roster[player][1]);
+    local EP, GP, BP = CEPGP_getEPGPBP(offNote);
+    local BPBase = BP;
+    BP = amount + BPBase;
+    CEPGP_SetEPGPBP(index, EP, GP, BP);
+    if tonumber(amount) <= 0 then
+        if msg ~= "" and msg ~= nil then
+            amount = string.sub(amount, 2, string.len(amount));
+            CEPGP_sendChatMessage(amount .. " BP taken from " .. player .. " (" .. msg .. ")");
+        else
+            amount = string.sub(amount, 2, string.len(amount));
+            CEPGP_sendChatMessage(amount .. " BP taken from " .. player);
+        end
+    else
+        if msg ~= "" and msg ~= nil then
+            CEPGP_sendChatMessage(amount .. " BP added to " .. player .. " (" .. msg .. ")");
+        else
+            CEPGP_sendChatMessage(amount .. " BP added to " .. player);
+        end
+	end
+	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+end
+
 function CEPGP_addEP(player, amount, msg)
 	if amount == nil then
 		CEPGP_print("Please enter a valid number", 1);
 		return;
 	end
 	amount = math.floor(amount);
-	if CEPGP_tContains(CEPGP_roster, player, true) then
-		local offNote = CEPGP_roster[player][5];
-		local index = CEPGP_getIndex(player, CEPGP_roster[player][1]);
-		local EP, GP, BP = CEPGP_getEPGPBP(offNote);
-		local EPB = EP;
-		EP = tonumber(EP) + amount;
-		GP = tonumber(GP);
-		if GP < BASEGP then
-			GP = BASEGP;
-		end
-		if EP < 0 then
-			EP = 0;
-		end
-		CEPGP_SetEPGPBP(index, EP, GP, BP);
-		if tonumber(amount) <= 0 then
-			if msg ~= "" and msg ~= nil then
-				amount = string.sub(amount, 2, string.len(amount));
-				CEPGP_sendChatMessage(amount .. " EP taken from " .. player .. " (" .. msg .. ")");
-				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-					[1] = player,
-					[2] = UnitName("player"),
-					[3] = "Subtract EP -" .. amount .. " (" .. msg .. ")",
-					[4] = EPB,
-					[5] = EP,
-					[6] = GP,
-					[7] = GP,
-					[9] = time()
-				};
-				CEPGP_ShareTraffic(player, UnitName("player"), "Subtract EP -" .. amount .. " (" .. msg .. ")", EPB, EP, GP, GP);
-			else
-				amount = string.sub(amount, 2, string.len(amount));
-				CEPGP_sendChatMessage(amount .. " EP taken from " .. player);
-				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-					[1] = player,
-					[2] = UnitName("player"),
-					[3] = "Subtract EP -" .. amount,
-					[4] = EPB,
-					[5] = EP,
-					[6] = GP,
-					[7] = GP,
-					[9] = time()
-				};
-				CEPGP_ShareTraffic(player, UnitName("player"), "Subtract EP -" .. amount, EPB, EP, GP, GP);
-			end
-		else
-			if msg ~= "" and msg ~= nil then
-				CEPGP_sendChatMessage(amount .. " EP added to " .. player .. " (" .. msg .. ")");
-				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-					[1] = player,
-					[2] = UnitName("player"),
-					[3] = "Add EP +" .. amount .. " (" .. msg .. ")",
-					[4] = EPB,
-					[5] = EP,
-					[6] = GP,
-					[7] = GP,
-					[9] = time()
-				};
-				CEPGP_ShareTraffic(player, UnitName("player"), "Add EP +" .. amount .. " (" .. msg ..")", EPB, EP, GP, GP);
-			else
-				CEPGP_sendChatMessage(amount .. " EP added to " .. player);
-				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-					[1] = player,
-					[2] = UnitName("player"),
-					[3] = "Add EP +" .. amount,
-					[4] = EPB,
-					[5] = EP,
-					[6] = GP,
-					[7] = GP,
-					[9] = time()
-				};
-				CEPGP_ShareTraffic(player, UnitName("player"), "Add EP +" .. amount, EPB, EP, GP, GP);
-			end
-		end
-		CEPGP_UpdateTrafficScrollBar();
-	else
+	if not CEPGP_tContains(CEPGP_roster, player, true) then
 		CEPGP_print("Player not found in guild CEPGP_roster.", true);
-	end
+        return;
+    end
+
+    local offNote = CEPGP_roster[player][5];
+    local index = CEPGP_getIndex(player, CEPGP_roster[player][1]);
+    local EP, GP, BP = CEPGP_getEPGPBP(offNote);
+    local EPB = EP;
+    EP = tonumber(EP) + amount;
+    GP = tonumber(GP);
+    if GP < BASEGP then
+        GP = BASEGP;
+    end
+    if EP < 0 then
+        EP = 0;
+    end
+    CEPGP_SetEPGPBP(index, EP, GP, BP);
+    if tonumber(amount) <= 0 then
+        if msg ~= "" and msg ~= nil then
+            amount = string.sub(amount, 2, string.len(amount));
+            CEPGP_sendChatMessage(amount .. " EP taken from " .. player .. " (" .. msg .. ")");
+            TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+                [1] = player,
+                [2] = UnitName("player"),
+                [3] = "Subtract EP -" .. amount .. " (" .. msg .. ")",
+                [4] = EPB,
+                [5] = EP,
+                [6] = GP,
+                [7] = GP,
+                [9] = time()
+            };
+            CEPGP_ShareTraffic(player, UnitName("player"), "Subtract EP -" .. amount .. " (" .. msg .. ")", EPB, EP, GP, GP);
+        else
+            amount = string.sub(amount, 2, string.len(amount));
+            CEPGP_sendChatMessage(amount .. " EP taken from " .. player);
+            TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+                [1] = player,
+                [2] = UnitName("player"),
+                [3] = "Subtract EP -" .. amount,
+                [4] = EPB,
+                [5] = EP,
+                [6] = GP,
+                [7] = GP,
+                [9] = time()
+            };
+            CEPGP_ShareTraffic(player, UnitName("player"), "Subtract EP -" .. amount, EPB, EP, GP, GP);
+        end
+    else
+        if msg ~= "" and msg ~= nil then
+            CEPGP_sendChatMessage(amount .. " EP added to " .. player .. " (" .. msg .. ")");
+            TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+                [1] = player,
+                [2] = UnitName("player"),
+                [3] = "Add EP +" .. amount .. " (" .. msg .. ")",
+                [4] = EPB,
+                [5] = EP,
+                [6] = GP,
+                [7] = GP,
+                [9] = time()
+            };
+            CEPGP_ShareTraffic(player, UnitName("player"), "Add EP +" .. amount .. " (" .. msg ..")", EPB, EP, GP, GP);
+        else
+            CEPGP_sendChatMessage(amount .. " EP added to " .. player);
+            TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+                [1] = player,
+                [2] = UnitName("player"),
+                [3] = "Add EP +" .. amount,
+                [4] = EPB,
+                [5] = EP,
+                [6] = GP,
+                [7] = GP,
+                [9] = time()
+            };
+            CEPGP_ShareTraffic(player, UnitName("player"), "Add EP +" .. amount, EPB, EP, GP, GP);
+        end
+    end
+    CEPGP_UpdateTrafficScrollBar();
 end
 
 function CEPGP_decay(amount, msg)
