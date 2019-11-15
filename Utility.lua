@@ -128,7 +128,7 @@ function CEPGP_calcGP(link, quantity, id)
 	else
 		return 0;
 	end
-	if not name and CEPGP_itemExists(id) then
+	if not name and CEPGP_itemExists(tonumber(id)) then
 		local item = Item:CreateFromItemID(tonumber(id));
 		item:ContinueOnItemLoad(function()
 			name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
@@ -249,10 +249,19 @@ end
 function CEPGP_addGPHyperlink(self, iString)
 	if not string.find(iString, "item:") or not CEPPG_gp_tooltips then return; end
 	local id = CEPGP_getItemID(iString);
-	if not CEPGP_itemExists(tonumber(id)) then return; end
-	local gp = CEPGP_calcGP(_, 1, id);
-	ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
-	ItemRefTooltip:Show();
+	local name = GetItemInfo(id);
+	if not name and CEPGP_itemExists(tonumber(id)) then
+		local item = Item:CreateFromItemID(tonumber(id));
+		item:ContinueOnItemLoad(function()
+			local gp = CEPGP_calcGP(_, 1, id);
+			ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+			ItemRefTooltip:Show();
+		end);
+	else
+		local gp = CEPGP_calcGP(_, 1, id);
+		ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+		ItemRefTooltip:Show();
+	end
 end
 
 function CEPGP_populateFrame(CEPGP_criteria, items)
