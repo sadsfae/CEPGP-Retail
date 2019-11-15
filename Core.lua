@@ -344,7 +344,7 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 			local name = GetRaidRosterInfo(i);
 			if CEPGP_tContains(CEPGP_roster, name, true) then
 				local index = CEPGP_getIndex(name, CEPGP_roster[name][1]);
-				if not CEPGP_checkEPGP(CEPGP_roster[name][5]) then
+				if not CEPGP_checkEPGPBP(CEPGP_roster[name][5]) then
 					CEPGP_SetEPGPBP(index, amount);
 				else
 					local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5]);
@@ -893,12 +893,14 @@ end
 
 
 local function CEPGP_getPlayerEPBeforePull(name)
+	CEPGP_debugMsg('Calculating bonus points for ' .. name);
 	if not name then
-		return nil
+		return nil;
 	end
 
-	local FLASK_EP = 25;
-	local FOOD_EP = 10;
+	local FLASK_EP = 70;
+	local FOOD_EP = 30;
+	local food_added, flask_added = false, false;
 
 	local bonus_EP = 0;
 
@@ -906,12 +908,17 @@ local function CEPGP_getPlayerEPBeforePull(name)
 		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i,"HELPFUL")
 		if not spellId then
 			break
-		elseif db.tableFlask[spellId] then
-			bonus_EP = bonus_EP + FLASK_EP
-		elseif db.tableFood[spellId] then
-			bonus_EP = bonus_EP + FOOD_EP
+		elseif not flask_added and db.tableFlask[spellId] then
+			bonus_EP = bonus_EP + FLASK_EP;
+			flask_added = true;
+		elseif not food_added and db.tableFood[spellId] then
+			bonus_EP = bonus_EP + FOOD_EP;
+			food_added = true;
 		end
 	end
+	CEPGP_debugMsg(
+		'food_added = ' .. tostring(food_added) .. ', flask_added = ' .. tostring(flask_added) .. '. Bonus EP is ' .. tostring(bonus_EP)
+	);
 	return bonus_EP;
 end
 
@@ -927,10 +934,14 @@ function CEPGP_AddEPBeforePull()
 				local EP = data[5];
 				local GP = data[6];
 				local BP = data[9];
+				data[5] = EP + bonus_ep;
+				CEPGP_debugMsg(name .. " EP " .. EP + bonus_ep .. " GP " .. GP .. " BP " .. BP)
 				CEPGP_SetEPGPBP(index, EP + bonus_ep, GP, BP);
 			end
 		end
 	end
 
 	CEPGP_ignoreUpdates = false;
+	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+	CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
 end

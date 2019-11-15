@@ -539,6 +539,9 @@ function CEPGP_rosterUpdate(event)
 			if name then
 				local EP, GP = CEPGP_getEPGP(officerNote, i, name);
 				local PR = math.floor((EP/GP)*100)/100;
+				if name == "Енотовод" then
+					CEPGP_debugMsg(name .. ' update guild roster: EP - ' .. EP .. ' OffNote is ' .. officerNote);
+				end
 				CEPGP_roster[name] = {
 					[1] = i,
 					[2] = class,
@@ -610,6 +613,7 @@ function CEPGP_rosterUpdate(event)
 				rank = CEPGP_roster[name][3];
 				local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5], _, name);
 				local rankIndex = CEPGP_roster[name][4];
+				CEPGP_debugMsg('Raid roster update: ' .. name .. ', EP ' .. EP)
 				CEPGP_raidRoster[i] = {
 					[1] = name,
 					[2] = class,

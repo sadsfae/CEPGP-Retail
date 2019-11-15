@@ -254,10 +254,12 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_popup);
 		HideUIPanel(CEPGP_context_popup_EP_check);
 		HideUIPanel(CEPGP_context_popup_GP_check);
+		HideUIPanel(CEPGP_context_popup_BP_check);
 		HideUIPanel(CEPGP_context_amount);
 		HideUIPanel(CEPGP_context_reason);
 		_G["CEPGP_context_popup_EP_check_text"]:Hide();
 		_G["CEPGP_context_popup_GP_check_text"]:Hide();
+		_G["CEPGP_context_popup_BP_check_text"]:Hide();
 		_G["CEPGP_context_amount"]:Hide();
 		_G["CEPGP_context_popup_reason"]:Hide();
 		CEPGP_context_popup_EP_check:SetChecked(nil);
@@ -271,6 +273,7 @@ function CEPGP_ListButton_OnClick(obj)
 				PlaySound(799);
 				HideUIPanel(CEPGP_context_popup);
 				CEPGP_AddEPBeforePull();
+				CEPGP_UpdateRaidScrollBar();
 			end
 		);
 	end
