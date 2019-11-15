@@ -1223,6 +1223,11 @@ function CEPGP_getDebugInfo()
 	info = info .. "Locale: " .. GetLocale() .. "<br />\n";
 	info = info .. "GP Formula: (" .. COEF .. "x(" .. MOD_COEF .. "^<sup>((ilvl/26)+(rarity-4))</sup>)xSlot Modifier)x" .. MOD .. "<br />";
 	info = info .. "Base GP: " .. BASEGP .. "<br />\n";
+	if CEPGP_minGPDecayFactor then
+		info = info .. "Base GP Decay Factor: true<br />\n";
+	else
+		info = info .. "Base GP Decay Factor: false<br />\n";
+	end
 	if STANDBYEP then
 		info = info .. "Standby EP: True<br />\n";
 	else
@@ -1255,12 +1260,42 @@ function CEPGP_getDebugInfo()
 	else
 		info = info .. "GUI for Loot: False<br />\n";
 	end
-	
 	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br />\n";
-		
-	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />\n";
-
-	info = info .. "<details><summary>Auto EP</summary>\n";
+	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br />\n";
+	if CEPGP_auto_pass then
+		info = info .. "Auto Pass on Ineligible Items: true<br />\n";
+	else
+		info = info .. "Auto Pass on Ineligible Items: false<br />\n";
+	end
+	if CEPGP_raid_wide_dist then
+		info = info .. "Full Raid Loot Visibility: true<br />\n";
+	else
+		info = info .. "Full Raid Loot Visibility: false<br />\n";
+	end
+	if CEPPG_gp_tooltips then
+		info = info .. "GP on Tooltips: true<br />\n";
+	else
+		info = info .. "GP on Tooltips: false<br />\n";
+	end
+	if CEPGP_suppress_announcements then
+		info = info .. "Suppress Loot Announcements: true<br />\n";
+	else
+		info = info .. "Suppress Loot Announcements: false<br />\n";
+	end
+	if CEPGP_minEP[1] then
+		info = info .. "Minimum EP: true, " .. CEPGP_minEP[2] .. "<br />\n";
+	else
+		info = info .. "Minimum EP: false, " .. CEPGP_minEP[2] .. "<br />\n";
+	end
+	info = info .. "Reporting Channel: " .. CHANNEL .. "<br />\n";
+	info = info .. "Loot Response Channel: " .. CEPGP_lootChannel .. "<br />\n";
+	info = info .. "Minimum Threshold for Loot: " .. CEPGP_min_threshold .. "<br />\n";
+	if ALLOW_FORCED_SYNC then
+		info = info .. "Allow Force Sync: true, " .. GuildControlGetRankName(CEPGP_force_sync_rank) .. "<br />\n";
+	else
+		info = info .. "Allow Force Sync: false, " .. GuildControlGetRankName(CEPGP_force_sync_rank) .. "<br />\n";
+	end
+	info = info .. "<br /><details><summary>Auto EP</summary>\n";
 	for k, v in pairs(AUTOEP) do
 		if v then
 			info = info .. k .. ": True<br />\n";

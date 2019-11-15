@@ -1274,7 +1274,7 @@
 									</OnClick>
 									<OnEnter>
 										GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-										GameTooltip:SetText("Factor in your base GP amount when decaying guild EPGP standings.");
+										GameTooltip:SetText("Subtract base GP from the calculation when decaying guild EPGP standings.");
 									</OnEnter>
 									<OnLeave>
 										GameTooltip:Hide();
