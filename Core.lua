@@ -943,7 +943,7 @@ function CEPGP_invisibleFrameUpdateHandler(self, elapsed)
 	end
 
 	local elapsed_since_last_flush = time() - (CEPGP_lastFlush or time())
-	if CEPGP_addTimedEP and not UnitAffectingCombat("player") and elapsed_since_last_flush > 5 then
+	if CEPGP_addTimedEP and not UnitAffectingCombat("player") and elapsed_since_last_flush > 60 * 60 then
 		CEPGP_showFlushWindow();
 	end
 end
