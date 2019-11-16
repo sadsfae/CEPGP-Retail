@@ -3,6 +3,15 @@
 	<Script File="Button.lua"/>
 	<Script File="Utility.lua"/>
 	<Script File="Core.lua"/>
+
+	<Frame name="CEPGP_invisibleFrame" parent="UIParent" hidden="false" clampedToScreen="true">
+		<Size>
+			<AbsDimension x="1" y="1" />
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+		</Anchors>
+    </Frame>
 		
 	<Frame name="CEPGP_frame" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
 		<Size>
@@ -628,6 +637,52 @@
 							<Anchor point="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="120" y="25" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if not CanEditOfficerNote() then
+									self:Hide();
+								end
+							</OnLoad>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_ListButton_OnClick(self:GetName());
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_raid_add_timed_EP" inherits="GameMenuButtonTemplate" text="Add EP by timer">
+						<Size>
+							<AbsDimension x="100" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="230" y="25" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if not CanEditOfficerNote() then
+									self:Hide();
+								end
+							</OnLoad>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_ListButton_OnClick(self:GetName());
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_raid_flush_timed_EP" inherits="GameMenuButtonTemplate" text="Flush EP by timer">
+						<Size>
+							<AbsDimension x="100" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="340" y="25" />
 								</Offset>
 							</Anchor>
 						</Anchors>

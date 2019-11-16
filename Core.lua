@@ -923,25 +923,121 @@ local function CEPGP_getPlayerEPBeforePull(name)
 end
 
 
-function CEPGP_AddEPBeforePull()
+function CEPGP_cleanName(name)
+	if not name then return; end
+	local dash_position = string.find(name, "-");
+	if dash_position then
+		name = string.sub(name, 0, dash_position - 1);
+	end
+	return name;
+end
+
+
+function CEPGP_invisibleFrameUpdateHandler(self, elapsed)
+	self.timeSinceLastUpdate = self.timeSinceLastUpdate + elapsed;
+
+	if CEPGP_addTimedEP and self.timeSinceLastUpdate >= 5 and not CEPGP_pauseQueue then
+		self.timeSinceLastUpdate = 0;
+		CEPGP_debugMsg('Updating...');
+		CEPGP_updateRealtimeEP();
+	end
+
+	local elapsed_since_last_flush = time() - (CEPGP_lastFlush or time())
+	if CEPGP_addTimedEP and not UnitAffectingCombat("player") and elapsed_since_last_flush > 5 then
+		CEPGP_showFlushWindow();
+	end
+end
+
+
+function CEPGP_updateRealtimeEP()
+	CEPGP_debugMsg('Last queue update ' .. CEPGP_queueLastUpdate);
+	if (time() - CEPGP_queueLastUpdate) < 60 then
+		return;
+	end
+	if CEPGP_queueEP == nil then
+		CEPGP_queueEP = {};
+	end
+
+	for i = 1, GetNumGroupMembers() do
+		local name = CEPGP_cleanName(GetRaidRosterInfo(i));
+
+		if not name then break; end
+		if CEPGP_queueEP[name] == nil then
+			CEPGP_queueEP[name] = 0;
+		end
+		CEPGP_debugMsg('For ' .. name .. ' will be  ' .. CEPGP_queueEP[name] + CEPGP_EPPerMinute .. ' EP');
+		CEPGP_queueEP[name] = CEPGP_queueEP[name] + CEPGP_EPPerMinute;
+	end
+	CEPGP_queueLastUpdate = time();
+end
+
+
+function CEPGP_flushQueuedEP()
+	CEPGP_debugMsg('Flushing queued EP');
 	CEPGP_ignoreUpdates = true;
-	for i, data in pairs(CEPGP_raidRoster) do
-		local name = data[1]
+	CEPGP_pauseQueue = true;
+
+	for i = 1, GetNumGuildMembers() do
+		local name, rank, rankIndex, _, class, _, _, officerNote, online, _, classFileName = GetGuildRosterInfo(i);
+		name = CEPGP_cleanName(name);
+		if CEPGP_queueEP[name] then
+			local EP, GP, BP = CEPGP_getEPGPBP(officerNote);
+			local bonusEP = math.floor(CEPGP_queueEP[name]);
+			CEPGP_debugMsg(name .. ' - EP=' .. EP + bonusEP .. ' GP=' .. GP .. ' BP=' .. BP);
+			CEPGP_SetEPGPBP(i, EP + bonusEP, GP, BP);
+			CEPGP_queueEP[name] = nil;
+		end
+	end
+	CEPGP_lastFlush = time();
+	CEPGP_ignoreUpdates = false;
+	CEPGP_pauseQueue = false;
+	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+	CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+end
+
+
+function CEPGP_AddEPBeforePull()
+	CEPGP_debugMsg('Adding EP before pull');
+	CEPGP_ignoreUpdates = true;
+	for name, data in pairs(CEPGP_getRealtimeRoster()) do
 		local bonus_ep = CEPGP_getPlayerEPBeforePull(name);
 		if bonus_ep then
-			local index = CEPGP_getIndex(name);  -- data[1] == guild index
-			if index then
-				local EP = data[5];
-				local GP = data[6];
-				local BP = data[9];
-				data[5] = EP + bonus_ep;
-				CEPGP_debugMsg(name .. " EP " .. EP + bonus_ep .. " GP " .. GP .. " BP " .. BP)
-				CEPGP_SetEPGPBP(index, EP + bonus_ep, GP, BP);
-			end
+			CEPGP_debugMsg(name .. " EP " .. data.EP + bonus_ep .. " GP " .. data.GP .. " BP " .. data.BP)
+			CEPGP_SetEPGPBP(data.guildIndex, data.EP + bonus_ep, data.GP, data.BP);
 		end
 	end
 
 	CEPGP_ignoreUpdates = false;
 	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 	CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+end
+
+
+function CEPGP_getRealtimeRoster()
+	local realtimeRaidRoster = {};
+	local raidMembers = {};
+
+	for i = 1, GetNumGroupMembers() do
+		local name = CEPGP_cleanName(GetRaidRosterInfo(i));
+
+		if not name then break; end
+		raidMembers[name] = true;
+	end
+
+	for i = 1, GetNumGuildMembers() do
+		local name, _, _, _, _, _, _, officerNote = GetGuildRosterInfo(i);
+		name = CEPGP_cleanName(name);
+		if raidMembers[name] then
+			local EP, GP, BP = CEPGP_getEPGPBP(officerNote);
+			CEPGP_debugMsg(name .. ' - EP=' .. EP .. ' GP=' .. GP .. ' BP=' .. BP);
+			realtimeRaidRoster[name] = {
+				['EP'] = EP,
+				['GP'] = GP,
+				['BP'] = BP,
+				['guildIndex'] = i,
+			}
+		end
+	end
+
+	return realtimeRaidRoster;
 end

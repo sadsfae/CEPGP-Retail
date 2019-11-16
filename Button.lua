@@ -273,11 +273,105 @@ function CEPGP_ListButton_OnClick(obj)
 				PlaySound(799);
 				HideUIPanel(CEPGP_context_popup);
 				CEPGP_AddEPBeforePull();
-				CEPGP_UpdateRaidScrollBar();
 			end
 		);
+	elseif strfind(obj, "CEPGP_raid_add_timed_EP") then
+		ShowUIPanel(CEPGP_context_popup);
+		HideUIPanel(CEPGP_context_popup_EP_check);
+		HideUIPanel(CEPGP_context_popup_GP_check);
+		HideUIPanel(CEPGP_context_popup_BP_check);
+		HideUIPanel(CEPGP_context_amount);
+		HideUIPanel(CEPGP_context_reason);
+		_G["CEPGP_context_popup_EP_check_text"]:Hide();
+		_G["CEPGP_context_popup_GP_check_text"]:Hide();
+		_G["CEPGP_context_popup_BP_check_text"]:Hide();
+		_G["CEPGP_context_amount"]:Hide();
+		_G["CEPGP_context_popup_reason"]:Hide();
+		CEPGP_context_popup_EP_check:SetChecked(nil);
+		CEPGP_context_popup_GP_check:SetChecked(nil);
+		CEPGP_context_popup_header:SetText("Raid Moderation");
+		CEPGP_context_popup_title:SetText("Modify Raid EP");
+		if CEPGP_addTimedEP then
+			CEPGP_context_popup_desc:SetText("Disable counting timed EP?");
+			CEPGP_context_popup_confirm:SetScript(
+				'OnClick',
+				function()
+					PlaySound(799);
+					HideUIPanel(CEPGP_context_popup);
+					CEPGP_addTimedEP = false;
+					CEPGP_queueEP = {};
+					CEPGP_queueLastUpdate = 0;
+					CEPGP_EPPerHour = 500;  -- TODO Do it in config
+					CEPGP_EPPerMinute = CEPGP_EPPerHour / 60;
+					CEPGP_lastFlush = nil;
+				end
+			);
+		else
+			CEPGP_context_popup_desc:SetText("Enable counting timed EP?");
+			CEPGP_context_popup_confirm:SetScript(
+				'OnClick',
+				function()
+					PlaySound(799);
+					HideUIPanel(CEPGP_context_popup);
+					CEPGP_invisibleFrame.timeSinceLastUpdate = 0;
+					CEPGP_addTimedEP = true;
+					CEPGP_queueEP = {};
+					CEPGP_queueLastUpdate = 0;
+					CEPGP_EPPerHour = 500;  -- TODO Do it in config
+					CEPGP_EPPerMinute = CEPGP_EPPerHour / 60;
+					CEPGP_lastFlush = time();
+					CEPGP_pauseQueue = false;
+
+					CEPGP_invisibleFrame:SetScript("OnUpdate", CEPGP_invisibleFrameUpdateHandler);
+				end
+			);
+		end
+	elseif strfind(obj, "CEPGP_raid_flush_timed_EP") then
+		CEPGP_showFlushWindow();
 	end
 end
+
+function CEPGP_showFlushWindow()
+	ShowUIPanel(CEPGP_context_popup);
+	HideUIPanel(CEPGP_context_popup_EP_check);
+	HideUIPanel(CEPGP_context_popup_GP_check);
+	HideUIPanel(CEPGP_context_popup_BP_check);
+	HideUIPanel(CEPGP_context_amount);
+	HideUIPanel(CEPGP_context_reason);
+	_G["CEPGP_context_popup_EP_check_text"]:Hide();
+	_G["CEPGP_context_popup_GP_check_text"]:Hide();
+	_G["CEPGP_context_popup_BP_check_text"]:Hide();
+	_G["CEPGP_context_amount"]:Hide();
+	_G["CEPGP_context_popup_reason"]:Hide();
+	CEPGP_context_popup_EP_check:SetChecked(nil);
+	CEPGP_context_popup_GP_check:SetChecked(nil);
+	CEPGP_context_popup_header:SetText("Raid Moderation");
+	CEPGP_context_popup_title:SetText("Modify Raid EP");
+	local min_elapsed_from_last_flush = (time() - (CEPGP_lastFlush or time())) / 60;
+	local name = CEPGP_cleanName(UnitName("player"));
+	CEPGP_debugMsg(name);
+	local bonusEP = 0;
+	if CEPGP_queueEP ~= nil then
+		CEPGP_debugMsg('It is not nil');
+		bonusEP = CEPGP_queueEP[name];
+	end
+	if not bonusEP then
+		bonusEP = 0;
+	end
+	CEPGP_context_popup_desc:SetText(
+		"Last flush was " .. math.floor(min_elapsed_from_last_flush) .. ' minutes ago.\n'
+				.. math.floor(bonusEP) .. ' will be added.\nFlush?'
+	);
+	CEPGP_context_popup_confirm:SetScript(
+		'OnClick',
+		function()
+			PlaySound(799);
+			HideUIPanel(CEPGP_context_popup);
+			CEPGP_flushQueuedEP();
+		end
+	);
+end
+
 
 function CEPGP_setOverrideLink(frame, event)
 	
