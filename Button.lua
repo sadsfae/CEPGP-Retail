@@ -49,6 +49,9 @@ function CEPGP_ListButton_OnClick(obj)
 		for i = 1, CEPGP_ntgetn(CEPGP_standbyRoster) do
 			if CEPGP_standbyRoster[i][1] == name then
 				table.remove(CEPGP_standbyRoster, i);
+				if CEPGP_isML() == 0 and CEPGP_standby_share then
+					CEPGP_SendAddonMsg("StandbyListRemove;" .. CEPGP_standbyRoster[i][1]);
+				end
 				break;
 			end
 		end
@@ -56,7 +59,7 @@ function CEPGP_ListButton_OnClick(obj)
 		return;
 	end
 	
-	if strfind(obj, "CEPGP_standby_ep_list_add") and (CanEditOfficerNote() or CEPGP_debugMode) then
+	if obj == "CEPGP_standby_ep_list_add" and (CanEditOfficerNote() or CEPGP_debugMode) then
 		ShowUIPanel(CEPGP_context_popup);
 		CEPGP_context_popup_EP_check:Hide();
 		CEPGP_context_popup_GP_check:Hide();
@@ -72,6 +75,46 @@ function CEPGP_ListButton_OnClick(obj)
 															CEPGP_addToStandby(CEPGP_context_amount:GetText());
 														end);
 		return;
+	end
+	
+	if obj == "CEPGP_standby_ep_list_addbyrank" then
+		CEPGP_standby_addRank:Show();
+	end
+	if obj == "CEPGP_standby_addRank_confirm" then
+		local ranks = {};
+		for i = 1, 10 do
+			if _G["CEPGP_standby_addRank_" .. i .. "_check"]:GetChecked() then
+				ranks[i] = true;
+			else
+				ranks[i] = false;
+			end
+		end
+		for i = 1, GetNumGuildMembers() do
+			local name, _, rIndex = GetGuildRosterInfo(i);
+			if string.find(name, "-") then
+				name = string.sub(name, 0, string.find(name, "-")-1);
+			end
+			if ranks[rIndex+1] and not CEPGP_tContains(CEPGP_standbyRoster, name) and name ~= UnitName("player") then
+				local _, class, rank, _, oNote, _, classFile = CEPGP_getGuildInfo(name);
+				local EP,GP = CEPGP_getEPGP(oNote);
+				CEPGP_standbyRoster[#CEPGP_standbyRoster+1] = {
+					[1] = name,
+					[2] = class,
+					[3] = rank,
+					[4] = rIndex,
+					[5] = EP,
+					[6] = GP,
+					[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+					[8] = classFile
+				};
+			end
+		end
+		CEPGP_UpdateStandbyScrollBar();
+		CEPGP_standby_addRank:Hide();
+	end
+	if obj == "CEPGP_standby_ep_list_purge" then
+		CEPGP_standbyRoster = {};
+		CEPGP_UpdateStandbyScrollBar();
 	end
 	
 	if not CanEditOfficerNote() and not CEPGP_debugMode then
@@ -162,12 +205,12 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_desc:SetText("Positive numbers decay | Negative numbers inflate");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
-															if string.find(CEPGP_context_amount:GetText(), '^[0-9]$') or string.find(CEPGP_context_amount:GetText(), '^[0-9.0-9]$') then
-																CEPGP_print("Enter a valid number", true);
-															else
+															if string.find(CEPGP_context_amount:GetText(), '^[0-9]+$') or string.find(CEPGP_context_amount:GetText(), '^[0-9]+.[0-9]+$') then
 																PlaySound(799);
 																HideUIPanel(CEPGP_context_popup);
 																CEPGP_decay(tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
+															else
+																CEPGP_print("Enter a valid number", true);
 															end
 														end);
 		return;
@@ -183,7 +226,7 @@ function CEPGP_ListButton_OnClick(obj)
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Guild Moderation");
 		CEPGP_context_popup_title:SetText("Reset Guild EPGP");
-		CEPGP_context_popup_desc:SetText("Resets the Guild EPGP standings\n|c00FF0000Are you sure that is what you want to do?\nthis cannot be reversed!\nNote: this will report to Guild chat|r");
+		CEPGP_context_popup_desc:SetText("Resets the Guild EPGP standings\n|c00FF0000Are you sure that is what you want to do?\nthis cannot be reversed!|r");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()
 															PlaySound(799);
 															HideUIPanel(CEPGP_context_popup);
@@ -528,5 +571,42 @@ function CEPGP_defChannelChange(self, value)
 	UIDropDownMenu_SetSelectedName(CEPGP_def_channel_dropdown, self:GetText());
 	UIDropDownMenu_SetSelectedValue(CEPGP_def_channel_dropdown, self.value);
 	CHANNEL = self:GetText();
-	CEPGP_print("Default reporting channel changed to \"" .. CHANNEL .. "\".");
+	CEPGP_print("Reporting channel set to \"" .. CHANNEL .. "\".");
+end
+
+		--[[ Loot Response Channel DropDown ]]--
+		
+function CEPGP_lootChannelDropdown(frame, level, menuList)
+	local channels = {
+		[1] = "Say",
+		[2] = "Yell",
+		[3] = "Party",
+		[4] = "Raid",
+		[5] = "Guild",
+		[6] = "Officer",
+	};
+	for i = 4, C_ChatInfo.GetNumActiveChannels() do
+		channels[i+3] = select(2, GetChannelName(i));
+	end
+	for index, value in ipairs(channels) do
+		local info = {
+			text = value,
+			value = index,
+			func = CEPGP_lootChannelChange
+		};
+		local entry = UIDropDownMenu_AddButton(info);
+	end
+	for i = 1, #channels do
+		if string.lower(CEPGP_lootChannel) == string.lower(channels[i]) then
+			UIDropDownMenu_SetSelectedName(CEPGP_loot_channel_dropdown, channels[i]);
+			UIDropDownMenu_SetSelectedValue(CEPGP_loot_channel_dropdown, i);
+		end
+	end
+end
+
+function CEPGP_lootChannelChange(self, value)
+	UIDropDownMenu_SetSelectedName(CEPGP_loot_channel_dropdown, self:GetText());
+	UIDropDownMenu_SetSelectedValue(CEPGP_loot_channel_dropdown, self.value);
+	CEPGP_lootChannel = self:GetText();
+	CEPGP_print("Loot response channel set to \"" .. CEPGP_lootChannel .. "\".");
 end

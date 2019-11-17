@@ -1,3 +1,5 @@
+local L = CEPGP_Locale:GetLocale("CEPGP")
+
 function CEPGP_handleComms(event, arg1, arg2)
 	--arg1 = message; arg2 = sender
 	if event == "CHAT_MSG_WHISPER" and string.lower(arg1) == string.lower(CEPGP_keyword) and CEPGP_distributing then
@@ -33,7 +35,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 					CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 					if CEPGP_distributing then
 						if inGuild and not CEPGP_suppress_announcements then
-							SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", "RAID", CEPGP_LANGUAGE);
+							CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", CEPGP_lootChannel);
 							
 						elseif not CEPGP_suppress_announcements then
 							local total = GetNumGroupMembers();
@@ -42,7 +44,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 									_, _, _, _, class = GetRaidRosterInfo(i);
 								end
 							end
-								SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", "RAID", CEPGP_LANGUAGE);
+								CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", CEPGP_lootChannel);
 						end
 						if CEPGP_isML() == 0 then --If you are the master looter
 							CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
@@ -68,7 +70,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 				CEPGP_SendAddonMsg(arg2..";distslot;"..CEPGP_distSlot, "RAID");
 				if CEPGP_distributing then
 					if inGuild and not CEPGP_suppress_announcements then
-						SendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", "RAID", CEPGP_LANGUAGE);
+						CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (" .. math.floor((EP/GP)*100)/100 .. " PR)", CEPGP_lootChannel);
 					elseif not CEPGP_suppress_announcements then
 						local total = GetNumGroupMembers();
 						for i = 1, total do
@@ -76,7 +78,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 								_, _, _, _, class = GetRaidRosterInfo(i);
 							end
 						end
-						SendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", "RAID", CEPGP_LANGUAGE);
+						CEPGP_sendChatMessage(arg2 .. " (" .. class .. ") needs. (Non-guild member)", CEPGP_lootChannel);
 					end
 					if CEPGP_isML() == 0 then --If you are the master looter
 						CEPGP_SendAddonMsg("!need;"..arg2..";"..CEPGP_DistID, "RAID"); --!need;playername;itemID (of the item being distributed) is sent for sharing with raid assist
@@ -243,7 +245,7 @@ function CEPGP_handleComms(event, arg1, arg2)
 end
 
 function CEPGP_handleCombat(name, except)
-	if name == "The Prophet Skeram" or name == "Majordomo Executus" and not except then return; end
+	if name == L["The Prophet Skeram"] or name == L["Majordomo Executus"] and not except then return; end
 	local EP;
 	local isLead;
 	for i = 1, GetNumGroupMembers() do
@@ -253,22 +255,18 @@ function CEPGP_handleCombat(name, except)
 	end
 	if (((GetLootMethod() == "master" and CEPGP_isML() == 0) or (GetLootMethod() == "group" and isLead == 2)) and CEPGP_ntgetn(CEPGP_roster) > 0) or CEPGP_debugMode then
 		local success = CEPGP_getCombatModule(name);
-		if name == "Zealot Zath" or name == "Zealot Lor'Khan" then
-			name = "High Priest Thekal";
-		elseif name == "Flamewaker Elite" or name == "Flamewaker Healer" then
-			name = "Majordomo Executus";
+		if name == L["Zealot Zath"] or name == L["Zealot Lor'Khan"] then
+			name = L["High Priest Thekal"];
+		elseif name == L["Flamewaker Elite"] or name == L["Flamewaker Healer"] then
+			name = L["Majordomo Executus"];
 		end
 		EP = tonumber(EPVALS[name]);
-		if AUTOEP[name] and EP > 0 then
-			if success then
-				if CEPGP_combatModule == "The Four Horsemen" or CEPGP_combatModule == "The Bug Trio" or CEPGP_combatModule == "The Twin Emperors" then
-					CEPGP_AddRaidEP(EP, CEPGP_combatModule .. " have been defeated! " .. EP .. " EP has been awarded to the raid", CEPGP_combatModule);
-				else
-					CEPGP_AddRaidEP(EP, CEPGP_combatModule .. " has been defeated! " .. EP .. " EP has been awarded to the raid", CEPGP_combatModule);
-				end
-				if STANDBYEP and tonumber(STANDBYPERCENT) > 0 then
-					CEPGP_addStandbyEP(EP*(tonumber(STANDBYPERCENT)/100), CEPGP_combatModule);
-				end
+		if AUTOEP[name] and EP > 0 and success then
+			local plurals = CEPGP_combatModule == L["The Four Horsemen"] or CEPGP_combatModule == L["The Bug Trio"] or CEPGP_combatModule == L["The Twin Emperors"]
+			local message = format(L["%s " .. (plurals and "have" or "has") .. " been defeated! %d EP has been awarded to the raid"], CEPGP_combatModule, EP);
+			CEPGP_AddRaidEP(EP, message, CEPGP_combatModule);
+			if STANDBYEP and tonumber(STANDBYPERCENT) > 0 then
+				CEPGP_addStandbyEP(EP*(tonumber(STANDBYPERCENT)/100), CEPGP_combatModule);
 			end
 		end
 		CEPGP_UpdateStandbyScrollBar();
@@ -277,34 +275,35 @@ end
 
 function CEPGP_getCombatModule(name)
 	--Majordomo Executus
-	if name == "Flamewaker Elite" or name == "Flamewaker Healer" then
+	if name == L["Flamewaker Elite"] or name == L["Flamewaker Healer"] then
 		CEPGP_kills = CEPGP_kills + 1;
 		if CEPGP_kills == 8 then
-			CEPGP_combatModule = "Majordomo Executus";
+			CEPGP_combatModule = L["Majordomo Executus"];
 			return true;
 		else
 			return false;
 		end
 	end
-	
+
 	--Razorgore the Untamed
-	if name == "Razorgore the Untamed" then
+	if name == L["Razorgore the Untamed"] then
 		if CEPGP_kills == 30 then --For this encounter, CEPGP_kills is used for the eggs
-			CEPGP_combatModule = "Razorgore the Untamed";
+			CEPGP_combatModule = L["Razorgore the Untamed"];
 			return true;
 		else
 			return false;
 		end
 	end
-	
-	if name == "Zealot Lor'Khan" or name == "Zealot Zath" or name == "High Priest Thekal" then
-		CEPGP_combatModule = "High Priest Thekal";
+
+	-- High Priest Thekal
+	if name == L["Zealot Lor'Khan"] or name == L["Zealot Zath"] or name == L["High Priest Thekal"] then
+		CEPGP_combatModule = L["High Priest Thekal"];
 		if CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] and CEPGP_THEKAL_PARAMS["ZATH_DEAD"] and CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] then
 			return true;
 		else
-			if name == "Zealot Lor'Khan" then
+			if name == L["Zealot Lor'Khan"] then
 			CEPGP_THEKAL_PARAMS["LOR'KHAN_DEAD"] = true;
-		elseif name == "Zealot Zath" then
+		elseif name == L["Zealot Zath"] then
 			CEPGP_THEKAL_PARAMS["ZATH_DEAD"] = true;
 		else
 			CEPGP_THEKAL_PARAMS["THEKAL_DEAD"] = true;
@@ -312,14 +311,16 @@ function CEPGP_getCombatModule(name)
 			return false;
 		end
 	end
-	
-	if name == "Gri'lek" or name == "Hazza'rah" or name == "Renataki" or name == "Wushoolay" then
-		CEPGP_combatModule = "The Edge of Madness";
+
+	-- The Edge of Madness
+	if name == L["Gri'lek"] or name == L["Hazza'rah"] or name == L["Renataki"] or name == L["Wushoolay"] then
+		CEPGP_combatModule = L["The Edge of Madness"];
 		return true;
 	end
-	
-	if name == "Princess Yauj" or name == "Vem" or name == "Lord Kri" then
-		CEPGP_combatModule = "The Bug Trio";
+
+	-- Bug Trio
+	if name == L["Princess Yauj"] or name == L["Vem"] or name == L["Lord Kri"] then
+		CEPGP_combatModule = L["The Bug Trio"];
 		CEPGP_kills = CEPGP_kills + 1;
 		if CEPGP_kills == 3 then
 			return true;
@@ -327,9 +328,10 @@ function CEPGP_getCombatModule(name)
 			return false;
 		end
 	end
-	
-	if name == "Emperor Vek'lor" or name == "Emperor Vek'nilash" then
-		CEPGP_combatModule = "The Twin Emperors";
+
+	-- Twin Emperors
+	if name == L["Emperor Vek'lor"] or name == L["Emperor Vek'nilash"] then
+		CEPGP_combatModule = L["The Twin Emperors"];
 		CEPGP_kills = CEPGP_kills + 1;
 		if CEPGP_kills == 2 then
 			return true;
@@ -337,9 +339,10 @@ function CEPGP_getCombatModule(name)
 			return false;
 		end
 	end
-	
-	if name == "Highlord Mograine" or name == "Thane Korth'azz" or name == "Lady Blaumeux" or name == "Sir Zeliek" then
-		CEPGP_combatModule = "The Four Horsemen";
+
+	-- The Four Horseman
+	if name == L["Highlord Mograine"] or name == L["Thane Korth'azz"] or name == L["Lady Blaumeux"] or name == L["Sir Zeliek"] then
+		CEPGP_combatModule = L["The Four Horsemen"];
 		CEPGP_kills = CEPGP_kills + 1;
 		if CEPGP_kills == 4 then
 			return true;

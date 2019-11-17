@@ -1,3 +1,5 @@
+local L = CEPGP_Locale:GetLocale("CEPGP")
+
 function CEPGP_initialise()
 	_, _, _, CEPGP_ElvUI = GetAddOnInfo("ElvUI");
 	if not CEPGP_ElvUI then CEPGP_ElvUI = GetAddOnInfo("TukUI"); end
@@ -8,6 +10,9 @@ function CEPGP_initialise()
 	end
 	if CHANNEL == nil then
 		CHANNEL = "GUILD";
+	end
+	if CEPGP_lootChannel == nil then
+		CEPGP_lootChannel = "RAID";
 	end
 	if MOD == nil then
 		MOD = 1;
@@ -36,6 +41,11 @@ function CEPGP_initialise()
 		for k, v in pairs(bossNameIndex) do
 			EPVALS[k] = v;
 		end
+	end
+	-- Localize boss names on the config UI
+	local bossNames = _G["CEPGP_options_page_3_mc"].bosses
+	for k, entity in pairs(bossNames) do
+		entity:SetText(L[entity:GetText()])
 	end
 	if CEPGP_ntgetn(SLOTWEIGHTS) == 0 then
 		SLOTWEIGHTS = {
@@ -118,8 +128,8 @@ function CEPGP_calcGP(link, quantity, id)
 	else
 		return 0;
 	end
-	if not name and CEPGP_itemExists(id) then
-		local item = Item:CreateFromItemID(id);
+	if not name and CEPGP_itemExists(tonumber(id)) then
+		local item = Item:CreateFromItemID(tonumber(id));
 		item:ContinueOnItemLoad(function()
 			name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
 			for k, v in pairs(OVERRIDE_INDEX) do
@@ -131,61 +141,21 @@ function CEPGP_calcGP(link, quantity, id)
 				if string.lower(temp) == string.lower(k) then
 					return v;
 				end
-			end	
-			local found = false;
-			--Tier 3 slots
-			if strfind(name, "desecrated") and rarity == 4 then
-				if (name == "desecratedshoulderpads" or name == "desecratedspaulders" or name == "desecratedpauldrons") then slot = "INVTYPE_SHOULDER";
-				elseif (name == "desecratedsandals" or name == "desecratedboots" or name == "desecratedsabatons") then slot = "INVTYPE_FEET";
-				elseif (name == "desecratedbindings" or name == "desecratedwristguards" or name == "desecratedbracers") then slot = "INVTYPE_WRIST";
-				elseif (name == "desecratedgloves" or name == "desecratedhandguards" or name == "desecratedgauntlets") then slot = "INVTYPE_HAND";
-				elseif (name == "desecratedbelt" or name == "desecratedwaistguard" or name == "desecratedgirdle") then slot = "INVTYPE_WAIST";
-				elseif (name == "desecratedleggings" or name == "desecratedlegguards" or name == "desecratedlegplates") then slot = "INVTYPE_LEGS";
-				elseif (name == "desecratedcirclet" or name == "desecratedheadpiece" or name == "desecratedhelmet") then slot = "INVTYPE_HEAD";
-				elseif name == "desecratedrobe" then slot = "INVTYPE_ROBE";
-				elseif (name == "desecratedtunic" or name == "desecratedbreastplate") then slot = "INVTYPE_CHEST";
-				end
-				
-			elseif strfind(name, "primalhakkari") and rarity == 4 then
-				if (name == "primalhakkari bindings" or name == "primalhakkari armsplint" or name == "primalhakkari stanchion") then slot = "INVTYPE_WRIST";
-				elseif (name == "primalhakkari girdle" or name == "primalhakkari sash" or name == "primalhakkari shawl") then slot = "INVTYPE_WAIST";
-				elseif (name == "primalhakkari tabard" or name == "primalhakkari kossack" or name == "primalhakkari aegis") then slot = "INVTYPE_CHEST";
-				end
-			
-			elseif strfind(name, "qiraji") then
-				if (name == "qirajispikedhilt" or name == "qirajiornatehilt") then slot = "INVTYPE_WEAPONMAINHAND";
-				elseif (name == "qirajiregaldrape" or name == "qirajimartialdrape") then slot = "INVTYPE_CLOAK";
-				elseif (name == "qirajimagisterialring" or name == "qirajiceremonialring") then slot = "INVTYPE_FINGER";
-				elseif (name == "imperialqirajiarmaments" or name == "imperialqirajiregalia") then slot = "INVTYPE_2HWEAPON";
-				elseif (name == "qirajibindingsofcommand" or name == "qirajibindingsofdominance") then slot = "INVTYPE_WRIST";
-				end
-				
-			elseif name == "headofossiriantheunscarred" or name == "headofonyxia" or name == "headofnefarian" or name == "eyeofcthun" then
-				slot = "INVTYPE_NECK";
-			elseif name == "thephylacteryofkel'thuzad" or name == "heartofhakkar" then
-				slot = "INVTYPE_TRINKET";
-			elseif name == "huskoftheoldgod" or name == "carapaceoftheoldgod" then
-				slot = "INVTYPE_CHEST";
-			elseif name == "ourosintacthide" or name == "skinofthegreatsandworm" then
-				slot = "INVTYPE_LEGS";
-					
-			--Exceptions: Items that should not carry GP but still need to be distributed
-			elseif name == "splinterofatiesh"
-				or name == "tomeoftranquilizingshot"
-				or name == "bindingsofthewindseeker"
-				or name == "resilienceofthescourge"
-				or name == "fortitudeofthescourge"
-				or name == "mightofthescourge" 
-				or name == "powerofthescourge"
-				or name == "sulfuroningot"
-				or name == "matureblackdragonsinew"
-				or name == "nightmareengulfedobject"
-				or name == "ancientpetrifiedleaf" then
-				slot = "INVTYPE_EXCEPTION";
-			else
-				slot = "INVTYPE_EXCEPTION";
 			end
-		
+			
+			for _, k in pairs(CEPGP_tokens) do
+			for slotName, v in pairs(k) do
+				if k[slotName][tonumber(id)] then
+					slot = "INVTYPE_" .. string.upper(slotName);
+					ilvl = k[slotName][tonumber(id)];
+					break;
+				end
+			end
+		end
+		if slot == "" or slot == nil then
+			slot = "INVTYPE_EXCEPTION";
+		end
+			
 			if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
 			if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
 			if CEPGP_debugMode then
@@ -219,61 +189,18 @@ function CEPGP_calcGP(link, quantity, id)
 			if string.lower(temp) == string.lower(k) then
 				return v;
 			end
-		end	
-		local found = false;
-		if slot == "" or slot == nil then
-			--Tier 3 slots
-			if strfind(name, "desecrated") and rarity == 4 then
-				if (name == "desecratedshoulderpads" or name == "desecratedspaulders" or name == "desecratedpauldrons") then slot = "INVTYPE_SHOULDER";
-				elseif (name == "desecratedsandals" or name == "desecratedboots" or name == "desecratedsabatons") then slot = "INVTYPE_FEET";
-				elseif (name == "desecratedbindings" or name == "desecratedwristguards" or name == "desecratedbracers") then slot = "INVTYPE_WRIST";
-				elseif (name == "desecratedgloves" or name == "desecratedhandguards" or name == "desecratedgauntlets") then slot = "INVTYPE_HAND";
-				elseif (name == "desecratedbelt" or name == "desecratedwaistguard" or name == "desecratedgirdle") then slot = "INVTYPE_WAIST";
-				elseif (name == "desecratedleggings" or name == "desecratedlegguards" or name == "desecratedlegplates") then slot = "INVTYPE_LEGS";
-				elseif (name == "desecratedcirclet" or name == "desecratedheadpiece" or name == "desecratedhelmet") then slot = "INVTYPE_HEAD";
-				elseif name == "desecratedrobe" then slot = "INVTYPE_ROBE";
-				elseif (name == "desecratedtunic" or name == "desecratedbreastplate") then slot = "INVTYPE_CHEST";
+		end
+		for _, k in pairs(CEPGP_tokens) do
+			for slotName, v in pairs(k) do
+				if k[slotName][tonumber(id)] then
+					slot = "INVTYPE_" .. string.upper(slotName);
+					ilvl = k[slotName][tonumber(id)];
+					break;
 				end
-				
-			elseif strfind(name, "primalhakkari") and rarity == 4 then
-				if (name == "primalhakkari bindings" or name == "primalhakkari armsplint" or name == "primalhakkari stanchion") then slot = "INVTYPE_WRIST";
-				elseif (name == "primalhakkari girdle" or name == "primalhakkari sash" or name == "primalhakkari shawl") then slot = "INVTYPE_WAIST";
-				elseif (name == "primalhakkari tabard" or name == "primalhakkari kossack" or name == "primalhakkari aegis") then slot = "INVTYPE_CHEST";
-				end
-			
-			elseif strfind(name, "qiraji") then
-				if (name == "qirajispikedhilt" or name == "qirajiornatehilt") then slot = "INVTYPE_WEAPONMAINHAND";
-				elseif (name == "qirajiregaldrape" or name == "qirajimartialdrape") then slot = "INVTYPE_CLOAK";
-				elseif (name == "qirajimagisterialring" or name == "qirajiceremonialring") then slot = "INVTYPE_FINGER";
-				elseif (name == "imperialqirajiarmaments" or name == "imperialqirajiregalia") then slot = "INVTYPE_2HWEAPON";
-				elseif (name == "qirajibindingsofcommand" or name == "qirajibindingsofdominance") then slot = "INVTYPE_WRIST";
-				end
-				
-			elseif name == "headofossiriantheunscarred" or name == "headofonyxia" or name == "headofnefarian" or name == "eyeofcthun" then
-				slot = "INVTYPE_NECK";
-			elseif name == "thephylacteryofkel'thuzad" or name == "heartofhakkar" then
-				slot = "INVTYPE_TRINKET";
-			elseif name == "huskoftheoldgod" or name == "carapaceoftheoldgod" then
-				slot = "INVTYPE_CHEST";
-			elseif name == "ourosintacthide" or name == "skinofthegreatsandworm" then
-				slot = "INVTYPE_LEGS";
-					
-			--Exceptions: Items that should not carry GP but still need to be distributed
-			elseif name == "splinterofatiesh"
-				or name == "tomeoftranquilizingshot"
-				or name == "bindingsofthewindseeker"
-				or name == "resilienceofthescourge"
-				or name == "fortitudeofthescourge"
-				or name == "mightofthescourge" 
-				or name == "powerofthescourge"
-				or name == "sulfuroningot"
-				or name == "matureblackdragonsinew"
-				or name == "nightmareengulfedobject"
-				or name == "ancientpetrifiedleaf" then
-				slot = "INVTYPE_EXCEPTION";
-			else
-				slot = "INVTYPE_EXCEPTION";
 			end
+		end
+		if slot == "" or slot == nil then
+			slot = "INVTYPE_EXCEPTION";
 		end
 		
 		if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
@@ -322,10 +249,19 @@ end
 function CEPGP_addGPHyperlink(self, iString)
 	if not string.find(iString, "item:") or not CEPPG_gp_tooltips then return; end
 	local id = CEPGP_getItemID(iString);
-	if not CEPGP_itemExists(tonumber(id)) then return; end
-	local gp = CEPGP_calcGP(_, 1, id);
-	ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
-	ItemRefTooltip:Show();
+	local name = GetItemInfo(id);
+	if not name and CEPGP_itemExists(tonumber(id)) then
+		local item = Item:CreateFromItemID(tonumber(id));
+		item:ContinueOnItemLoad(function()
+			local gp = CEPGP_calcGP(_, 1, id);
+			ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+			ItemRefTooltip:Show();
+		end);
+	else
+		local gp = CEPGP_calcGP(_, 1, id);
+		ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+		ItemRefTooltip:Show();
+	end
 end
 
 function CEPGP_populateFrame(CEPGP_criteria, items)
@@ -1271,6 +1207,11 @@ function CEPGP_getDebugInfo()
 	info = info .. "Locale: " .. GetLocale() .. "<br />\n";
 	info = info .. "GP Formula: (" .. COEF .. "x(" .. MOD_COEF .. "^<sup>((ilvl/26)+(rarity-4))</sup>)xSlot Modifier)x" .. MOD .. "<br />";
 	info = info .. "Base GP: " .. BASEGP .. "<br />\n";
+	if CEPGP_minGPDecayFactor then
+		info = info .. "Base GP Decay Factor: true<br />\n";
+	else
+		info = info .. "Base GP Decay Factor: false<br />\n";
+	end
 	if STANDBYEP then
 		info = info .. "Standby EP: True<br />\n";
 	else
@@ -1303,12 +1244,42 @@ function CEPGP_getDebugInfo()
 	else
 		info = info .. "GUI for Loot: False<br />\n";
 	end
-	
 	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br />\n";
-		
-	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />\n";
-
-	info = info .. "<details><summary>Auto EP</summary>\n";
+	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br />\n";
+	if CEPGP_auto_pass then
+		info = info .. "Auto Pass on Ineligible Items: true<br />\n";
+	else
+		info = info .. "Auto Pass on Ineligible Items: false<br />\n";
+	end
+	if CEPGP_raid_wide_dist then
+		info = info .. "Full Raid Loot Visibility: true<br />\n";
+	else
+		info = info .. "Full Raid Loot Visibility: false<br />\n";
+	end
+	if CEPPG_gp_tooltips then
+		info = info .. "GP on Tooltips: true<br />\n";
+	else
+		info = info .. "GP on Tooltips: false<br />\n";
+	end
+	if CEPGP_suppress_announcements then
+		info = info .. "Suppress Loot Announcements: true<br />\n";
+	else
+		info = info .. "Suppress Loot Announcements: false<br />\n";
+	end
+	if CEPGP_minEP[1] then
+		info = info .. "Minimum EP: true, " .. CEPGP_minEP[2] .. "<br />\n";
+	else
+		info = info .. "Minimum EP: false, " .. CEPGP_minEP[2] .. "<br />\n";
+	end
+	info = info .. "Reporting Channel: " .. CHANNEL .. "<br />\n";
+	info = info .. "Loot Response Channel: " .. CEPGP_lootChannel .. "<br />\n";
+	info = info .. "Minimum Threshold for Loot: " .. CEPGP_min_threshold .. "<br />\n";
+	if ALLOW_FORCED_SYNC then
+		info = info .. "Allow Force Sync: true, " .. GuildControlGetRankName(CEPGP_force_sync_rank) .. "<br />\n";
+	else
+		info = info .. "Allow Force Sync: false, " .. GuildControlGetRankName(CEPGP_force_sync_rank) .. "<br />\n";
+	end
+	info = info .. "<br /><details><summary>Auto EP</summary>\n";
 	for k, v in pairs(AUTOEP) do
 		if v then
 			info = info .. k .. ": True<br />\n";
@@ -1424,31 +1395,64 @@ function CEPGP_deleteAttendance()
 	CEPGP_UpdateAttendanceScrollBar();
 end
 
-function CEPGP_formatExport(form)
+function CEPGP_formatExport()
 	--form is the export format
+	local temp = {};
+	local text = "";
+	for k, v in pairs(CEPGP_roster) do
+		temp[#temp+1] = {
+			[1] = k; -- Player Name
+			[2] = v[2]; -- Class
+			[3] = v[3]; -- Guild Rank
+			[4] = v[5]; -- Officer Note (Doesn't need to be broken down into EP and GP separately)
+			[5] = v[6]; -- Priority
+		};
+	end
+	temp = CEPGP_tSort(temp, 1);
+	local form = _G["CEPGP_export"]:GetAttribute("format");
+	
+	
 	if form == "CSV" then
-		local temp = {};
-		local text = "";
-		local size = CEPGP_ntgetn(CEPGP_roster);
-		for k, v in pairs(CEPGP_roster) do
-			temp[CEPGP_ntgetn(temp)+1] = {
-				[1] = k,
-				[2] = v[2],
-				[3] = v[3],
-				[4] = v[4],
-				[5] = v[5],
-				[6] = v[6]
-			};
-		end
-		temp = CEPGP_tSort(temp, 1);
-		for i = 1, size do
-			text = text .. temp[i][1] .. "," .. temp[i][2] .. "," .. temp[i][3] .. "," .. temp[i][5] .. "," .. temp[i][6] .. "\n"; --Line 16
+		for i = 1, #temp do
+			text = text .. temp[i][1];
+			if CEPGP_export_class_check:GetChecked() then
+				text = text .. "," .. temp[i][2]; -- Class
+			end
+			if CEPGP_export_rank_check:GetChecked() then
+				text = text .. "," .. temp[i][3];
+			end
+			text = text .. "," .. temp[i][4];
+			text = text .. "," .. temp[i][5];
+			text = text .. "\n";
 		end
 		_G["CEPGP_export_dump"]:SetText(text);
 		_G["CEPGP_export_dump"]:HighlightText();
-		temp = nil;
-		text = nil;
-		size = nil;
+		
+		
+	elseif form == "JSON" then
+		text = "{";
+		text = text .. "\"roster\": [";
+		for i = 1, #temp do
+			text = text .. "[\"" .. temp[i][1] .. "\""; -- Player Name
+			if CEPGP_export_class_check:GetChecked() then
+				text = text .. ",\"" .. temp[i][2] .. "\""; -- Class
+			end
+			if CEPGP_export_rank_check:GetChecked() then
+				text = text .. ",\"" .. temp[i][3] .. "\""; -- Guild Rank
+			end
+			text = text .. "," .. temp[i][4];
+			text = text .. "," .. temp[i][5];
+			if i+1 <= #temp then
+				text = text .. "],";
+			else
+				text = text .. "]";
+			end
+		end
+		text = text .. "],";
+		text = text .. "\"timestamp\":" .. time() .. "";
+		text = text .. "}";
+		_G["CEPGP_export_dump"]:SetText(text);
+		_G["CEPGP_export_dump"]:HighlightText();
 	end
 end
 
@@ -1642,26 +1646,26 @@ function CEPGP_itemExists(id)
 	end
 end
 
-function CEPGP_getReportChannel()
+function CEPGP_getReportChannel(channel)
 	local channels = {"SAY","YELL","PARTY","RAID","GUILD","OFFICER"};
 	for k, v in pairs(channels) do
-		if string.upper(CHANNEL) == v then
-			return string.upper(CHANNEL);
+		if string.upper(channel) == v then
+			return string.upper(channel);
 		end
 	end
 	for i = 4, C_ChatInfo.GetNumActiveChannels() do
-		if select(2, GetChannelName(i)) == CHANNEL then
+		if select(2, GetChannelName(i)) == channel then
 			return i;
 		end
 	end
-	CEPGP_print("Couldn't post to channel \"" .. CHANNEL .. "\". Please update your reporting channel in CEPGP options.");
+	CEPGP_print("Couldn't post to channel \"" .. channel .. "\". Please update your reporting channel in CEPGP options.");
 end
 
-function CEPGP_sendChatMessage(msg)
+function CEPGP_sendChatMessage(msg, channel)
 	if not msg then return; end
-	if tonumber(CEPGP_getReportChannel()) then
-		SendChatMessage(msg, "CHANNEL", CEPGP_LANGUAGE, CEPGP_getReportChannel());
+	if tonumber(CEPGP_getReportChannel(channel)) then
+		SendChatMessage(msg, "CHANNEL", CEPGP_LANGUAGE, CEPGP_getReportChannel(channel));
 	else
-		SendChatMessage(msg, CHANNEL, CEPGP_LANGUAGE);
+		SendChatMessage(msg, channel, CEPGP_LANGUAGE);
 	end
 end

@@ -737,37 +737,41 @@
 				self:ClearFocus();
 			</OnEnterPressed>
 			<OnEditFocusLost>
+				local L = CEPGP_Locale:GetLocale("CEPGP")
+
 				local name = strsub(self:GetName(), 15, strfind(self:GetName(), "_EP")-1);
 				local value = self:GetText();
 				if value == "" or not CEPGP_isNumber(value) then
-					self:SetText(tostring(EPVALS[name]));
-				elseif value == EPVALS[name] then
+					self:SetText(tostring(EPVALS[L[name]]));
+				elseif value == EPVALS[L[name]] then
 					return;
-				elseif EPVALS[name] ~= tonumber(value) then
+				elseif EPVALS[L[name]] ~= tonumber(value) then
 					if name == "The Edge of Madness" then
-						EPVALS["Gri'lek"] = value;
-						EPVALS["Hazza'rah"] = value;
-						EPVALS["Renataki"] = value;
-						EPVALS["Wushoolay"] = value;
+						EPVALS[L["Gri'lek"]] = value;
+						EPVALS[L["Hazza'rah"]] = value;
+						EPVALS[L["Renataki"]] = value;
+						EPVALS[L["Wushoolay"]] = value;
 					elseif name == "The Bug Trio" then
-						EPVALS["Princess Yauj"] = value;
-						EPVALS["Vem"] = value;
-						EPVALS["Lord Kri"] = value;
+						EPVALS[L["Princess Yauj"]] = value;
+						EPVALS[L["Vem"]] = value;
+						EPVALS[L["Lord Kri"]] = value;
 					elseif name == "The Twin Emperors" then
-						EPVALS["Emperor Vek'lor"] = value;
-						EPVALS["Emperor Vek'nilash"] = value;
+						EPVALS[L["Emperor Vek'lor"]] = value;
+						EPVALS[L["Emperor Vek'nilash"]] = value;
 					elseif name == "The Four Horsemen" then
-						EPVALS["Highlord Mograine"] = value;
-						EPVALS["Thane Korth'azz"] = value;
-						EPVALS["Lady Blaumeux"] = value;
-						EPVALS["Sir Zeliek"] = value;
+						EPVALS[L["Highlord Mograine"]] = value;
+						EPVALS[L["Thane Korth'azz"]] = value;
+						EPVALS[L["Lady Blaumeux"]] = value;
+						EPVALS[L["Sir Zeliek"]] = value;
 					else
-						EPVALS[name] = value;
+						EPVALS[L[name]] = value;
 					end
-					CEPGP_print("Updated EP awarded for " .. name);
+					CEPGP_print("Updated EP awarded for " .. L[name]);
 				end
 			</OnEditFocusLost>
 			<OnShow>
+				local L = CEPGP_Locale:GetLocale("CEPGP")
+
 				local name = strsub(self:GetName(), 15, strfind(self:GetName(), "_EP")-1);
 				local target = _G["CEPGP_options_" .. name .. "_val"];
 				if name == "The Edge of Madness" then
@@ -779,7 +783,7 @@
 				elseif name == "The Four Horsemen" then
 					name = "Highlord Mograine";
 				end				
-				self:SetText(tostring(EPVALS[name]));
+				self:SetText(tostring(EPVALS[L[name]]));
 				self:SetPoint('LEFT', target, 'LEFT', 275, 0); --FontStrings justify to the left, so for the sake of structuring, it's better to set the relative anchor to left
 			</OnShow>
 		</Scripts>
@@ -822,60 +826,64 @@
 				self:RegisterForClicks('LeftButtonDown');
 			</OnLoad>
 			<OnClick>
+				local L = CEPGP_Locale:GetLocale("CEPGP")
+
 				local name = strsub(self:GetName(), 15, strfind(self:GetName(), "_auto_check")-1);
 				if name == "The Edge of Madness" then
 					if self:GetChecked() then
-						AUTOEP["Gri'lek"] = true;
-						AUTOEP["Hazza'rah"] = true;
-						AUTOEP["Renataki"] = true;
-						AUTOEP["Wushoolay"] = true;
+						AUTOEP[L["Gri'lek"]] = true;
+						AUTOEP[L["Hazza'rah"]] = true;
+						AUTOEP[L["Renataki"]] = true;
+						AUTOEP[L["Wushoolay"]] = true;
 					else
-						AUTOEP["Gri'lek"] = false;
-						AUTOEP["Hazza'rah"] = false;
-						AUTOEP["Renataki"] = false;
-						AUTOEP["Wushoolay"] = false;
+						AUTOEP[L["Gri'lek"]] = false;
+						AUTOEP[L["Hazza'rah"]] = false;
+						AUTOEP[L["Renataki"]] = false;
+						AUTOEP[L["Wushoolay"]] = false;
 					end
 				elseif name == "The Bug Trio" then
 					if self:GetChecked() then
-						AUTOEP["Princess Yauj"] = true;
-						AUTOEP["Vem"] = true;
-						AUTOEP["Lord Kri"] = true;
+						AUTOEP[L["Princess Yauj"]] = true;
+						AUTOEP[L["Vem"]] = true;
+						AUTOEP[L["Lord Kri"]] = true;
 					else
-						AUTOEP["Princess Yauj"] = false;
-						AUTOEP["Vem"] = false;
-						AUTOEP["Lord Kri"] = false;
+						AUTOEP[L["Princess Yauj"]] = false;
+						AUTOEP[L["Vem"]] = false;
+						AUTOEP[L["Lord Kri"]] = false;
 					end
 				elseif name == "The Twin Emperors" then
 					if self:GetChecked() then
-						AUTOEP["Emperor Vek'lor"] = true;
-						AUTOEP["Emperor Vek'nilash"] = true;
+						AUTOEP[L["Emperor Vek'lor"]] = true;
+						AUTOEP[L["Emperor Vek'nilash"]] = true;
 					else
-						AUTOEP["Emperor Vek'lor"] = false;
-						AUTOEP["Emperor Vek'nilash"] = false;
+						AUTOEP[L["Emperor Vek'lor"]] = false;
+						AUTOEP[L["Emperor Vek'nilash"]] = false;
 					end
 				elseif name == "The Four Horsemen" then
 					if self:GetChecked() then
-						AUTOEP["Highlord Mograine"] = true;
-						AUTOEP["Thane Korth'azz"] = true;
-						AUTOEP["Lady Blaumeux"] = true;
-						AUTOEP["Sir Zeliek"] = true;
+						AUTOEP[L["Highlord Mograine"]] = true;
+						AUTOEP[L["Thane Korth'azz"]] = true;
+						AUTOEP[L["Lady Blaumeux"]] = true;
+						AUTOEP[L["Sir Zeliek"]] = true;
 					else
-						AUTOEP["Highlord Mograine"] = false;
-						AUTOEP["Thane Korth'azz"] = false;
-						AUTOEP["Lady Blaumeux"] = false;
-						AUTOEP["Sir Zeliek"] = false;
+						AUTOEP[L["Highlord Mograine"]] = false;
+						AUTOEP[L["Thane Korth'azz"]] = false;
+						AUTOEP[L["Lady Blaumeux"]] = false;
+						AUTOEP[L["Sir Zeliek"]] = false;
 					end
 				else
 					local name = strsub(self:GetName(), 15, strfind(self:GetName(), "_auto_check")-1);
 					if self:GetChecked() then
-						AUTOEP[name] = true;
+						AUTOEP[L[name]] = true;
 					else
-						AUTOEP[name] = false;
+						AUTOEP[L[name]] = false;
 					end
 				end
-				CEPGP_print("Updated auto award for " .. name);
+				CEPGP_print("Updated auto award for " .. L[name]);
 			</OnClick>
 			<OnShow>
+				local L = CEPGP_Locale:GetLocale("CEPGP")
+
 				local name = strsub(self:GetName(), 15, strfind(self:GetName(), "_auto_check")-1);
 				local target = _G["CEPGP_options_" .. name .. "_EP_value"];
 				if name == "The Edge of Madness" then
@@ -887,7 +895,7 @@
 				elseif name == "The Four Horsemen" then
 					name = "Highlord Mograine";
 				end				
-				self:SetChecked(AUTOEP[name]);
+				self:SetChecked(AUTOEP[L[name]]);
 				self:SetPoint('LEFT', target, 'RIGHT', 25, 0);
 			</OnShow>
 		</Scripts>
