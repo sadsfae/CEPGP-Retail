@@ -305,17 +305,33 @@ function CEPGP_ListButton_OnClick(obj)
 		_G["CEPGP_context_popup_BP_check_text"]:Hide();
 		_G["CEPGP_context_amount"]:Hide();
 		_G["CEPGP_context_popup_reason"]:Hide();
+
+		ShowUIPanel(CEPGP_context_popup_additional_check);
+		_G["CEPGP_context_popup_additional_check_text"]:Show();
+		CEPGP_context_popup_additional_check_text:SetText("Check fireresist flasks");
+
 		CEPGP_context_popup_EP_check:SetChecked(nil);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Raid Moderation");
 		CEPGP_context_popup_title:SetText("Modify Raid EP");
 		CEPGP_context_popup_desc:SetText("Add EP for flasks and food?");
-		CEPGP_context_popup_confirm:SetScript(
+		CEPGP_context_popup_cancel:SetScript(
 			'OnClick',
 			function()
 				PlaySound(799);
 				HideUIPanel(CEPGP_context_popup);
-				CEPGP_AddEPBeforePull();
+				_G["CEPGP_context_popup_additional_check_text"]:Hide();
+				HideUIPanel(CEPGP_context_popup_additional_check);
+			end
+		);
+		CEPGP_context_popup_confirm:SetScript(
+			'OnClick',
+			function()
+				PlaySound(799);
+				_G["CEPGP_context_popup_additional_check_text"]:Hide();
+				HideUIPanel(CEPGP_context_popup_additional_check);
+				HideUIPanel(CEPGP_context_popup);
+				CEPGP_AddEPBeforePull(CEPGP_context_popup_additional_check:GetChecked());
 			end
 		);
 	elseif strfind(obj, "CEPGP_raid_add_timed_EP") then

@@ -896,25 +896,33 @@ function CEPGP_resetAll(msg)
 end
 
 
-local function CEPGP_getPlayerEPBeforePull(name)
-	CEPGP_debugMsg('Calculating bonus points for ' .. name);
+local function CEPGP_getPlayerEPBeforePull(name, checkFireResistFlask)
+	CEPGP_debugMsg(
+		'Calculating bonus points for ' .. name .. '. Chech fireResistFlask is ' .. (checkFireResistFlask and 'true' or 'false' )
+	);
 	if not name then
-		return nil;
+		return 0;
 	end
 
 	local bonus_EP = 0;
+	local fireResistFlaskUsed = false;
 
 	for i=1,40 do
-		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i,"HELPFUL")
+		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i, "HELPFUL")
 		if not spellId then
 			break
 		elseif db.tableAuras[spellId] then
 			bonus_EP = bonus_EP + db.tableAuras[spellId];
+		elseif checkFireResistFlask and db.fireResistFlask[spellId] then
+			bonus_EP = bonus_EP + db.fireResistFlask[spellId];
+			fireResistFlaskUsed = true;
 		end
 	end
-	CEPGP_debugMsg(
-		'food_added = ' .. tostring(food_added) .. ', flask_added = ' .. tostring(flask_added) .. '. Bonus EP is ' .. tostring(bonus_EP)
-	);
+
+	if checkFireResistFlask and not fireResistFlaskUsed then
+		bonus_EP = bonus_EP - 100;
+	end
+	CEPGP_debugMsg('Bonus EP is ' .. tostring(bonus_EP));
 	return bonus_EP;
 end
 
@@ -992,12 +1000,12 @@ function CEPGP_flushQueuedEP()
 end
 
 
-function CEPGP_AddEPBeforePull()
+function CEPGP_AddEPBeforePull(checkFireResistFlask)
 	CEPGP_debugMsg('Adding EP before pull');
 	CEPGP_ignoreUpdates = true;
 	for name, data in pairs(CEPGP_getRealtimeRoster()) do
-		local bonus_ep = CEPGP_getPlayerEPBeforePull(name);
-		if bonus_ep then
+		local bonus_ep = CEPGP_getPlayerEPBeforePull(name, checkFireResistFlask);
+		if bonus_ep ~= 0 then
 			CEPGP_debugMsg(name .. " EP " .. data.EP + bonus_ep .. " GP " .. data.GP .. " BP " .. data.BP)
 			CEPGP_SetEPGPBP(data.guildIndex, data.EP + bonus_ep, data.GP, data.BP);
 		end

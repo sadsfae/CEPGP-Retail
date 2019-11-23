@@ -4493,6 +4493,15 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="CEPGP_context_popup_additional_check_text" inherits="GameFontNormal" text="" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="CEPGP_context_popup">
+							<Offset>
+								<AbsDimension x="32" y="-75"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 				<FontString name="CEPGP_context_popup_header" inherits="GameFontNormal" text="Moderation">
 					<Anchors>
 						<Anchor point="TOP">
@@ -4598,6 +4607,29 @@
 						else
 							self:SetChecked(1);
 						end
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="CEPGP_context_popup_additional_check" inherits="UIOptionsCheckButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="BOTTOM" relativeTo="CEPGP_context_popup_BP_check">
+						<Offset>
+							<AbsDimension x="0" y="-20" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self:RegisterForClicks('LeftButtonDown');
+					</OnLoad>
+					<OnClick>
+--						if self:GetChecked() then
+--							CEPGP_context_popup_EP_check:SetChecked(nil);
+--							CEPGP_context_popup_GP_check:SetChecked(nil);
+--							CEPGP_context_popup_desc:SetText("Add/Subtract BP");
+--						else
+--							self:SetChecked(1);
+--						end
 					</OnClick>
 				</Scripts>
 			</CheckButton>
