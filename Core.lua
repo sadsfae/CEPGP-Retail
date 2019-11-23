@@ -902,22 +902,14 @@ local function CEPGP_getPlayerEPBeforePull(name)
 		return nil;
 	end
 
-	local FLASK_EP = 70;
-	local FOOD_EP = 30;
-	local food_added, flask_added = false, false;
-
 	local bonus_EP = 0;
 
 	for i=1,40 do
 		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i,"HELPFUL")
 		if not spellId then
 			break
-		elseif not flask_added and db.tableFlask[spellId] then
-			bonus_EP = bonus_EP + FLASK_EP;
-			flask_added = true;
-		elseif not food_added and db.tableFood[spellId] then
-			bonus_EP = bonus_EP + FOOD_EP;
-			food_added = true;
+		elseif db.tableAuras[spellId] then
+			bonus_EP = bonus_EP + db.tableAuras[spellId];
 		end
 	end
 	CEPGP_debugMsg(
