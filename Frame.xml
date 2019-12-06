@@ -15,7 +15,7 @@
 		
 	<Frame name="CEPGP_frame" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
 		<Size>
-			<AbsDimension x="450" y="480" />
+			<AbsDimension x="600" y="480" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" />
@@ -246,7 +246,7 @@
 					</Button>
 					<ScrollFrame name="GuildScrollFrame" inherits="UIPanelScrollFrameTemplate">
 						<Size>
-							<AbsDimension x="400" y="325" />
+							<AbsDimension x="550" y="325" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CEPGP_guild" relativePoint="TOPLEFT">
@@ -305,7 +305,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_class">
 								<Offset>
-									<AbsDimension x="70" y="0" />
+									<AbsDimension x="90" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -322,7 +322,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_rank">
 								<Offset>
-									<AbsDimension x="95" y="0" />
+									<AbsDimension x="105" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -339,7 +339,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_EP">
 								<Offset>
-									<AbsDimension x="32.5" y="0" />
+									<AbsDimension x="62.5" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -356,7 +356,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_GP">
 								<Offset>
-									<AbsDimension x="32.5" y="0" />
+									<AbsDimension x="62.5" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -373,7 +373,7 @@
 						<Anchors>
 							<Anchor point="RIGHT" relativeTo="CEPGP_guild_PR">
 								<Offset>
-									<AbsDimension x="32.5" y="0" />
+									<AbsDimension x="62.5" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -499,7 +499,7 @@
 				<Frames>
 					<ScrollFrame name="RaidScrollFrame" inherits="UIPanelScrollFrameTemplate">
 						<Size>
-							<AbsDimension x="400" y="325" />
+							<AbsDimension x="550" y="325" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CEPGP_raid" relativePoint="TOPLEFT">
