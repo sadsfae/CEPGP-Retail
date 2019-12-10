@@ -1,14 +1,9 @@
-local CEPGP_SendAddonMsg, CEPGP_role_check_popup, CEPGP_debugMsg, CEPGP_getRealtimeRoster, ROLE_CHECK_COMMAND_SEND_ROLE, CEPGP_print, ROLE_CHECK_COMMAND_BEGIN = CEPGP_SendAddonMsg, CEPGP_role_check_popup, CEPGP_debugMsg, CEPGP_getRealtimeRoster, ROLE_CHECK_COMMAND_SEND_ROLE, CEPGP_print, ROLE_CHECK_COMMAND_BEGIN
+local CEPGP_SendAddonMsg, CEPGP_role_check_popup, CEPGP_debugMsg, CEPGP_getRealtimeRoster, ROLE_CHECK_COMMAND_SEND_ROLE, CEPGP_print, ROLE_CHECK_COMMAND_BEGIN, ROLE_TANK, ROLE_HEAL, ROLE_MDD, ROLE_RDD = CEPGP_SendAddonMsg, CEPGP_role_check_popup, CEPGP_debugMsg, CEPGP_getRealtimeRoster, ROLE_CHECK_COMMAND_SEND_ROLE, CEPGP_print, ROLE_CHECK_COMMAND_BEGIN, ROLE_TANK, ROLE_HEAL, ROLE_MDD, ROLE_RDD
 local UnitClass, ShowUIPanel, HideUIPanel = UnitClass, ShowUIPanel, HideUIPanel
-local pairs, string = pairs, string
+local pairs = pairs
 
 local CHANNEL_RAID = 'RAID'
 local CHANNEL_WHISPER = 'WHISPER'
-
-local ROLE_TANK = 'tank'
-local ROLE_HEAL = 'heal'
-local ROLE_MDD = 'mdd'
-local ROLE_RDD = 'rdd'
 
 local ROLE_NAMES = {
     [ROLE_TANK] = 'Танк',

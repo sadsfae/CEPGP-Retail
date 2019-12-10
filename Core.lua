@@ -44,6 +44,10 @@ CEPGP_award = false;
 CEPGP_plugins = {};
 ROLE_CHECK_COMMAND_BEGIN = 'checkBegin';
 ROLE_CHECK_COMMAND_SEND_ROLE = 'myRole';
+ROLE_TANK = 'tank'
+ROLE_HEAL = 'heal'
+ROLE_MDD = 'mdd'
+ROLE_RDD = 'rdd'
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;
@@ -899,13 +903,21 @@ function CEPGP_resetAll(msg)
 end
 
 
-local function CEPGP_getPlayerEPBeforePull(name, checkFireResistFlask)
+local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResistFlask)
 	CEPGP_debugMsg(
 		'Calculating bonus points for ' .. name .. '. Chech fireResistFlask is ' .. (checkFireResistFlask and 'true' or 'false' )
 	);
 	if not name then
 		return 0;
 	end
+
+	local role = CEPGP_RaidRoles[name];
+	if role == nil then
+		return 0;
+	end
+
+	local allowed_flasks = db.tableClassSpecElexir[class][role];
+	CEPGP_debugMsg('Class ' .. class .. ' role ' .. role);
 
 	local bonus_EP = 0;
 	local fireResistFlaskUsed = false;
@@ -914,8 +926,12 @@ local function CEPGP_getPlayerEPBeforePull(name, checkFireResistFlask)
 		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i, "HELPFUL")
 		if not spellId then
 			break
-		elseif db.tableAuras[spellId] then
-			bonus_EP = bonus_EP + db.tableAuras[spellId];
+		elseif db.tableElixirPrice[spellId] then
+			if allowed_flasks[spellId] then
+				bonus_EP = bonus_EP + db.tableElixirPrice[spellId];
+			else
+				bonus_EP = bonus_EP - db.tableElixirPrice[spellId];
+			end
 		elseif checkFireResistFlask and db.fireResistFlask[spellId] then
 			bonus_EP = bonus_EP + db.fireResistFlask[spellId];
 			fireResistFlaskUsed = true;
@@ -1007,9 +1023,9 @@ function CEPGP_AddEPBeforePull(checkFireResistFlask)
 	CEPGP_debugMsg('Adding EP before pull');
 	CEPGP_ignoreUpdates = true;
 	for name, data in pairs(CEPGP_getRealtimeRoster()) do
-		local bonus_ep = CEPGP_getPlayerEPBeforePull(name, checkFireResistFlask);
+		local bonus_ep = CEPGP_getPlayerEPBeforePull(name, data['class'], checkFireResistFlask);
 		if bonus_ep ~= 0 then
-			CEPGP_debugMsg(name .. " EP " .. data.EP + bonus_ep .. " GP " .. data.GP .. " BP " .. data.BP)
+			CEPGP_debugMsg(name .. " EP " .. data.EP + bonus_ep .. " GP " .. data.GP .. " BP " .. data.BP);
 			CEPGP_SetEPGPBP(data.guildIndex, data.EP + bonus_ep, data.GP, data.BP);
 		end
 	end
@@ -1032,7 +1048,7 @@ function CEPGP_getRealtimeRoster()
 	end
 
 	for i = 1, GetNumGuildMembers() do
-		local name, _, _, _, _, _, _, officerNote = GetGuildRosterInfo(i);
+		local name, _, _, _, _, _, _, officerNote, _, _, class = GetGuildRosterInfo(i);
 		name = CEPGP_cleanName(name);
 		if raidMembers[name] then
 			local EP, GP, BP = CEPGP_getEPGPBP(officerNote);
@@ -1042,6 +1058,7 @@ function CEPGP_getRealtimeRoster()
 				['GP'] = GP,
 				['BP'] = BP,
 				['guildIndex'] = i,
+				['class'] = class,
 			}
 		end
 	end
