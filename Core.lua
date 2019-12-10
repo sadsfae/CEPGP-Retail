@@ -42,6 +42,8 @@ CEPGP_use = false;
 CEPGP_ignoreUpdates = false;
 CEPGP_award = false;
 CEPGP_plugins = {};
+ROLE_CHECK_COMMAND_BEGIN = 'checkBegin';
+ROLE_CHECK_COMMAND_SEND_ROLE = 'myRole';
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;
@@ -80,6 +82,7 @@ TRAFFIC = {};
 CEPGP_raid_logs = {};
 CEPGP_standbyRoster = {};
 CEPGP_minEP = {false, 0};
+CEPGP_RaidRoles = {};
 
 local L = CEPGP_Locale:GetLocale("CEPGP")
 

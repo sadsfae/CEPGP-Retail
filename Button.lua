@@ -387,6 +387,10 @@ function CEPGP_ListButton_OnClick(obj)
 		end
 	elseif strfind(obj, "CEPGP_raid_flush_timed_EP") then
 		CEPGP_showFlushWindow();
+	elseif strfind(obj, "CEPGP_raid_role_check") then
+		CEPGP_StartRaidRoleCheck();
+	elseif strfind(obj, "CEPGP_raid_role_personal") then
+		CEPGP_RoleCheckEventHandler();
 	end
 end
 

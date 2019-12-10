@@ -137,15 +137,6 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentBP" inherits="GameFontHighlight" justifyH="CENTER">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
-							<Offset>
-								<AbsDimension x="357.5" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
 			</Layer>
 		</Layers>
 		<Scripts>
@@ -301,6 +292,15 @@
 				<FontString name="$parentBP" inherits="GameFontHighlight" justifyH="CENTER">
 					<Anchors>
 						<Anchor point="CENTER" relativeTo="$parentPR" relativePoint="CENTER">
+							<Offset>
+								<AbsDimension x="55" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentRaidRole" inherits="GameFontHighlight" justifyH="CENTER">
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="$parentBP" relativePoint="CENTER">
 							<Offset>
 								<AbsDimension x="55" y="0"/>
 							</Offset>

@@ -1,4 +1,5 @@
 function CEPGP_IncAddonMsg(message, sender)
+	CEPGP_debugMsg('message '.. message .. ' sender ' .. sender);
 	local args = CEPGP_split(message); -- The broken down message, delimited by semi-colons
 	
 	if args[1] == "CEPGP_setDistID" then
@@ -381,18 +382,28 @@ function CEPGP_IncAddonMsg(message, sender)
 			};
 		end
 		CEPGP_UpdateTrafficScrollBar();
+	elseif args[1] == ROLE_CHECK_COMMAND_BEGIN then
+		CEPGP_RoleCheckEventHandler();
+	elseif args[1] == ROLE_CHECK_COMMAND_SEND_ROLE then
+		CEPGP_RoleSetEventHandler(sender, args[2]);
 	end
 end
 
-function CEPGP_SendAddonMsg(message, channel)
+function CEPGP_SendAddonMsg(message, channel, person)
+	local prefix = 'CEPGP';
 	if channel == "GUILD" and IsInGuild() then
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "GUILD");
+		C_ChatInfo.SendAddonMessage(prefix, message, "GUILD");
+	elseif channel == 'WHISPER' then
+		if person ~= nil then
+			CEPGP_debugMsg('Sending message ' .. message .. ' to ' .. person);
+			C_ChatInfo.SendAddonMessage(prefix, message, channel, person);
+		end;
 	elseif (channel == "RAID" or not channel) and IsInRaid("player") then --Player is in a raid group
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "RAID");
+		C_ChatInfo.SendAddonMessage(prefix, message, "RAID");
 	elseif GetNumGroupMembers() > 0 and not IsInRaid("player") then --Player is in a party but not a raid
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "PARTY");
+		C_ChatInfo.SendAddonMessage(prefix, message, "PARTY");
 	elseif IsInGuild() then --If channel is not specified then assume guild
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "GUILD");
+		C_ChatInfo.SendAddonMessage(prefix, message, "GUILD");
 	end
 end
 

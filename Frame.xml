@@ -443,6 +443,29 @@
 							</OnLeave>
 						</Scripts>
 					</Button>
+					<Button name="CEPGP_raid_role_personal" inherits="GameMenuButtonTemplate" text="Set raid role">
+						<Size>
+							<AbsDimension x="120" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="RIGHT" relativeTo="CEPGP_guild_decay">
+								<Offset>
+									<AbsDimension x="115" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if not CanEditOfficerNote() then
+									self:Hide();
+								end
+							</OnLoad>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_ListButton_OnClick(self:GetName());
+							</OnClick>
+						</Scripts>
+					</Button>
 					<Button name="CEPGP_guild_reset" inherits="GameMenuButtonTemplate" text="Reset All EPGP Standings">
 						<Size>
 							<AbsDimension x="160" y="21" />
@@ -602,7 +625,25 @@
 						<Scripts>
 							<OnClick>
 								CEPGP_raidRoster = CEPGP_tSort(CEPGP_raidRoster, 7);
-								CEPGP_setCriteria(6, "Raid");
+								CEPGP_setCriteria(9, "Raid");
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_raid_role" inherits="CEPGPHeaderButton" text="Raid Role">
+						<Size>
+							<AbsDimension x="50" y="20" />
+						</Size>
+						<Anchors>
+							<Anchor point="RIGHT" relativeTo="CEPGP_raid_PR">
+								<Offset>
+									<AbsDimension x="60" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								CEPGP_raidRoster = CEPGP_tSort(CEPGP_raidRoster, 8);
+								CEPGP_setCriteria(10, "Raid");
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -683,6 +724,29 @@
 							<Anchor point="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="340" y="25" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if not CanEditOfficerNote() then
+									self:Hide();
+								end
+							</OnLoad>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_ListButton_OnClick(self:GetName());
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_raid_role_check" inherits="GameMenuButtonTemplate" text="Check raid roles">
+						<Size>
+							<AbsDimension x="80" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="450" y="25" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -4297,7 +4361,7 @@
 			</OnDragStop>
 		</Scripts>
 	</Frame>
-	
+
 	<Frame name="CEPGP_distribute_popup" toplevel="true" frameStrata="DIALOG" enableMouse="true" parent="UIParent" hidden="true" clampedToScreen="true">
 		<Size>
 			<AbsDimension x="300" y="100"/>
@@ -4353,24 +4417,6 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="CEPGP_distribute_popup_cancel" inherits="GameMenuButtonTemplate" text="Cancel">
-				<Size>
-					<AbsDimension x="100" y="21"/>
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOM">
-						<Offset>
-							<AbsDimension x="0" y="16"/>
-					</Offset>
-				</Anchor>
-			</Anchors>
-				<Scripts>
-					<OnClick>
-						PlaySound(799);
-						HideUIPanel(CEPGP_distribute_popup);
-					</OnClick>
-				</Scripts>
-			</Button>
 			<Button name="CEPGP_distribute_popup_gp" inherits="GameMenuButtonTemplate" text="Give for GP">
 				<Size>
 					<AbsDimension x="75" y="30"/>
@@ -4430,6 +4476,112 @@
 				CEPGP_distPlayer = "";
 			</OnHide>
 		</Scripts>
+	</Frame>
+
+	<Frame name="CEPGP_role_check_popup" toplevel="true" frameStrata="DIALOG" enableMouse="true" parent="UIParent" hidden="true" clampedToScreen="true" >
+		<Size>
+			<AbsDimension x="400" y="100"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32"/>
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="CEPGP_role_check_popup_header" inherits="GameFontNormal" text="Role Checking">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="CEPGP_distribute_popup">
+							<Offset>
+								<AbsDimension x="0" y="-2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="CEPGP_role_check_popup_title" inherits="GameFontNormal" text="Пожалуйста, выберите свою роль">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeTo="CEPGP_role_check_popup_header">
+							<Offset>
+								<AbsDimension x="0" y="-30"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="CEPGP_check_role_button_1" inherits="GameMenuButtonTemplate" text="TO BE FILLED">
+				<Size>
+					<AbsDimension x="80" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="10" y="16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="CEPGP_check_role_button_2" inherits="GameMenuButtonTemplate" text="TO BE FILLED">
+				<Size>
+					<AbsDimension x="80" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="110" y="16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="CEPGP_check_role_button_3" inherits="GameMenuButtonTemplate" text="TO BE FILLED">
+				<Size>
+					<AbsDimension x="80" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="210" y="16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="CEPGP_check_role_button_4" inherits="GameMenuButtonTemplate" text="TO BE FILLED">
+				<Size>
+					<AbsDimension x="80" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="310" y="16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
 	</Frame>
 	
 	<Frame name="CEPGP_context_popup" toplevel="true" frameStrata="DIALOG" enableMouse="true" parent="UIParent" hidden="true" movable="true" clampedToScreen="true">

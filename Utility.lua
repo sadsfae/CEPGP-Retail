@@ -455,20 +455,23 @@ function CEPGP_rosterUpdate(event)
 		if CanEditOfficerNote() then
 			ShowUIPanel(CEPGP_guild_add_EP);
 			ShowUIPanel(CEPGP_guild_decay);
+			ShowUIPanel(CEPGP_raid_role_personal);
 			ShowUIPanel(CEPGP_guild_reset);
 			ShowUIPanel(CEPGP_raid_add_EP);
 			ShowUIPanel(CEPGP_raid_add_pull_EP);
 			ShowUIPanel(CEPGP_raid_add_timed_EP);
 			ShowUIPanel(CEPGP_raid_flush_timed_EP);
+			ShowUIPanel(CEPGP_raid_role_check);
 			ShowUIPanel(CEPGP_button_guild_restore);
 		else --[[ Hides context sensitive options if player cannot edit officer notes ]]--
 			HideUIPanel(CEPGP_guild_add_EP);
 			HideUIPanel(CEPGP_guild_decay);
+			HideUIPanel(CEPGP_raid_role_personal);
 			HideUIPanel(CEPGP_guild_reset);
 			HideUIPanel(CEPGP_raid_add_EP);
-			ShowUIPanel(CEPGP_raid_add_pull_EP);
-			ShowUIPanel(CEPGP_raid_add_timed_EP);
-			ShowUIPanel(CEPGP_raid_flush_timed_EP);
+			HideUIPanel(CEPGP_raid_add_pull_EP);
+			HideUIPanel(CEPGP_raid_add_timed_EP);
+			HideUIPanel(CEPGP_raid_flush_timed_EP);
 			HideUIPanel(CEPGP_button_guild_restore);
 		end
 		for i = 1, numGuild do
@@ -549,6 +552,8 @@ function CEPGP_rosterUpdate(event)
 			end
 			local rank;
 			local _, _, _, _, class, classFileName = GetRaidRosterInfo(i);
+			local role = CEPGP_RaidRoles[name];
+			if role == nil then role = 'Unknown'; end
 			if CEPGP_roster[name] then
 				rank = CEPGP_roster[name][3];
 				local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5], _, name);
@@ -563,7 +568,8 @@ function CEPGP_rosterUpdate(event)
 					[6] = GP,
 					[7] = tonumber(EP)/tonumber(GP),
 					[8] = classFileName,
-					[9] = BP
+					[9] = BP,
+					[10] = role,
 				};
 			else
 				rank = "Not in Guild";
@@ -576,7 +582,8 @@ function CEPGP_rosterUpdate(event)
 					[6] = 0,
 					[7] = 0,
 					[8] = classFileName,
-					[9] = 0
+					[9] = 0,
+					[10] = role,
 				};
 			end
 		end
