@@ -52,10 +52,9 @@ function CEPGP_IncAddonMsg(message, sender)
 		table.insert(CEPGP_responses, sender);
 		local itemID = args[3];
 		local itemID2 = args[4];
-		CEPGP_itemsTable[sender] = {};
 		CEPGP_itemsTable[sender] = {
 			[1] = itemID,
-			[2] = itemID2
+			[2] = itemID2,
 		};
 		CEPGP_UpdateLootScrollBar();
 	end

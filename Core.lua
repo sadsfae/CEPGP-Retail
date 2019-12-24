@@ -716,16 +716,16 @@ function CEPGP_addBP(player, amount, msg)
     if tonumber(amount) <= 0 then
         if msg ~= "" and msg ~= nil then
             amount = string.sub(amount, 2, string.len(amount));
-            CEPGP_sendChatMessage(amount .. " BP taken from " .. player .. " (" .. msg .. ")");
+            CEPGP_sendChatMessage(amount .. " BP taken from " .. player .. " (" .. msg .. ")", CHANNEL);
         else
             amount = string.sub(amount, 2, string.len(amount));
-            CEPGP_sendChatMessage(amount .. " BP taken from " .. player);
+            CEPGP_sendChatMessage(amount .. " BP taken from " .. player, CHANNEL);
         end
     else
         if msg ~= "" and msg ~= nil then
-            CEPGP_sendChatMessage(amount .. " BP added to " .. player .. " (" .. msg .. ")");
+            CEPGP_sendChatMessage(amount .. " BP added to " .. player .. " (" .. msg .. ")", CHANNEL);
         else
-            CEPGP_sendChatMessage(amount .. " BP added to " .. player);
+            CEPGP_sendChatMessage(amount .. " BP added to " .. player, CHANNEL);
         end
 	end
 	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
@@ -758,7 +758,7 @@ function CEPGP_addEP(player, amount, msg)
     if tonumber(amount) <= 0 then
         if msg ~= "" and msg ~= nil then
             amount = string.sub(amount, 2, string.len(amount));
-            CEPGP_sendChatMessage(amount .. " EP taken from " .. player .. " (" .. msg .. ")");
+            CEPGP_sendChatMessage(amount .. " EP taken from " .. player .. " (" .. msg .. ")", CHANNEL);
             TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
                 [1] = player,
                 [2] = UnitName("player"),
@@ -772,7 +772,7 @@ function CEPGP_addEP(player, amount, msg)
             CEPGP_ShareTraffic(player, UnitName("player"), "Subtract EP -" .. amount .. " (" .. msg .. ")", EPB, EP, GP, GP);
         else
             amount = string.sub(amount, 2, string.len(amount));
-            CEPGP_sendChatMessage(amount .. " EP taken from " .. player);
+            CEPGP_sendChatMessage(amount .. " EP taken from " .. player, CHANNEL);
             TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
                 [1] = player,
                 [2] = UnitName("player"),
@@ -787,7 +787,7 @@ function CEPGP_addEP(player, amount, msg)
         end
     else
         if msg ~= "" and msg ~= nil then
-            CEPGP_sendChatMessage(amount .. " EP added to " .. player .. " (" .. msg .. ")");
+            CEPGP_sendChatMessage(amount .. " EP added to " .. player .. " (" .. msg .. ")", CHANNEL);
             TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
                 [1] = player,
                 [2] = UnitName("player"),
@@ -800,7 +800,7 @@ function CEPGP_addEP(player, amount, msg)
             };
             CEPGP_ShareTraffic(player, UnitName("player"), "Add EP +" .. amount .. " (" .. msg ..")", EPB, EP, GP, GP);
         else
-            CEPGP_sendChatMessage(amount .. " EP added to " .. player);
+            CEPGP_sendChatMessage(amount .. " EP added to " .. player, CHANNEL);
             TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
                 [1] = player,
                 [2] = UnitName("player"),
@@ -903,9 +903,9 @@ function CEPGP_resetAll(msg)
 end
 
 
-local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResistFlask)
+local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 	CEPGP_debugMsg(
-		'Calculating bonus points for ' .. name .. '. Chech fireResistFlask is ' .. (checkFireResistFlask and 'true' or 'false' )
+		'Calculating bonus points for ' .. name .. '. Chech fireResistFlask is ' .. (checkFireResist and 'true' or 'false' )
 	);
 	if not name then
 		return 0;
@@ -921,6 +921,7 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResistFlask)
 
 	local bonus_EP = 0;
 	local fireResistFlaskUsed = false;
+	local fireResistJujuUsed = false;
 
 	for i=1,40 do
 		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i, "HELPFUL")
@@ -930,16 +931,26 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResistFlask)
 			if allowed_flasks[spellId] then
 				bonus_EP = bonus_EP + db.tableElixirPrice[spellId];
 			else
-				bonus_EP = bonus_EP - db.tableElixirPrice[spellId];
+				if not db.juju[spellId] then
+					bonus_EP = bonus_EP - db.tableElixirPrice[spellId];
+				end
 			end
-		elseif checkFireResistFlask and db.fireResistFlask[spellId] then
+		elseif checkFireResist and db.fireResistFlask[spellId] then
 			bonus_EP = bonus_EP + db.fireResistFlask[spellId];
 			fireResistFlaskUsed = true;
+		elseif checkFireResist and db.fireResistJuju == spellId then
+			bonus_EP = bonus_EP + 40;
+			fireResistJujuUsed = true;
 		end
 	end
 
-	if checkFireResistFlask and not fireResistFlaskUsed then
-		bonus_EP = bonus_EP - 100;
+	if checkFireResist then
+		if not fireResistFlaskUsed then
+			bonus_EP = bonus_EP - 100;
+		end
+		if not fireResistJujuUsed then
+			bonus_EP = bonus_EP - 40;
+		end
 	end
 	CEPGP_debugMsg('Bonus EP is ' .. tostring(bonus_EP));
 	return bonus_EP;
@@ -1019,11 +1030,11 @@ function CEPGP_flushQueuedEP()
 end
 
 
-function CEPGP_AddEPBeforePull(checkFireResistFlask)
+function CEPGP_AddEPBeforePull(checkFireResist)
 	CEPGP_debugMsg('Adding EP before pull');
 	CEPGP_ignoreUpdates = true;
 	for name, data in pairs(CEPGP_getRealtimeRoster()) do
-		local bonus_ep = CEPGP_getPlayerEPBeforePull(name, data['class'], checkFireResistFlask);
+		local bonus_ep = CEPGP_getPlayerEPBeforePull(name, data['class'], checkFireResist);
 		if bonus_ep ~= 0 then
 			CEPGP_debugMsg(name .. " EP " .. data.EP + bonus_ep .. " GP " .. data.GP .. " BP " .. data.BP);
 			CEPGP_SetEPGPBP(data.guildIndex, data.EP + bonus_ep, data.GP, data.BP);

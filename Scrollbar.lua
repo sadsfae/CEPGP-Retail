@@ -36,7 +36,7 @@ function CEPGP_UpdateLootScrollBar()
 		if tempTable[i][8] ~= "noitem" or tempTable[i][9] ~= "noitem" then
 			if tempTable[i][8] ~= "noitem" then
 				local id = tonumber(tempTable[i][8]);
-				_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
+				local _, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
 				local iString;
 				if not link and CEPGP_itemExists(id) then
 					local item = Item:CreateFromItemID(id);
@@ -48,7 +48,7 @@ function CEPGP_UpdateLootScrollBar()
 							colour = {
 							r = 1,
 							g = 1,
-							b = 1
+							b = 1,
 						};
 						end
 						_G["LootDistButton" .. i]:Show();

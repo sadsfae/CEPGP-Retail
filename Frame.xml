@@ -907,7 +907,6 @@
 							<Anchor point="TOPLEFT">
 								<Offset>
 									<AbsDimension x="7.5" y="-60" />
-									<!--<AbsDimension x="40" y="0" />-->
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -958,7 +957,7 @@
 						<Anchors>
 							<Anchor point="LEFT" relativePoint="LEFT" relativeTo="CEPGP_distribute_raid_rank">
 								<Offset>
-									<AbsDimension x="90" y="0" />
+									<AbsDimension x="110" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -975,7 +974,7 @@
 						<Anchors>
 							<Anchor point="LEFT" relativePoint="LEFT" relativeTo="CEPGP_distribute_raid_EP">
 								<Offset>
-									<AbsDimension x="45" y="0" />
+									<AbsDimension x="65" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -990,9 +989,9 @@
 							<AbsDimension x="50" y="20" />
 						</Size>
 						<Anchors>
-							<Anchor point="TOPRIGHT">
+							<Anchor point="LEFT" relativePoint="LEFT" relativeTo="CEPGP_distribute_raid_GP">
 								<Offset>
-									<AbsDimension x="-75" y="-60" />
+									<AbsDimension x="65" y="0" />
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -1004,7 +1003,7 @@
 					</Button>
 					<ScrollFrame name="DistScrollFrame" inherits="UIPanelScrollFrameTemplate">
 						<Size>
-							<AbsDimension x="400" y="325" />
+							<AbsDimension x="540" y="325" />
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
@@ -1016,7 +1015,7 @@
 						<ScrollChild>
 							<Frame name="CEPGP_dist_scrollframe_container">
 								<Size>
-									<AbsDimension x="420" y="300" />
+									<AbsDimension x="560" y="300" />
 								</Size>
 							</Frame>
 						</ScrollChild>
