@@ -922,12 +922,33 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 	local bonus_EP = 0;
 	local fireResistFlaskUsed = false;
 	local fireResistJujuUsed = false;
+	local requiredElixir;
+	local requiredElixirUsedCount = 0;
+
+	local isTank = role == ROLE_TANK;
+	if isTank then
+		requiredElixir = db.tableRequiredTankElixir;
+	else
+		requiredElixir = db.tableRequiredElexir[class][role];
+	end
+
+	if requiredElixir == nil then
+		bonus_EP = bonus_EP + 80;
+		requiredElixir = {[-1] = true};
+	end
 
 	for i=1,40 do
 		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i, "HELPFUL")
 		if not spellId then
 			break
 		elseif db.tableElixirPrice[spellId] then
+			if requiredElixir[spellId] then
+				requiredElixirUsedCount = requiredElixirUsedCount + 1;
+			end
+			if isTank and spellId == 25804 then -- Ром
+				CEPGP_debugMsg('Extra 20 points for tanks were added');
+				bonus_EP = bonus_EP + 20;
+			end
 			if allowed_flasks[spellId] then
 				bonus_EP = bonus_EP + db.tableElixirPrice[spellId];
 			else
@@ -942,6 +963,13 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 			bonus_EP = bonus_EP + 40;
 			fireResistJujuUsed = true;
 		end
+	end
+
+	CEPGP_debugMsg('requiredElixirUsedCount is ' .. requiredElixirUsedCount);
+	if requiredElixirUsedCount == 0 then
+		bonus_EP = bonus_EP - 80;
+	elseif isTank then
+		bonus_EP = bonus_EP - 40 * (2 - requiredElixirUsedCount);
 	end
 
 	if checkFireResist then

@@ -25,7 +25,18 @@ db.tableElixirPrice = {
     [10668] = 40,
     [17627] = 120,
     [21920] = 20,
-    [23161] = 100, -- Конь погибели
+    [23161] = 80, -- Конь погибели
+
+    -- Food
+    [22730] = 20,
+    [18192] = 20,
+    [18125] = 20,
+    [25661] = 20,
+    [19710] = 20,
+    [25804] = 20,
+    [18141] = 20,
+    [18194] = 20,
+    [24799] = 20,
 };
 
 db.tableClassSpecElexir = {
@@ -39,6 +50,9 @@ db.tableClassSpecElexir = {
             [16323] = true,
             [10667] = true,
             [10669] = true,
+
+            [18192] = true,
+            [18125] = true,
         },
     },
     ['WARLOCK'] = {
@@ -49,6 +63,8 @@ db.tableClassSpecElexir = {
             [11390] = true,
             [10692] = true,
             [23161] = true, -- Конь погибели
+
+            [22730] = true,
         },
     },
     ['MAGE'] = {
@@ -58,6 +74,8 @@ db.tableClassSpecElexir = {
             [11390] = true,
             [10692] = true,
             [21920] = true,
+
+            [22730] = true,
         },
     },
     ['HUNTER'] = {
@@ -66,6 +84,9 @@ db.tableClassSpecElexir = {
             [11334] = true,
             [16323] = true,
             [10669] = true,
+
+            [18192] = true,
+            [18125] = true,
         },
     },
     ['WARRIOR'] = {
@@ -79,6 +100,9 @@ db.tableClassSpecElexir = {
             [16323] = true,
             [10667] = true,
             [10669] = true,
+
+            [18192] = true,
+            [18125] = true,
         },
         [ROLE_TANK] = {
             [17626] = true,
@@ -93,6 +117,10 @@ db.tableClassSpecElexir = {
             [16329] = true,
             [16323] = true,
             [10668] = true,
+
+            [25661] = true,
+            [19710] = true,
+            [25804] = true,
         },
     },
     ['PALADIN'] = {
@@ -105,11 +133,20 @@ db.tableClassSpecElexir = {
             [16323] = true,
             [10667] = true,
             [10669] = true,
+
+            [24799] = true,
+            [19710] = true,
+            [25804] = true,
+            [18194] = true,
         },
         [ROLE_HEAL] = {
             [17627] = true,
             [24363] = true,
             [10692] = true,
+
+            [18141] = true,
+            [22730] = true,
+            [18194] = true,
         },
         [ROLE_TANK] = {
             [17626] = true,
@@ -124,6 +161,11 @@ db.tableClassSpecElexir = {
             [16329] = true,
             [16323] = true,
             [10668] = true,
+
+            [25661] = true,
+            [19710] = true,
+            [25804] = true,
+            [18194] = true,
         },
     },
     ['PRIEST'] = {
@@ -133,11 +175,17 @@ db.tableClassSpecElexir = {
             [11474] = true,
             [11390] = true,
             [10692] = true,
+
+            [22730] = true,
         },
         [ROLE_HEAL] = {
             [17627] = true,
             [24363] = true,
             [10692] = true,
+
+            [18141] = true,
+            [22730] = true,
+            [18194] = true,
         },
     },
     ['DRUID'] = {
@@ -146,11 +194,17 @@ db.tableClassSpecElexir = {
             [17539] = true,
             [11390] = true,
             [10692] = true,
+
+            [22730] = true,
         },
         [ROLE_HEAL] = {
             [17627] = true,
             [24363] = true,
             [10692] = true,
+
+            [18141] = true,
+            [22730] = true,
+            [18194] = true,
         },
         [ROLE_MDD] = {
             [17538] = true,
@@ -161,6 +215,9 @@ db.tableClassSpecElexir = {
             [16323] = true,
             [10667] = true,
             [10669] = true,
+
+            [18192] = true,
+            [18125] = true,
         },
         [ROLE_TANK] = {
             [17626] = true,
@@ -175,21 +232,69 @@ db.tableClassSpecElexir = {
             [16329] = true,
             [16323] = true,
             [10668] = true,
+
+            [25661] = true,
+            [18192] = true,
+            [19710] = true,
+            [25804] = true,
         },
     },
 };
 
-db.tableFoodPrice = {
-    [22730]=20,
-    [18192]=20,
-    [18125]=20,
-    [25661]=20,
-    [19710]=20,
-    [25804]=20,
-    [18141]=20,
-    [18194]=20,
-    [24799]=20,
+db.tableRequiredElexir = {
+    ['ROGUE'] = {
+        [ROLE_MDD] = {
+            [17538] = true,
+        },
+    },
+    ['WARLOCK'] = {
+        [ROLE_RDD] = {
+            [17539] = true,
+            [11474] = true,
+
+            [23161] = true, -- Конь погибели
+        },
+    },
+    ['MAGE'] = {
+        [ROLE_RDD] = {
+            [11390] = true,
+        },
+    },
+    ['HUNTER'] = {
+        [ROLE_RDD] = {
+            [17538] = true,
+        },
+    },
+    ['WARRIOR'] = {
+        [ROLE_MDD] = {
+            [17538] = true,
+        },
+    },
+    ['PALADIN'] = {
+        [ROLE_MDD] = {
+            [17538] = true,
+        },
+    },
+    ['PRIEST'] = {
+        [ROLE_RDD] = {
+            [17539] = true,
+            [11474] = true,
+        },
+    },
+    ['DRUID'] = {
+        [ROLE_RDD] = {
+            [11390] = true,
+        },
+        [ROLE_MDD] = {
+            [17538] = true,
+        },
+    },
 };
+
+db.tableRequiredTankElixir = {
+    [11348] = true,
+    [25804] = true,
+}
 
 db.fireResistFlask = {
     [7233]=30,
