@@ -257,7 +257,7 @@ db.tableRequiredElexir = {
     },
     ['MAGE'] = {
         [ROLE_RDD] = {
-            [11390] = true,
+            [17539] = true,
         },
     },
     ['HUNTER'] = {
@@ -283,7 +283,7 @@ db.tableRequiredElexir = {
     },
     ['DRUID'] = {
         [ROLE_RDD] = {
-            [11390] = true,
+            [17539] = true,
         },
         [ROLE_MDD] = {
             [17538] = true,
