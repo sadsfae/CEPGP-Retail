@@ -37,6 +37,7 @@ db.tableElixirPrice = {
     [18141] = 20,
     [18194] = 20,
     [24799] = 20,
+    [22790] = 20,
 };
 
 db.tableClassSpecElexir = {
@@ -153,6 +154,7 @@ db.tableClassSpecElexir = {
             [22730] = true,
             [18194] = true,
             [25804] = true,
+            [22790] = true,
         },
         [ROLE_TANK] = {
             [17626] = true,
@@ -194,6 +196,7 @@ db.tableClassSpecElexir = {
             [22730] = true,
             [18194] = true,
             [25804] = true,
+            [22790] = true,
         },
     },
     ['DRUID'] = {
@@ -215,6 +218,7 @@ db.tableClassSpecElexir = {
             [22730] = true,
             [18194] = true,
             [25804] = true,
+            [22790] = true,
         },
         [ROLE_MDD] = {
             [17538] = true,
