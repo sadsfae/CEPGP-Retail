@@ -951,10 +951,6 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 			end
 			if allowed_flasks[spellId] then
 				bonus_EP = bonus_EP + db.tableElixirPrice[spellId];
-			else
-				if not db.juju[spellId] then
-					bonus_EP = bonus_EP - db.tableElixirPrice[spellId];
-				end
 			end
 		elseif checkFireResist and db.fireResistFlask[spellId] then
 			bonus_EP = bonus_EP + db.fireResistFlask[spellId];

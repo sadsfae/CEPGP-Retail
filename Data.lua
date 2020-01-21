@@ -53,6 +53,7 @@ db.tableClassSpecElexir = {
 
             [18192] = true,
             [18125] = true,
+            [25804] = true,
         },
     },
     ['WARLOCK'] = {
@@ -65,6 +66,7 @@ db.tableClassSpecElexir = {
             [23161] = true, -- Конь погибели
 
             [22730] = true,
+            [25804] = true,
         },
     },
     ['MAGE'] = {
@@ -76,6 +78,7 @@ db.tableClassSpecElexir = {
             [21920] = true,
 
             [22730] = true,
+            [25804] = true,
         },
     },
     ['HUNTER'] = {
@@ -87,6 +90,7 @@ db.tableClassSpecElexir = {
 
             [18192] = true,
             [18125] = true,
+            [25804] = true,
         },
     },
     ['WARRIOR'] = {
@@ -103,6 +107,7 @@ db.tableClassSpecElexir = {
 
             [18192] = true,
             [18125] = true,
+            [25804] = true,
         },
         [ROLE_TANK] = {
             [17626] = true,
@@ -147,6 +152,7 @@ db.tableClassSpecElexir = {
             [18141] = true,
             [22730] = true,
             [18194] = true,
+            [25804] = true,
         },
         [ROLE_TANK] = {
             [17626] = true,
@@ -177,6 +183,7 @@ db.tableClassSpecElexir = {
             [10692] = true,
 
             [22730] = true,
+            [25804] = true,
         },
         [ROLE_HEAL] = {
             [17627] = true,
@@ -186,6 +193,7 @@ db.tableClassSpecElexir = {
             [18141] = true,
             [22730] = true,
             [18194] = true,
+            [25804] = true,
         },
     },
     ['DRUID'] = {
@@ -196,6 +204,7 @@ db.tableClassSpecElexir = {
             [10692] = true,
 
             [22730] = true,
+            [25804] = true,
         },
         [ROLE_HEAL] = {
             [17627] = true,
@@ -205,6 +214,7 @@ db.tableClassSpecElexir = {
             [18141] = true,
             [22730] = true,
             [18194] = true,
+            [25804] = true,
         },
         [ROLE_MDD] = {
             [17538] = true,
@@ -218,6 +228,7 @@ db.tableClassSpecElexir = {
 
             [18192] = true,
             [18125] = true,
+            [25804] = true,
         },
         [ROLE_TANK] = {
             [17626] = true,
