@@ -158,18 +158,6 @@ function CEPGP_calcGP(link, quantity, id)
 			
 			if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
 			if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
-			if CEPGP_debugMode then
-				local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
-				CEPGP_print("Name: " .. name);
-				CEPGP_print("Rarity: " .. quality);
-				CEPGP_print("Item Level: " .. ilvl);
-				CEPGP_print("Class ID: " .. classID);
-				CEPGP_print("Subclass ID: " .. subClassID);
-				CEPGP_print(GetItemSubClassInfo(classID, subClassID), false);
-				CEPGP_print("Item Type: " .. itemType);
-				CEPGP_print("Subtype: " .. subType);
-				CEPGP_print("Slot: " .. slot);
-			end
 			slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 			slot = SLOTWEIGHTS[slot];
 			if ilvl and rarity and slot then
@@ -205,18 +193,6 @@ function CEPGP_calcGP(link, quantity, id)
 		
 		if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
 		if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
-		if CEPGP_debugMode then
-			local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
-			CEPGP_print("Name: " .. name);
-			CEPGP_print("Rarity: " .. quality);
-			CEPGP_print("Item Level: " .. ilvl);
-			CEPGP_print("Class ID: " .. classID);
-			CEPGP_print("Subclass ID: " .. subClassID);
-			CEPGP_print(GetItemSubClassInfo(classID, subClassID), false);
-			CEPGP_print("Item Type: " .. itemType);
-			CEPGP_print("Subtype: " .. subType);
-			CEPGP_print("Slot: " .. slot);
-		end
 		slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
 		slot = SLOTWEIGHTS[slot];
 		if ilvl and rarity and slot then
@@ -1611,7 +1587,7 @@ function CEPGP_checkVersion(message)
 	local curMinor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
 	curBuild = string.sub(curBuild, string.find(curBuild, "%.")+1);
 	
-	outMessage = "Your addon is out of date. Version " .. major .. "." .. minor .. "." .. build .. " is now available for download at https://github.com/Alumian/CEPGP-Retail"
+	outMessage = "Ваша версия устарела. Версия  " .. major .. "." .. minor .. "." .. build .. " теперь доступна для скачивания в Дискорде"
 	if not CEPGP_VERSION_NOTIFIED then
 		if tonumber(major) > tonumber(curMajor) then 
 			CEPGP_print(outMessage);

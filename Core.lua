@@ -1,5 +1,5 @@
 --[[ Globals ]]--
-CEPGP_VERSION = "1.12.7";
+CEPGP_VERSION = "1.13.1";
 SLASH_CEPGP1 = "/CEPGP";
 SLASH_CEPGP2 = "/cep";
 CEPGP_VERSION_NOTIFIED = false;
@@ -42,12 +42,27 @@ CEPGP_use = false;
 CEPGP_ignoreUpdates = false;
 CEPGP_award = false;
 CEPGP_plugins = {};
+CEPGP_trackConsumables = false;
+CEPGP_sendConsumables = false;
+CEPGP_stopTrackConsumablesAfterCombat = false;
+CEPGP_bagItems = {};
+CEGPG_consumedItems = {};
+CEGPG_trackedCunsumersSpells = {};
+CEPGP_queueEP = {};
+
+CONSUMABLES_SEND_START = 'consumablesSendStart';
+CONSUMABLES_SEND_STOP = 'consumablesSendStop';
+CONSUMED_ITEM = 'consumedItem';
+
 ROLE_CHECK_COMMAND_BEGIN = 'checkBegin';
 ROLE_CHECK_COMMAND_SEND_ROLE = 'myRole';
-ROLE_TANK = 'tank'
-ROLE_HEAL = 'heal'
-ROLE_MDD = 'mdd'
-ROLE_RDD = 'rdd'
+ROLE_TANK = 'tank';
+ROLE_HEAL = 'heal';
+ROLE_MDD = 'mdd';
+ROLE_RDD = 'rdd';
+BEFORE_PULL = 'before_pull';
+AFTER_PULL = 'after_pull';
+SHOW_MESSAGE_COMMAND = 'showMessage'
 
 --[[ SAVED VARIABLES ]]--
 CHANNEL = nil;
@@ -105,12 +120,43 @@ function CEPGP_SetEPGPBP(index, EP, GP, BP)
 end
 
 
+function CEPGP_getBagItems(bagID)
+	local result = {};
+	local slots = GetContainerNumSlots(bagID);
+	for i=1, slots do
+		local itemId = GetContainerItemID(bagID, i);
+		if itemId ~= nil then
+			if not result[itemId] then
+				result[itemId] = 0;
+			end
+			local _, count = GetContainerItemInfo(bagID, i);
+			result[itemId] = result[itemId] + count;
+		end
+	end
+	return result;
+end
+
 
 --[[ EVENT AND COMMAND HANDLER ]]--
 function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
-	
 	if event == "ADDON_LOADED" and arg1 == "CEPGP" then --arg1 = addon name
 		CEPGP_initialise();
+	elseif event == 'BAG_UPDATE' then
+		local bagID = arg1;
+		CEPGP_debugMsg('Bag update occured. Bag ID = ' .. bagID);
+		if CEPGP_sendConsumables then
+			local current_bag_state = CEPGP_getBagItems(bagID);
+			if CEPGP_bagItems[bagID] == nil then
+				CEPGP_bagItems[bagID] = current_bag_state;
+			end
+			for itemID, amount in pairs(CEPGP_bagItems[bagID]) do
+				local current_amount = current_bag_state[itemID];
+				if current_amount == nil or current_amount < amount then
+					CEPGP_debugMsg('Item ' .. itemID .. ' was consumed');
+					CEPGP_SendAddonMsg(CONSUMED_ITEM .. ';' .. itemID, 'RAID');
+				end
+			end
+		end
 	elseif event == "GUILD_ROSTER_UPDATE" or event == "GROUP_ROSTER_UPDATE" then
 		CEPGP_rosterUpdate(event);
 		
@@ -170,6 +216,22 @@ function CEPGP_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ar
 	elseif CEPGP_use then --EPGP and loot distribution related 
 		if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 			local _, action, _, _, _, _, _, guid, name = CombatLogGetCurrentEventInfo();
+			if CEPGP_trackConsumables and action == 'SPELL_CAST_SUCCESS' then
+				local _,_,_,_, playerName,_, _,_,_,_,_, spellID, spellName = CombatLogGetCurrentEventInfo();
+				if db.consumerNames[spellName] ~= nil then
+					CEPGP_debugMsg('Player name is ' .. playerName);
+					playerName = CEPGP_cleanName(playerName);
+					CEPGP_debugMsg('Player name after cleaning is ' .. playerName);
+					if CEGPG_trackedCunsumersSpells[playerName] == nil then
+						CEGPG_trackedCunsumersSpells[playerName] = {};
+					end
+					if CEGPG_trackedCunsumersSpells[playerName][spellName] == nil then
+						CEGPG_trackedCunsumersSpells[playerName][spellName] = 0;
+					end
+					CEGPG_trackedCunsumersSpells[playerName][spellName] = CEGPG_trackedCunsumersSpells[playerName][spellName] + 1;
+					CEPGP_debugMsg('Consumption ' .. spellName .. ' was tracked');
+				end
+			end
 			if action == "UNIT_DIED" and string.find(guid, "Creature") then
 				if name == L["Zealot Zath"] or name == L["Zealot Lor'Khan"] then
 					CEPGP_handleCombat(name);
@@ -916,7 +978,7 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 		return 0;
 	end
 
-	local allowed_flasks = db.tableClassSpecElexir[class][role];
+	local allowed_flasks = db.tableClassSpecElexir[class][role][BEFORE_PULL];
 	CEPGP_debugMsg('Class ' .. class .. ' role ' .. role);
 
 	local bonus_EP = 0;
@@ -992,18 +1054,135 @@ end
 
 
 function CEPGP_invisibleFrameUpdateHandler(self, elapsed)
-	self.timeSinceLastUpdate = self.timeSinceLastUpdate + elapsed;
+	if CEPGP_addTimedEP then
+		local elapsed_since_last_flush = time() - (CEPGP_lastFlush or time())
+		if CEPGP_addTimedEP and not UnitAffectingCombat("player") and elapsed_since_last_flush > 60 * 60 then
+			CEPGP_showFlushWindow();
+		end
 
-	if CEPGP_addTimedEP and self.timeSinceLastUpdate >= 5 and not CEPGP_pauseQueue then
-		self.timeSinceLastUpdate = 0;
-		CEPGP_debugMsg('Updating...');
-		CEPGP_updateRealtimeEP();
+		self.timeSinceLastUpdate = self.timeSinceLastUpdate + elapsed;
+
+		if self.timeSinceLastUpdate >= 5 and not CEPGP_pauseQueue then
+			self.timeSinceLastUpdate = 0;
+			CEPGP_debugMsg('Updating...');
+			CEPGP_updateRealtimeEP();
+		end
 	end
 
-	local elapsed_since_last_flush = time() - (CEPGP_lastFlush or time())
-	if CEPGP_addTimedEP and not UnitAffectingCombat("player") and elapsed_since_last_flush > 60 * 60 then
-		CEPGP_showFlushWindow();
+	if CEPGP_trackConsumables then
+		if UnitAffectingCombat("player") then
+			if not CEPGP_stopTrackConsumablesAfterCombat then
+				CEPGP_debugMsg('Adding points for the consumptions will be disabled');
+				CEPGP_stopTrackConsumablesAfterCombat = true;
+			end
+		elseif CEPGP_stopTrackConsumablesAfterCombat and self.timeToFlush == nil then
+			self.timeToFlush = time() + 4 * 60;
+		elseif self.timeToFlush and time() >= self.timeToFlush then
+			self.timeToFlush = nil;
+			CEPGP_flushConsumptions();
+		end
 	end
+end
+
+
+local function getPlayerClass(name)
+	for i_name, data in pairs(CEPGP_getRealtimeRoster()) do
+		if i_name == name then
+			return data['class'];
+		end
+	end
+end
+
+
+local function getPossibleItemIDs(playerName)
+	local role = CEPGP_RaidRoles[playerName];
+	local class = getPlayerClass(playerName);
+	if role == nil or class == nil then
+		return nil;
+	end
+	CEPGP_debugMsg('Player name ' .. playerName .. ' Class ' .. class or 'nil' .. ' role ' .. role or 'nil');
+	local consumptions = db.commonConsumptions;
+	local personalConsumptions = db.tableClassSpecElexir[class][role][AFTER_PULL];
+	if personalConsumptions ~= nil then
+		for itemID, _ in pairs(personalConsumptions) do
+			consumptions[itemID] = true;
+		end
+	end
+	return consumptions;
+end
+
+local function notifyPlayer(playerName, count, itemID)
+	local itemData = db.itemData[itemID];
+	local message = 'Вы использовали ' .. count .. ' \124cffffffff\124Hitem:' .. itemID
+			.. '::::::::60:::::\124h[' .. itemData['name'] .. ']\124h\124r. Это ' .. itemData['EP'] .. 'x' .. count
+			.. ' = ' .. itemData['EP'] * count .. 'EP';
+
+	CEPGP_SendAddonMsg(SHOW_MESSAGE_COMMAND .. ';' .. message, 'WHISPER', playerName);
+end
+
+function CEPGP_flushConsumptions()
+	if not CEPGP_trackConsumables then
+		return;
+	end
+
+	CEPGP_debugMsg('Adding points for the consumptions have been disabled');
+	CEPGP_SendAddonMsg(CONSUMABLES_SEND_STOP);
+	CEPGP_trackConsumables = false;
+	CEPGP_stopTrackConsumablesAfterCombat = false;
+
+	for playerName, spells in pairs(CEGPG_trackedCunsumersSpells) do
+		local possibleItems = getPossibleItemIDs(playerName);
+		local usedItems = CEGPG_consumedItems[playerName];
+		local scoredItems = {}
+		if possibleItems then
+			for spellName, amount in pairs(spells) do
+				CEPGP_debugMsg('Checking ' .. spellName);
+				for itemID, _ in pairs(db.consumerNames[spellName]) do
+					local usageAmount = usedItems[itemID];
+					-- If is allowed and was used
+					if possibleItems[itemID] and usageAmount ~= nil and usageAmount > 0 then
+						local usedCount = 0
+						if usageAmount >= amount then
+							usedItems[itemID] = usageAmount - amount;
+							usedCount = amount;
+						else
+							usedItems[itemID] = 0;
+							usedCount = usageAmount;
+						end
+
+						if not scoredItems[itemID] then
+							scoredItems[itemID] = 0;
+						end
+						scoredItems[itemID] = scoredItems[itemID] + usedCount;
+					else
+						CEPGP_debugMsg('Usage amount is ' .. (usageAmount or 'nil'));
+						if possibleItems[itemID] then
+							CEPGP_debugMsg('item ID = ' .. itemID .. ' could be used');
+						else
+							CEPGP_debugMsg('item ID = ' .. itemID .. ' could NOT be used');
+						end
+					end
+				end
+			end
+		else
+			CEPGP_debugMsg('There is no possible items');
+		end
+
+		local bonusEP = 0;
+		for itemID, count in pairs(scoredItems) do
+			CEPGP_debugMsg('Item ' .. itemID .. ' was used ' .. count .. ' times');
+			bonusEP = bonusEP + db.itemData[itemID]['EP'] * count;
+			notifyPlayer(playerName, count, itemID);
+		end
+
+		if CEPGP_queueEP[playerName] == nil then
+			CEPGP_queueEP[playerName] = 0;
+		end
+		CEPGP_debugMsg('bonus EP = ' .. bonusEP);
+		CEPGP_queueEP[playerName] = CEPGP_queueEP[playerName] + bonusEP;
+	end
+	CEGPG_trackedCunsumersSpells = {};
+	CEGPG_consumedItems = {};
 end
 
 
@@ -1011,9 +1190,6 @@ function CEPGP_updateRealtimeEP()
 	CEPGP_debugMsg('Last queue update ' .. CEPGP_queueLastUpdate);
 	if (time() - CEPGP_queueLastUpdate) < 60 then
 		return;
-	end
-	if CEPGP_queueEP == nil then
-		CEPGP_queueEP = {};
 	end
 
 	for i = 1, GetNumGroupMembers() do
@@ -1068,6 +1244,10 @@ function CEPGP_AddEPBeforePull(checkFireResist)
 	CEPGP_ignoreUpdates = false;
 	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 	CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+	CEPGP_trackConsumables = true;
+	CEPGP_invisibleFrame:SetScript("OnUpdate", CEPGP_invisibleFrameUpdateHandler);
+	CEPGP_SendAddonMsg(CONSUMABLES_SEND_START);
+	CEPGP_debugMsg('Consumables will be tracked now');
 end
 
 

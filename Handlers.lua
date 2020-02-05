@@ -253,6 +253,7 @@ function CEPGP_handleCombat(name, except)
 			_, isLead = GetRaidRosterInfo(i);
 		end
 	end
+	CEPGP_flushConsumptions();
 	if (((GetLootMethod() == "master" and CEPGP_isML() == 0) or (GetLootMethod() == "group" and isLead == 2)) and CEPGP_ntgetn(CEPGP_roster) > 0) or CEPGP_debugMode then
 		local success = CEPGP_getCombatModule(name);
 		if name == L["Zealot Zath"] or name == L["Zealot Lor'Khan"] then
