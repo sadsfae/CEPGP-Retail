@@ -1208,46 +1208,63 @@ end
 
 function CEPGP_flushQueuedEP()
 	CEPGP_debugMsg('Flushing queued EP');
-	CEPGP_ignoreUpdates = true;
 	CEPGP_pauseQueue = true;
-
-	for i = 1, GetNumGuildMembers() do
-		local name, rank, rankIndex, _, class, _, _, officerNote, online, _, classFileName = GetGuildRosterInfo(i);
-		name = CEPGP_cleanName(name);
-		if CEPGP_queueEP[name] then
-			local EP, GP, BP = CEPGP_getEPGPBP(officerNote);
-			local bonusEP = math.floor(CEPGP_queueEP[name]);
-			CEPGP_debugMsg(name .. ' - EP=' .. EP + bonusEP .. ' GP=' .. GP .. ' BP=' .. BP);
-			CEPGP_SetEPGPBP(i, EP + bonusEP, GP, BP);
-			CEPGP_queueEP[name] = nil;
+	CEPGP_ignoreUpdates = true;
+	CEPGP_SendAddonMsg("?IgnoreUpdates;true", "GUILD");
+	C_Timer.After(1, function()
+		for i = 1, GetNumGuildMembers() do
+			local name, rank, rankIndex, _, class, _, _, officerNote, online, _, classFileName = GetGuildRosterInfo(i);
+			name = CEPGP_cleanName(name);
+			if CEPGP_queueEP[name] then
+				local EP, GP, BP = CEPGP_getEPGPBP(officerNote);
+				local bonusEP = math.floor(CEPGP_queueEP[name]);
+				local message = 'За время и за банки во время боя Вам начислено ' .. bonusEP .. ' EP';
+				CEPGP_SendAddonMsg(SHOW_MESSAGE_COMMAND .. ';' .. message, 'WHISPER', name);
+				CEPGP_debugMsg(name .. ' - EP=' .. EP + bonusEP .. ' GP=' .. GP .. ' BP=' .. BP);
+				CEPGP_SetEPGPBP(i, EP + bonusEP, GP, BP);
+				CEPGP_queueEP[name] = nil;
+			end
 		end
-	end
-	CEPGP_lastFlush = time();
-	CEPGP_ignoreUpdates = false;
-	CEPGP_pauseQueue = false;
-	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
-	CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+	end);
+
+	C_Timer.After(5, function()
+		CEPGP_ignoreUpdates = false;
+		CEPGP_SendAddonMsg("?IgnoreUpdates;false", "GUILD");
+		CEPGP_lastFlush = time();
+		CEPGP_ignoreUpdates = false;
+		CEPGP_pauseQueue = false;
+		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+	end);
 end
 
 
 function CEPGP_AddEPBeforePull(checkFireResist)
 	CEPGP_debugMsg('Adding EP before pull');
 	CEPGP_ignoreUpdates = true;
-	for name, data in pairs(CEPGP_getRealtimeRoster()) do
-		local bonus_ep = CEPGP_getPlayerEPBeforePull(name, data['class'], checkFireResist);
-		if bonus_ep ~= 0 then
-			CEPGP_debugMsg(name .. " EP " .. data.EP + bonus_ep .. " GP " .. data.GP .. " BP " .. data.BP);
-			CEPGP_SetEPGPBP(data.guildIndex, data.EP + bonus_ep, data.GP, data.BP);
+	CEPGP_SendAddonMsg("?IgnoreUpdates;true", "GUILD");
+	C_Timer.After(1, function()
+		for name, data in pairs(CEPGP_getRealtimeRoster()) do
+			local bonusEP = CEPGP_getPlayerEPBeforePull(name, data['class'], checkFireResist);
+			if bonusEP ~= 0 then
+				local message = 'За бафы перед боем Вам начислено ' .. bonusEP .. ' EP';
+				CEPGP_SendAddonMsg(SHOW_MESSAGE_COMMAND .. ';' .. message, 'WHISPER', name);
+				CEPGP_debugMsg(name .. " EP " .. data.EP + bonusEP .. " GP " .. data.GP .. " BP " .. data.BP);
+				CEPGP_SetEPGPBP(data.guildIndex, data.EP + bonusEP, data.GP, data.BP);
+			end
 		end
-	end
+	end);
+	C_Timer.After(5, function()
+		CEPGP_ignoreUpdates = false;
+		CEPGP_SendAddonMsg("?IgnoreUpdates;false", "GUILD");
 
-	CEPGP_ignoreUpdates = false;
-	CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
-	CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
-	CEPGP_trackConsumables = true;
-	CEPGP_invisibleFrame:SetScript("OnUpdate", CEPGP_invisibleFrameUpdateHandler);
-	CEPGP_SendAddonMsg(CONSUMABLES_SEND_START);
-	CEPGP_debugMsg('Consumables will be tracked now');
+		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+		CEPGP_trackConsumables = true;
+		CEPGP_invisibleFrame:SetScript("OnUpdate", CEPGP_invisibleFrameUpdateHandler);
+		CEPGP_SendAddonMsg(CONSUMABLES_SEND_START);
+		CEPGP_debugMsg('Consumables will be tracked now');
+	end)
 end
 
 
