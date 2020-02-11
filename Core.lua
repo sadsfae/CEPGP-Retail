@@ -1138,28 +1138,34 @@ function CEPGP_flushConsumptions()
 			for spellName, amount in pairs(spells) do
 				CEPGP_debugMsg('Checking ' .. spellName);
 				for itemID, _ in pairs(db.consumerNames[spellName]) do
-					local usageAmount = usedItems[itemID];
-					-- If is allowed and was used
-					if possibleItems[itemID] and usageAmount ~= nil and usageAmount > 0 then
-						local usedCount = 0
-						if usageAmount >= amount then
-							usedItems[itemID] = usageAmount - amount;
-							usedCount = amount;
-						else
-							usedItems[itemID] = 0;
-							usedCount = usageAmount;
-						end
+					if amount > 0 then
+						local usageAmount = usedItems[itemID];
+						-- If is allowed and was used
+						if possibleItems[itemID] and usageAmount ~= nil and usageAmount > 0 then
+							local usedCount = 0
+							if usageAmount > amount then
+								usedCount = amount;
+							elseif usageAmount < amount then
+								usedCount = usageAmount;
+							else
+								usedCount = usageAmount;
+							end
 
-						if not scoredItems[itemID] then
-							scoredItems[itemID] = 0;
-						end
-						scoredItems[itemID] = scoredItems[itemID] + usedCount;
-					else
-						CEPGP_debugMsg('Usage amount is ' .. (usageAmount or 'nil'));
-						if possibleItems[itemID] then
-							CEPGP_debugMsg('item ID = ' .. itemID .. ' could be used');
+							usedItems[itemID] = usedItems[itemID] - usedCount;
+							spells[spellName] = spells[spellName] - usedCount;
+							amount = amount - usedCount;
+
+							if not scoredItems[itemID] then
+								scoredItems[itemID] = 0;
+							end
+							scoredItems[itemID] = scoredItems[itemID] + usedCount;
 						else
-							CEPGP_debugMsg('item ID = ' .. itemID .. ' could NOT be used');
+							CEPGP_debugMsg('Usage amount is ' .. (usageAmount or 'nil'));
+							if possibleItems[itemID] then
+								CEPGP_debugMsg('item ID = ' .. itemID .. ' could be used');
+							else
+								CEPGP_debugMsg('item ID = ' .. itemID .. ' could NOT be used');
+							end
 						end
 					end
 				end
