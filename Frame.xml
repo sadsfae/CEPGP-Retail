@@ -4128,7 +4128,6 @@
 				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 				self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
 				self:RegisterEvent("CHAT_MSG_BN_WHISPER");
-				self:RegisterEvent("BAG_UPDATE");
 			</OnLoad>
 			<OnMouseDown>
 				self:StartMoving();

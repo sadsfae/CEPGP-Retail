@@ -383,27 +383,6 @@ function CEPGP_IncAddonMsg(message, sender)
 		CEPGP_UpdateTrafficScrollBar();
 	elseif args[1] == ROLE_CHECK_COMMAND_BEGIN then
 		CEPGP_RoleCheckEventHandler();
-	elseif args[1] == CONSUMABLES_SEND_START then
-		CEPGP_debugMsg('CONSUMABLES_SEND_START');
-		for i=0, NUM_BAG_SLOTS do
-			CEPGP_bagItems[i] = CEPGP_getBagItems(i);
-		end
-		CEPGP_sendConsumables = true;
-	elseif args[1] == CONSUMABLES_SEND_STOP then
-		CEPGP_debugMsg('CONSUMABLES_SEND_STOP');
-		CEPGP_sendConsumables = false;
-	elseif args[1] == CONSUMED_ITEM then
-		if CEPGP_trackConsumables then
-			if CEGPG_consumedItems[sender] == nil then
-				CEGPG_consumedItems[sender] = {};
-			end
-			local itemID = tonumber(args[2])
-			if CEGPG_consumedItems[sender][itemID] == nil then
-				CEGPG_consumedItems[sender][itemID] = 0;
-			end
-			CEGPG_consumedItems[sender][itemID] = CEGPG_consumedItems[sender][itemID] + 1;
-			CEPGP_debugMsg(sender .. ' consumed ' .. itemID);
-		end
 	elseif args[1] == ROLE_CHECK_COMMAND_SEND_ROLE then
 		CEPGP_RoleSetEventHandler(sender, args[2]);
 	elseif args[1] == SHOW_MESSAGE_COMMAND then
