@@ -938,7 +938,6 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 	CEPGP_debugMsg('Class ' .. class .. ' role ' .. role);
 
 	local bonus_EP = 0;
-	local fireResistFlaskUsed = false;
 	local fireResistJujuUsed = false;
 	local requiredElixir;
 	local requiredElixirUsedCount = 0;
@@ -970,9 +969,6 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 			if allowed_flasks[spellId] then
 				bonus_EP = bonus_EP + db.tableElixirPrice[spellId];
 			end
-		elseif checkFireResist and db.fireResistFlask[spellId] then
-			bonus_EP = bonus_EP + db.fireResistFlask[spellId];
-			fireResistFlaskUsed = true;
 		elseif checkFireResist and db.fireResistJuju == spellId then
 			bonus_EP = bonus_EP + 40;
 			fireResistJujuUsed = true;
@@ -986,13 +982,8 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 		bonus_EP = bonus_EP - 40 * (2 - requiredElixirUsedCount);
 	end
 
-	if checkFireResist then
-		if not fireResistFlaskUsed then
-			bonus_EP = bonus_EP - 100;
-		end
-		if not fireResistJujuUsed then
-			bonus_EP = bonus_EP - 40;
-		end
+	if checkFireResist and not fireResistJujuUsed then
+		bonus_EP = bonus_EP - 40;
 	end
 	CEPGP_debugMsg('Bonus EP is ' .. tostring(bonus_EP));
 	return bonus_EP;

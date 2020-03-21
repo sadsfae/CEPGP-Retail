@@ -308,7 +308,7 @@ function CEPGP_ListButton_OnClick(obj)
 
 		ShowUIPanel(CEPGP_context_popup_additional_check);
 		_G["CEPGP_context_popup_additional_check_text"]:Show();
-		CEPGP_context_popup_additional_check_text:SetText("Check fireresist flasks");
+		CEPGP_context_popup_additional_check_text:SetText("Check fireresist JuJu");
 
 		CEPGP_context_popup_EP_check:SetChecked(nil);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
