@@ -3,7 +3,6 @@ local ROLE_TANK, ROLE_HEAL, ROLE_MDD, ROLE_RDD = ROLE_TANK, ROLE_HEAL, ROLE_MDD,
 db = {}
 
 db.tableElixirPrice = {
-    [17628] = 190,
     [17539] = 80,
     [11474] = 80,
     [11390] = 40,
@@ -15,12 +14,10 @@ db.tableElixirPrice = {
     [16323] = 40,
     [10667] = 40,
     [10669] = 40,
-    [17626] = 190,
     [17540] = 80,
     [11348] = 40,
     [3593] = 20,
     [10668] = 40,
-    [17627] = 190,
     [21920] = 20,
     [23161] = 80, -- Конь погибели
 
@@ -41,7 +38,6 @@ db.tableElixirPrice = {
 db.tableClassSpecElexir = {
     ['ROGUE'] = {
         [ROLE_MDD] = {
-            [17626] = true,
             [17538] = true,
             [17038] = true,
             [11334] = true,
@@ -58,8 +54,6 @@ db.tableClassSpecElexir = {
     },
     ['WARLOCK'] = {
         [ROLE_RDD] = {
-            [17626] = true,
-            [17628] = true,
             [17539] = true,
             [11474] = true,
             [11390] = true,
@@ -72,8 +66,6 @@ db.tableClassSpecElexir = {
     },
     ['MAGE'] = {
         [ROLE_RDD] = {
-            [17626] = true,
-            [17628] = true,
             [17539] = true,
             [11390] = true,
             [10692] = true,
@@ -85,7 +77,6 @@ db.tableClassSpecElexir = {
     },
     ['HUNTER'] = {
         [ROLE_RDD] = {
-            [17626] = true,
             [17538] = true,
             [11334] = true,
             [16323] = true,
@@ -96,7 +87,6 @@ db.tableClassSpecElexir = {
             [25804] = true,
         },
         [ROLE_MDD] = {  -- I'm crazy and I know it
-            [17626] = true,
             [17538] = true,
             [17038] = true,
             [11334] = true,
@@ -113,7 +103,6 @@ db.tableClassSpecElexir = {
     },
     ['WARRIOR'] = {
         [ROLE_MDD] = {
-            [17626] = true,
             [17538] = true,
             [17038] = true,
             [17537] = true,
@@ -148,7 +137,6 @@ db.tableClassSpecElexir = {
     },
     ['PALADIN'] = {
         [ROLE_MDD] = {
-            [17626] = true,
             [17539] = true,
             [17538] = true,
             [17038] = true,
@@ -164,8 +152,6 @@ db.tableClassSpecElexir = {
             [18194] = true,
         },
         [ROLE_HEAL] = {
-            [17626] = true,
-            [17627] = true,
             [24363] = true,
             [10692] = true,
 
@@ -196,8 +182,6 @@ db.tableClassSpecElexir = {
     },
     ['PRIEST'] = {
         [ROLE_RDD] = {
-            [17626] = true,
-            [17628] = true,
             [17539] = true,
             [11474] = true,
             [11390] = true,
@@ -207,8 +191,6 @@ db.tableClassSpecElexir = {
             [25804] = true,
         },
         [ROLE_HEAL] = {
-            [17626] = true,
-            [17627] = true,
             [24363] = true,
             [10692] = true,
 
@@ -221,8 +203,6 @@ db.tableClassSpecElexir = {
     },
     ['DRUID'] = {
         [ROLE_RDD] = {
-            [17626] = true,
-            [17628] = true,
             [17539] = true,
             [11390] = true,
             [10692] = true,
@@ -231,8 +211,6 @@ db.tableClassSpecElexir = {
             [25804] = true,
         },
         [ROLE_HEAL] = {
-            [17626] = true,
-            [17627] = true,
             [24363] = true,
             [10692] = true,
 
@@ -243,7 +221,6 @@ db.tableClassSpecElexir = {
             [22790] = true,
         },
         [ROLE_MDD] = {
-            [17626] = true,
             [17538] = true,
             [17038] = true,
             [11334] = true,
