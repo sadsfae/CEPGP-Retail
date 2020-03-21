@@ -245,14 +245,14 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_amount);
 		ShowUIPanel(CEPGP_context_popup_EP_check);
 		ShowUIPanel(CEPGP_context_popup_GP_check);
-		HideUIPanel(CEPGP_context_popup_GP_check);
+		HideUIPanel(CEPGP_context_popup_BP_check);
 		_G["CEPGP_context_popup_EP_check_text"]:Show();
 		_G["CEPGP_context_popup_GP_check_text"]:Show();
 		_G["CEPGP_context_popup_BP_check_text"]:Hide();
 		CEPGP_context_popup_EP_check:SetChecked(1);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Raid Moderation");
-		CEPGP_context_popup_title:SetText("Modify EP/GP/BP for " .. name);
+		CEPGP_context_popup_title:SetText("Modify EP/GP for " .. name);
 		CEPGP_context_popup_desc:SetText("Add/Subtract EP");
 		CEPGP_context_amount:SetText("0");
 		CEPGP_context_popup_confirm:SetScript('OnClick', function()

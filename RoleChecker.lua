@@ -49,11 +49,13 @@ function CEPGP_RoleCheckEventHandler()
     if class == 'ROGUE' then
         sendRoleToRaid(ROLE_MDD);
         CEPGP_print('Вам была назначена роль МДД');
-    elseif class == 'WARLOCK' or class == 'MAGE' or class == 'HUNTER' then
+    elseif class == 'WARLOCK' or class == 'MAGE' then
         sendRoleToRaid(ROLE_RDD);
         CEPGP_print('Вам была назначена роль РДД');
     elseif class == 'WARRIOR' then
         CEPGP_ShowRoleCheckWindow({ROLE_MDD, ROLE_TANK});
+    elseif class == 'HUNTER' then
+        CEPGP_ShowRoleCheckWindow({ROLE_MDD, ROLE_RDD});
     elseif class == 'PALADIN' then
         CEPGP_ShowRoleCheckWindow({ROLE_MDD, ROLE_TANK, ROLE_HEAL});
     elseif class == 'PRIEST' then

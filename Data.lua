@@ -199,6 +199,21 @@ db.tableClassSpecElexir = {
             [18125] = true,
             [25804] = true,
         },
+        [ROLE_MDD] = {  -- I'm crazy and I know it
+            [17626] = true,
+            [17538] = true,
+            [17038] = true,
+            [11334] = true,
+            [11405] = true,
+            [16329] = true,
+            [16323] = true,
+            [10667] = true,
+            [10669] = true,
+
+            [18192] = true,
+            [18125] = true,
+            [25804] = true,
+        },
     },
     ['WARRIOR'] = {
         [ROLE_MDD] = {
@@ -391,6 +406,9 @@ db.tableRequiredElexir = {
     },
     ['HUNTER'] = {
         [ROLE_RDD] = {
+            [17538] = true,
+        },
+        [ROLE_MDD] = {
             [17538] = true,
         },
     },

@@ -432,6 +432,7 @@ function CEPGP_rosterUpdate(event)
 			ShowUIPanel(CEPGP_guild_add_EP);
 			ShowUIPanel(CEPGP_guild_decay);
 			ShowUIPanel(CEPGP_raid_role_personal);
+			ShowUIPanel(CEPGP_extra_ep_button);
 			ShowUIPanel(CEPGP_guild_reset);
 			ShowUIPanel(CEPGP_raid_add_EP);
 			ShowUIPanel(CEPGP_raid_add_pull_EP);
@@ -442,7 +443,7 @@ function CEPGP_rosterUpdate(event)
 		else --[[ Hides context sensitive options if player cannot edit officer notes ]]--
 			HideUIPanel(CEPGP_guild_add_EP);
 			HideUIPanel(CEPGP_guild_decay);
-			HideUIPanel(CEPGP_raid_role_personal);
+			ShowUIPanel(CEPGP_extra_ep_button);
 			HideUIPanel(CEPGP_guild_reset);
 			HideUIPanel(CEPGP_raid_add_EP);
 			HideUIPanel(CEPGP_raid_add_pull_EP);

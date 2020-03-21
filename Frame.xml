@@ -455,6 +455,24 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_ListButton_OnClick(self:GetName());
+							</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="CEPGP_extra_ep_button" inherits="GameMenuButtonTemplate" text="Extra EP">
+						<Size>
+							<AbsDimension x="60" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="RIGHT" relativeTo="CEPGP_raid_role_personal">
+								<Offset>
+									<AbsDimension x="60" y="0" />
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
 							<OnLoad>
 								if not CanEditOfficerNote() then
 									self:Hide();
@@ -462,7 +480,7 @@
 							</OnLoad>
 							<OnClick>
 								PlaySound(799);
-								CEPGP_ListButton_OnClick(self:GetName());
+								CEPGP_extra_ep:Show();
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -6844,6 +6862,139 @@
 				self:StopMovingOrSizing();
 			</OnMouseUp>
 		</Scripts>
+	</Frame>
+
+	<Frame name="CEPGP_extra_ep" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">
+		<Size>
+			<AbsDimension x="600" y="275" />
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<Color r="0" g="0" b="0" />
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		<Attributes>
+			<Attribute name="format" type="string" value="CSV" />
+		</Attributes>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="CEPGP_extra_ep_title" inherits="GameFontNormal" text="Add reward">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="CEPGP_extra_ep_desc" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-30"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="CEPGP_extra_ep_close" inherits="UIPanelCloseButton">
+				<Size>
+					<AbsDimension x="40" y="40" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-3" y="-3" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PlaySound(799);
+						CEPGP_extra_ep:Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<ScrollFrame name="CEPGP_extra_ep_scrollframe" inherits="UIPanelScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="340" y="175"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="15" y="15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<ScrollChild>
+					<EditBox name="CEPGP_extra_ep_dump" autofocus="false" multiline="true">
+						<Anchors>
+							<Anchor point="CENTER" />
+						</Anchors>
+						<FontString inherits="GameFontNormal"/>
+						<Scripts>
+							<OnLoad>
+								self:SetSize(CEPGP_extra_ep_scrollframe:GetSize());
+							</OnLoad>
+							<OnEscapePressed>
+								self:ClearFocus();
+							</OnEscapePressed>
+							<OnEnterPressed>
+								self:ClearFocus();
+							</OnEnterPressed>
+						</Scripts>
+					</EditBox>
+				</ScrollChild>
+				<Scripts>
+					<OnLoad>
+						self:SetScrollChild(CEPGP_extra_ep_dump);
+					</OnLoad>
+				</Scripts>
+			</ScrollFrame>
+			<Button name="CEPGP_extra_ep_apply" inherits="GameMenuButtonTemplate" text="Apply">
+				<Size>
+					<AbsDimension x="150" y="21" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="CEPGP_extra_ep_scrollframe">
+						<Offset>
+							<AbsDimension x="-5" y="-5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CEPGP_applyExtraEP();
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
 	</Frame>
 
 	<Frame name="CEPGP_export" parent="UIParent" hidden="true" enableMouse="true" toplevel="true" movable="true" clampedToScreen="true">

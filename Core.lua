@@ -1134,3 +1134,36 @@ function CEPGP_getRealtimeRoster()
 
 	return realtimeRaidRoster;
 end
+
+
+function CEPGP_applyExtraEP()
+	CEPGP_debugMsg('Applying Extra EP');
+	CEPGP_ignoreUpdates = true;
+	CEPGP_SendAddonMsg("?IgnoreUpdates;true", "GUILD");
+	C_Timer.After(1, function()
+		local text = CEPGP_extra_ep_dump:GetText();
+		CEPGP_debugMsg('Text is ' .. text);
+		for row in text:gmatch("[^\r\n]+") do
+			local name, extra_ep = row:match("([^,]+),([^,]+)");
+			extra_ep = tonumber(extra_ep);
+			local data = CEPGP_roster[name];
+			if data ~= nil then
+				local EP, GP, BP = CEPGP_getEPGP(data[5]);
+				local index = CEPGP_getIndex(name, data[1]);
+				CEPGP_SetEPGPBP(index, EP + extra_ep, GP, BP);
+				local message = 'За использованые в рейде расходники Вам было начислено ' .. extra_ep .. ' EP';
+				CEPGP_SendAddonMsg(SHOW_MESSAGE_COMMAND .. ';' .. message, 'WHISPER', name);
+			else
+				CEPGP_print('Игрок ' .. name .. ' уже не в гильде :(')
+			end
+		end
+	end)
+
+	C_Timer.After(5, function()
+		CEPGP_ignoreUpdates = false;
+		CEPGP_SendAddonMsg("?IgnoreUpdates;false", "GUILD");
+
+		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+	end)
+end
