@@ -90,6 +90,7 @@ CEPGP_raid_logs = {};
 CEPGP_standbyRoster = {};
 CEPGP_minEP = {false, 0};
 CEPGP_RaidRoles = {};
+CEPGP_ReplacementList = nil;
 
 local L = CEPGP_Locale:GetLocale("CEPGP")
 
@@ -1009,7 +1010,7 @@ function CEPGP_invisibleFrameUpdateHandler(self, elapsed)
 
 		self.timeSinceLastUpdate = self.timeSinceLastUpdate + elapsed;
 
-		if self.timeSinceLastUpdate >= 5 and not CEPGP_pauseQueue then
+		if self.timeSinceLastUpdate >= 60 and not CEPGP_pauseQueue then
 			self.timeSinceLastUpdate = 0;
 			CEPGP_debugMsg('Updating...');
 			CEPGP_updateRealtimeEP();
@@ -1020,7 +1021,7 @@ end
 
 function CEPGP_updateRealtimeEP()
 	CEPGP_debugMsg('Last queue update ' .. CEPGP_queueLastUpdate);
-	if (time() - CEPGP_queueLastUpdate) < 60 then
+	if (time() - CEPGP_queueLastUpdate) < 5 * 60 then
 		return;
 	end
 
@@ -1032,7 +1033,20 @@ function CEPGP_updateRealtimeEP()
 			CEPGP_queueEP[name] = 0;
 		end
 		CEPGP_debugMsg('For ' .. name .. ' will be  ' .. CEPGP_queueEP[name] + CEPGP_EPPerMinute .. ' EP');
-		CEPGP_queueEP[name] = CEPGP_queueEP[name] + CEPGP_EPPerMinute;
+		CEPGP_queueEP[name] = CEPGP_queueEP[name] + CEPGP_EPPerMinute * 5;
+    end
+
+	if CEPGP_ReplacementList ~= nil then
+		for i = 1, GetNumGuildMembers() do
+			local name, _, _, _, _, _, _, _, is_online = GetGuildRosterInfo(i);
+			name = CEPGP_cleanName(name);
+			if is_online and CEPGP_ReplacementList[name] then
+				if CEPGP_queueEP[name] == nil then
+					CEPGP_queueEP[name] = 0;
+				end
+				CEPGP_queueEP[name] = CEPGP_queueEP[name] + CEPGP_EPPerMinute * 5;
+			end
+		end
 	end
 	CEPGP_queueLastUpdate = time();
 end
@@ -1050,7 +1064,7 @@ function CEPGP_flushQueuedEP()
 			if CEPGP_queueEP[name] then
 				local EP, GP, BP = CEPGP_getEPGPBP(officerNote);
 				local bonusEP = math.floor(CEPGP_queueEP[name]);
-				local message = 'За время и за банки во время боя Вам начислено ' .. bonusEP .. ' EP';
+				local message = 'За время Вам начислено ' .. bonusEP .. ' EP';
 				CEPGP_SendAddonMsg(SHOW_MESSAGE_COMMAND .. ';' .. message, 'WHISPER', name);
 				CEPGP_debugMsg(name .. ' - EP=' .. EP + bonusEP .. ' GP=' .. GP .. ' BP=' .. BP);
 				CEPGP_SetEPGPBP(i, EP + bonusEP, GP, BP);
@@ -1157,4 +1171,13 @@ function CEPGP_applyExtraEP()
 		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
 	end)
+end
+
+
+function CEPGP_save_replacement_list()
+	local text = CEPGP_replacement_list_dump:GetText();
+	CEPGP_ReplacementList = {};
+	for name in text:gmatch("[^\r\n]+") do
+		CEPGP_ReplacementList[name] = true;
+	end
 end
