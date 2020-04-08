@@ -387,6 +387,18 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 				end
 			end
 		end
+
+		-- add to replacement list
+		for i = 1, GetNumGuildMembers() do
+			local name, _, _, _, _, _, _, officernote, is_online = GetGuildRosterInfo(i);
+			name = CEPGP_cleanName(name);
+			if is_online and CEPGP_ReplacementList[name] then
+				local EP, GP, BP = CEPGP_getEPGPBP(officernote);
+				EP = tonumber(EP);
+				EP = EP + amount;
+				CEPGP_SetEPGPBP(i, EP, GP, BP);
+			end
+		end
 	end
 	if msg ~= "" and msg ~= nil or encounter then
 		if encounter then -- a boss was killed
