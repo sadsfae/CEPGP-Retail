@@ -934,6 +934,47 @@ function CEPGP_resetAll(msg)
 end
 
 
+local function CEPGP_getPlayerEPBeforeRaid(name, class)
+	if not name then
+		return 0;
+	end
+
+	local role = CEPGP_RaidRoles[name];
+	if role == nil then
+		CEPGP_print('У игрока ' .. name .. ' не указана роль!');
+		return 0;
+	end
+
+	local possible_buffs = CEPGP_db.beforeRaidBuffs[class][role];
+	local bonusEP = 0;
+	local message = '';
+
+	for i=1,40 do
+		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i, "HELPFUL")
+		if not spellId then
+			break
+		end
+
+		local spell_bonus_ep = possible_buffs[spellId];
+		if spell_bonus_ep ~= nil then
+			if bonusEP > 0 then
+				message = message .. ', ';
+			end
+			message = message .. spellId .. '=' .. spell_bonus_ep ;
+			bonusEP = bonusEP + spell_bonus_ep;
+		end
+	end
+	if bonusEP > 0 then
+		message = 'За мировые баффы Вам начислено ' .. bonusEP .. ' EP. А именно: ' .. message .. '.';
+		CEPGP_SendAddonMsg(SHOW_MESSAGE_COMMAND .. ';' .. message, 'WHISPER', name);
+	else
+		message = 'За мировые баффы Вам не были начислены очки т.к. баффов у Вас не обнаружено. Очень жаль :(';
+		CEPGP_SendAddonMsg(SHOW_MESSAGE_COMMAND .. ';' .. message, 'WHISPER', name);
+	end
+
+	return bonusEP
+end
+
 local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 	CEPGP_debugMsg(
 		'Calculating bonus points for ' .. name .. '. Chech fireResistFlask is ' .. (checkFireResist and 'true' or 'false' )
@@ -947,7 +988,7 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 		return 0;
 	end
 
-	local allowed_flasks = db.tableClassSpecElexir[class][role];
+	local allowed_flasks = CEPGP_db.tableClassSpecElexir[class][role];
 	CEPGP_debugMsg('Class ' .. class .. ' role ' .. role);
 
 	local bonus_EP = 0;
@@ -957,9 +998,9 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 
 	local isTank = role == ROLE_TANK;
 	if isTank then
-		requiredElixir = db.tableRequiredTankElixir;
+		requiredElixir = CEPGP_db.tableRequiredTankElixir;
 	else
-		requiredElixir = db.tableRequiredElexir[class][role];
+		requiredElixir = CEPGP_db.tableRequiredElexir[class][role];
 	end
 
 	if requiredElixir == nil then
@@ -971,7 +1012,7 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 		local _,_,_,_,_,_,_,_,_,spellId = UnitAura(name, i, "HELPFUL")
 		if not spellId then
 			break
-		elseif db.tableElixirPrice[spellId] then
+		elseif CEPGP_db.tableElixirPrice[spellId] then
 			if requiredElixir[spellId] then
 				requiredElixirUsedCount = requiredElixirUsedCount + 1;
 			end
@@ -980,9 +1021,9 @@ local function CEPGP_getPlayerEPBeforePull(name, class, checkFireResist)
 				bonus_EP = bonus_EP + 20;
 			end
 			if allowed_flasks[spellId] then
-				bonus_EP = bonus_EP + db.tableElixirPrice[spellId];
+				bonus_EP = bonus_EP + CEPGP_db.tableElixirPrice[spellId];
 			end
-		elseif checkFireResist and db.fireResistJuju == spellId then
+		elseif checkFireResist and CEPGP_db.fireResistJuju == spellId then
 			bonus_EP = bonus_EP + 40;
 			fireResistJujuUsed = true;
 		end
@@ -1112,6 +1153,28 @@ function CEPGP_AddEPBeforePull(checkFireResist)
 			end
 		end
 	end);
+	C_Timer.After(5, function()
+		CEPGP_ignoreUpdates = false;
+		CEPGP_SendAddonMsg("?IgnoreUpdates;false", "GUILD");
+
+		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
+	end)
+end
+
+
+function CEPGP_AddEPBeforeRaid()
+	CEPGP_ignoreUpdates = true;
+	CEPGP_SendAddonMsg("?IgnoreUpdates;true", "GUILD");
+	C_Timer.After(1, function()
+		for name, data in pairs(CEPGP_getRealtimeRoster()) do
+			local bonusEP = CEPGP_getPlayerEPBeforeRaid(name, data.class);
+			if bonusEP > 0 then
+				CEPGP_SetEPGPBP(data.guildIndex, data.EP + bonusEP, data.GP, data.BP);
+			end
+		end
+	end);
+
 	C_Timer.After(5, function()
 		CEPGP_ignoreUpdates = false;
 		CEPGP_SendAddonMsg("?IgnoreUpdates;false", "GUILD");

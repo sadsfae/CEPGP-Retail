@@ -436,6 +436,7 @@ function CEPGP_rosterUpdate(event)
 			ShowUIPanel(CEPGP_guild_reset);
 			ShowUIPanel(CEPGP_raid_add_EP);
 			ShowUIPanel(CEPGP_open_replacement_list);
+			ShowUIPanel(CEPGP_ep_before_raid);
 			ShowUIPanel(CEPGP_raid_add_pull_EP);
 			ShowUIPanel(CEPGP_raid_add_timed_EP);
 			ShowUIPanel(CEPGP_raid_flush_timed_EP);
@@ -448,6 +449,7 @@ function CEPGP_rosterUpdate(event)
 			HideUIPanel(CEPGP_guild_reset);
 			HideUIPanel(CEPGP_raid_add_EP);
 			HideUIPanel(CEPGP_open_replacement_list);
+			HideUIPanel(CEPGP_ep_before_raid);
 			HideUIPanel(CEPGP_raid_add_pull_EP);
 			HideUIPanel(CEPGP_raid_add_timed_EP);
 			HideUIPanel(CEPGP_raid_flush_timed_EP);

@@ -711,6 +711,25 @@
 							</OnClick>
 						</Scripts>
 					</Button>
+					<Button name="CEPGP_ep_before_raid" inherits="GameMenuButtonTemplate" text="Before raid">
+						<Size>
+							<AbsDimension x="100" y="21" />
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="CEPGP_open_replacement_list"/>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if not CanEditOfficerNote() then
+									self:Hide();
+								end
+							</OnLoad>
+							<OnClick>
+								PlaySound(799);
+								CEPGP_ListButton_OnClick(self:GetName());
+							</OnClick>
+						</Scripts>
+					</Button>
 					<Button name="CEPGP_raid_add_pull_EP" inherits="GameMenuButtonTemplate" text="Add EP on Pull">
 						<Size>
 							<AbsDimension x="100" y="21" />
