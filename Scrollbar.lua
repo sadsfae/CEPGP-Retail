@@ -2,7 +2,7 @@ function CEPGP_UpdateLootScrollBar()
 	local tempTable = {};
 	local count = 1;
 	for name, id in pairs(CEPGP_itemsTable) do
-		local EP, GP = CEPGP_getEPGP(CEPGP_roster[name][5], CEPGP_roster[name][1], name)
+		local EP, GP = CEPGP_getEPGPBP(CEPGP_roster[name][5], CEPGP_roster[name][1], name)
 		if not EP then EP = 0; end
 		if not GP then GP = BASEGP; end
 		tempTable[count] = {

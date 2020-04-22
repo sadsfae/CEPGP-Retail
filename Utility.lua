@@ -461,7 +461,7 @@ function CEPGP_rosterUpdate(event)
 				name = string.sub(name, 0, string.find(name, "-")-1);
 			end
 			if name then
-				local EP, GP = CEPGP_getEPGP(officerNote, i, name);
+				local EP, GP = CEPGP_getEPGPBP(officerNote, i, name);
 				local PR = math.floor((EP/GP)*100)/100;
 				if name == "Енотовод" then
 					CEPGP_debugMsg(name .. ' update guild roster: EP - ' .. EP .. ' OffNote is ' .. officerNote);
@@ -608,7 +608,7 @@ function CEPGP_addToStandby(player)
 		end
 	end	
 	local _, class, rank, rankIndex, oNote, _, classFile = CEPGP_getGuildInfo(player);
-	local EP,GP = CEPGP_getEPGP(oNote);
+	local EP,GP = CEPGP_getEPGPBP(oNote);
 	CEPGP_standbyRoster[#CEPGP_standbyRoster+1] = {
 		[1] = player,
 		[2] = class,
@@ -791,29 +791,6 @@ function CEPGP_checkEPGPBP(offNote)
 		return true;
 	end
 	return false;
-end
-
-function CEPGP_getEPGP(offNote, index, name)
-	if not name then index = CEPGP_nameToIndex(name); end
-
-	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
-		return 0, tonumber(BASEGP);
-	end
-
-	local data = {};
-	for i in offNote:gmatch("([^,%s]+)") do
-		data[#data + 1] = i
-	end
-
-	local EP = tonumber(data[1]);
-	local GP = tonumber(data[2]);
-
-	if EP == nil or GP == nil then
-		CEPGP_print("An error was found with " .. name .. "'s EPGP. Their officer note has been set to " .. offNote);
-		return 0, tonumber(BASEGP);
-	end
-
-	return EP, GP;
 end
 
 function CEPGP_getEPGPBP(offNote, index, name)

@@ -552,7 +552,7 @@ function CEPGP_addStandbyEP(amount, boss, msg)
 			if not inRaid then
 				local _, rank, _, _, offNote, _, _, _, online = GetGuildRosterInfo(CEPGP_roster[name][1]);
 				if online or STANDBYOFFLINE then
-					local EP, GP, BP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+					local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5]);
 					EP = tonumber(EP) + amount;
 					GP = tonumber(GP);
 					if GP < BASEGP then
@@ -858,7 +858,7 @@ function CEPGP_decay(amount, msg)
 	CEPGP_SendAddonMsg("?IgnoreUpdates;true");
 	C_Timer.After(0.1, function()
 		for name,_ in pairs(CEPGP_roster)do
-			local EP, GP, BP = CEPGP_getEPGP(CEPGP_roster[name][5]);
+			local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5]);
 			local index = CEPGP_getIndex(name, CEPGP_roster[name][1]);
             local EP = math.floor(tonumber(EP)*(1-(amount/100)));
 				if CEPGP_minGPDecayFactor then
@@ -1228,7 +1228,7 @@ function CEPGP_applyExtraEP()
 			extra_ep = tonumber(extra_ep);
 			local data = CEPGP_roster[name];
 			if data ~= nil then
-				local EP, GP, BP = CEPGP_getEPGP(data[5]);
+				local EP, GP, BP = CEPGP_getEPGPBP(data[5]);
 				local index = CEPGP_getIndex(name, data[1]);
 				CEPGP_SetEPGPBP(index, EP + extra_ep, GP, BP);
 				local message = 'За использованые в рейде расходники Вам было начислено ' .. extra_ep .. ' EP';
