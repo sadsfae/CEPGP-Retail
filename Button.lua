@@ -63,8 +63,10 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_popup);
 		CEPGP_context_popup_EP_check:Hide();
 		CEPGP_context_popup_GP_check:Hide();
+		CEPGP_context_popup_BP_check:Hide();
 		_G["CEPGP_context_popup_EP_check_text"]:Hide();
 		_G["CEPGP_context_popup_GP_check_text"]:Hide();
+		_G["CEPGP_context_popup_BP_check_text"]:Hide();
 		CEPGP_context_popup_header:SetText("Add to Standby");
 		CEPGP_context_popup_title:Hide();
 		CEPGP_context_popup_desc:SetText("Add a guild member to the standby list");
@@ -264,7 +266,7 @@ function CEPGP_ListButton_OnClick(obj)
 																if CEPGP_context_popup_EP_check:GetChecked() then
 																	CEPGP_addEP(name, tonumber(CEPGP_context_amount:GetText()), CEPGP_context_reason:GetText());
 																else
-																	CEPGP_addGP(name, tonumber(CEPGP_context_amount:GetText()), _, _, CEPGP_context_reason:GetText());
+																	CEPGP_addGP(name, tonumber(CEPGP_context_amount:GetText()), nil, nil, CEPGP_context_reason:GetText());
 																end
 															end
 														end);
@@ -275,8 +277,10 @@ function CEPGP_ListButton_OnClick(obj)
 		ShowUIPanel(CEPGP_context_amount);
 		HideUIPanel(CEPGP_context_popup_EP_check);
 		HideUIPanel(CEPGP_context_popup_GP_check);
+		HideUIPanel(CEPGP_context_popup_BP_check);
 		_G["CEPGP_context_popup_EP_check_text"]:Hide();
 		_G["CEPGP_context_popup_GP_check_text"]:Hide();
+		_G["CEPGP_context_popup_BP_check_text"]:Hide();
 		CEPGP_context_popup_EP_check:SetChecked(nil);
 		CEPGP_context_popup_GP_check:SetChecked(nil);
 		CEPGP_context_popup_header:SetText("Raid Moderation");

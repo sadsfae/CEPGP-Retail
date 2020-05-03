@@ -90,7 +90,6 @@ CEPGP_raid_logs = {};
 CEPGP_standbyRoster = {};
 CEPGP_minEP = {false, 0};
 CEPGP_RaidRoles = {};
-CEPGP_ReplacementList = nil;
 
 local L = CEPGP_Locale:GetLocale("CEPGP")
 
@@ -387,18 +386,6 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 				end
 			end
 		end
-
-		-- add to replacement list
-		for i = 1, GetNumGuildMembers() do
-			local name, _, _, _, _, _, _, officernote, is_online = GetGuildRosterInfo(i);
-			name = CEPGP_cleanName(name);
-			if is_online and CEPGP_ReplacementList[name] then
-				local EP, GP, BP = CEPGP_getEPGPBP(officernote);
-				EP = tonumber(EP);
-				EP = EP + amount;
-				CEPGP_SetEPGPBP(i, EP, GP, BP);
-			end
-		end
 	end
 	if msg ~= "" and msg ~= nil or encounter then
 		if encounter then -- a boss was killed
@@ -429,6 +416,7 @@ function CEPGP_AddRaidEP(amount, msg, encounter)
 		end
 	end
 	CEPGP_UpdateTrafficScrollBar();
+	CEPGP_addStandbyEP(amount, nil, msg);
 end
 
 function CEPGP_addGuildEP(amount, msg)
@@ -1089,18 +1077,6 @@ function CEPGP_updateRealtimeEP()
 		CEPGP_queueEP[name] = CEPGP_queueEP[name] + CEPGP_EPPerMinute * 5;
     end
 
-	if CEPGP_ReplacementList ~= nil then
-		for i = 1, GetNumGuildMembers() do
-			local name, _, _, _, _, _, _, _, is_online = GetGuildRosterInfo(i);
-			name = CEPGP_cleanName(name);
-			if is_online and CEPGP_ReplacementList[name] then
-				if CEPGP_queueEP[name] == nil then
-					CEPGP_queueEP[name] = 0;
-				end
-				CEPGP_queueEP[name] = CEPGP_queueEP[name] + CEPGP_EPPerMinute * 5;
-			end
-		end
-	end
 	CEPGP_queueLastUpdate = time();
 end
 
@@ -1246,13 +1222,4 @@ function CEPGP_applyExtraEP()
 		CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
 		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
 	end)
-end
-
-
-function CEPGP_save_replacement_list()
-	local text = CEPGP_replacement_list_dump:GetText();
-	CEPGP_ReplacementList = {};
-	for name in text:gmatch("[^\r\n]+") do
-		CEPGP_ReplacementList[name] = true;
-	end
 end

@@ -567,7 +567,10 @@ function CEPGP_UpdateStandbyScrollBar()
 			end
 		end
 		local _, _, rank, rankIndex, oNote, _, classFile = CEPGP_getGuildInfo(CEPGP_standbyRoster[i][1]);
-		local _, _, _, _, _, _, _, _, online = GetGuildRosterInfo(CEPGP_getIndex(CEPGP_standbyRoster[i][1]));
+        local online = true;
+        if CEPGP_getIndex(CEPGP_standbyRoster[i][1]) then
+		    local _, _, _, _, _, _, _, _, online = GetGuildRosterInfo(CEPGP_getIndex(CEPGP_standbyRoster[i][1]));
+        end
 		tempTable[i] = {
 			[1] = CEPGP_standbyRoster[i][1], --name
 			[2] = CEPGP_standbyRoster[i][2], --class
