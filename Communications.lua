@@ -1,254 +1,232 @@
---This function gets run twice. Once by the loot master when someone whispers !need
---and again by raid assists when the loot master's addon notifies theirs of the !need response
 function CEPGP_IncAddonMsg(message, sender)
-
-	if strfind(message, "CEPGP_setDistID?") then
-		CEPGP_DistID = string.sub(message, strfind(message, "?")+1);
-
-	elseif strfind(message, "CEPGP_distributing") and strfind(message, UnitName("player")) then-- and strfind(message, GetRealmName()) then
+	CEPGP_debugMsg('message '.. message .. ' sender ' .. sender);
+	local args = CEPGP_split(message); -- The broken down message, delimited by semi-colons
+	
+	if args[1] == "CEPGP_setDistID" then
+		CEPGP_DistID = args[2];
+	
+	elseif args[1] == UnitName("player") and args[2] == "distslot" then
 		--Recipient should see this
-		local _, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
-		if not slot then
-			slot = string.sub(message, strfind(message, "~")+1);
-		end
-		if CEPGP_DistID then
-			if slot then --string.len(slot) > 0 and slot ~= nil then
-				local slotName = string.sub(slot, 9);
-				local slotid, slotid2 = CEPGP_SlotNameToID(slotName);
-				local currentItem;
-				if slotid then
-					currentItem = GetInventoryItemLink("player", slotid);
-				end
-				local currentItem2;
-				if slotid2 then
-					currentItem2 = GetInventoryItemLink("player", slotid2);
-				end
-				local itemID;
-				local itemID2;
-				if currentItem then
-					itemID = CEPGP_getItemID(CEPGP_getItemString(currentItem));
-					itemID2 = CEPGP_getItemID(CEPGP_getItemString(currentItem2));
-				else
-					itemID = "noitem";
-				end
-				if itemID2 then
-					CEPGP_SendAddonMsg(sender.."-receiving-"..itemID.." "..itemID2);
-				else
-					CEPGP_SendAddonMsg(sender.."-receiving-"..itemID);
-				end
-			elseif slot == "" then
-				CEPGP_SendAddonMsg(sender.."-receiving-noslot");
-			elseif itemID == "noitem" then
-				CEPGP_SendAddonMsg(sender.."-receiving-noitem");
+		local slot = args[3];
+		if slot then --string.len(slot) > 0 and slot ~= nil then
+			local slotName = string.sub(slot, 9);
+			local slotid, slotid2 = CEPGP_SlotNameToID(slotName);
+			local currentItem;
+			local currentItem2;
+			local itemID;
+			local itemID2;
+			
+			if slotid then
+				currentItem = GetInventoryItemLink("player", slotid);
 			end
-		end
-		
-		
-	elseif strfind(message, "receiving") and strfind(message, UnitName("player")) then--and strfind(message, GetRealmName()) then
-		--Loot master sees this
-		local itemID;
-		local itemID2;
-		if strfind(message, " ") then
-			itemID = string.sub(message, strfind(message, "receiving")+10, strfind(message, " "));
-			itemID2 = string.sub(message, strfind(message, " ")+1);
-		else
-			itemID = string.sub(message, strfind(message, "receiving")+10);
-		end
-		if itemID == "noitem" then
-			CEPGP_itemsTable[sender] = {};
-			CEPGP_UpdateLootScrollBar();
-		elseif itemID == "noslot" then
-			CEPGP_itemsTable[sender] = {};
-			CEPGP_UpdateLootScrollBar();
-		else
-			local name, iString = GetItemInfo(itemID);
-			if not name then
-				local item = Item:CreateFromItemID(tonumber(itemID));
-				item:ContinueOnItemLoad(function()
-					local name, link = GetItemInfo(itemID)
-					iString = CEPGP_getItemString(link);
-					CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
-					CEPGP_UpdateLootScrollBar();
-				end);
+			if slotid2 then
+				currentItem2 = GetInventoryItemLink("player", slotid2);
+			end
+			
+			if currentItem then
+				itemID = CEPGP_getItemID(CEPGP_getItemString(currentItem));
 			else
-				CEPGP_itemsTable[sender] = {iString .. "[" .. name .. "]"};
+				itemID = "noitem";
 			end
+			
+			if currentItem2 then
+				itemID2 = CEPGP_getItemID(CEPGP_getItemString(currentItem2));
+			else
+				itemID2 = "noitem";
+			end
+			
 			if itemID2 then
-				local name2, iString2 = GetItemInfo(itemID2);
-				if not name2 then
-					local item = Item:CreateFromItemID(tonumber(itemID2));
-					item:ContinueOnItemLoad(function()
-						local name2, link2 = GetItemInfo(itemID2)
-						iString2 = CEPGP_getItemString(link2);
-						CEPGP_itemsTable[sender] = {iString2 .. "[" .. name2 .. "]"};
-						CEPGP_UpdateLootScrollBar();
-					end);
-				else
-					CEPGP_itemsTable[sender] = {iString2 .. "[" .. name2 .. "]"};
-				end
+				CEPGP_SendAddonMsg(sender..";receiving;"..itemID..";"..itemID2);
 			else
+				CEPGP_SendAddonMsg(sender..";receiving;"..itemID);
 			end
-			CEPGP_UpdateLootScrollBar();
+			
+		elseif slot == "" then
+			CEPGP_SendAddonMsg(sender..";receiving;noslot");
+		elseif itemID == "noitem" then
+			CEPGP_SendAddonMsg(sender..";receiving;noitem");
 		end
+		
+		
+	elseif args[2] == "receiving" then
+		table.insert(CEPGP_responses, sender);
+		local itemID = args[3];
+		local itemID2 = args[4];
+		CEPGP_itemsTable[sender] = {
+			[1] = itemID,
+			[2] = itemID2,
+		};
+		CEPGP_UpdateLootScrollBar();
 	end
 		
-		
-	if strfind(message, UnitName("player").."versioncheck") then
-		if CEPGP_vSearch == "GUILD" then
-			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
-				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
-					if CEPGP_groupVersion[i][1] == sender then
-						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
-						break;
+	if args[1] == UnitName("player") and args[2] == "versioncheck" then
+		local index = CEPGP_ntgetn(CEPGP_groupVersion);
+		if not index then index = 0; end
+		for i=1, index do
+			if CEPGP_groupVersion[i][1] == sender then
+				CEPGP_groupVersion[i][2] = args[3];
+				if CEPGP_roster[sender] then
+					CEPGP_groupVersion[i][3] = CEPGP_roster[sender][2];
+				else
+					for x = 1, GetNumGroupMembers() do
+						if GetRaidRosterInfo(x) == sender then
+							_, _, _, _, CEPGP_groupVersion[i][3], CEPGP_groupVersion[i][4] = GetRaidRosterInfo(x);
+							print(CEPGP_groupVersion[i][4]);
+							break;
+						end
 					end
 				end
-			else
-				CEPGP_groupVersion[CEPGP_ntgetn(CEPGP_groupVersion)+1] = {
-					[1] = sender,
-					[2] = string.sub(message, strfind(message, " ")+1)
-				};
+				break;
 			end
-		else
-			if CEPGP_tContains(CEPGP_groupVersion, sender, true) then
-				for i=1, CEPGP_ntgetn(CEPGP_groupVersion) do
-					if CEPGP_groupVersion[i][1] == sender then
-						CEPGP_groupVersion[i][2] = string.sub(message, strfind(message, " ")+1);
-						break;
-					end
-				end
-			else				
-				CEPGP_groupVersion[CEPGP_ntgetn(CEPGP_groupVersion)+1] = {
-					[1] = sender,
-					[2] = string.sub(message, strfind(message, " ")+1)
-				};
-			end
-			CEPGP_vInfo[sender] = string.sub(message, strfind(message, " ")+1);
 		end
-	CEPGP_UpdateVersionScrollBar();
-	CEPGP_checkVersion(message);
+		CEPGP_vInfo[sender] = args[3];
+		CEPGP_checkVersion(message);
+		CEPGP_UpdateVersionScrollBar();
 		
 		
 	elseif message == "version-check" then
 		if not sender then return; end
 		CEPGP_updateGuild();
 		if CEPGP_roster[sender] then
-			CEPGP_SendAddonMsg(sender .. "versioncheck " .. CEPGP_VERSION, "GUILD");
+			CEPGP_SendAddonMsg(sender .. ";versioncheck;" .. CEPGP_VERSION, "GUILD");
 		else
-			CEPGP_SendAddonMsg(sender .. "versioncheck " .. CEPGP_VERSION);
+			CEPGP_SendAddonMsg(sender .. ";versioncheck;" .. CEPGP_VERSION, "RAID");
 		end
 	end
 		
 		
-	if strfind(message, "RaidAssistLoot") and (sender ~= UnitName("player") and sender ~= UnitName("player"))	then
-		if strfind(message, "RaidAssistLootDist") then
-			local link = string.sub(message, 19, strfind(message, ",")-1);
-			local gp = string.sub(message, strfind(message, ",")+1, strfind(message, "\\")-1);
-			CEPGP_RaidAssistLootDist(link, gp);
+	if strfind(message, "RaidAssistLoot") and sender ~= UnitName("player")	then
+		if args[1] == "RaidAssistLootDist" then
+			if args[4] == "true" then
+				CEPGP_RaidAssistLootDist(args[2], args[3], true);
+			else
+				CEPGP_RaidAssistLootDist(args[2], args[3], false);
+			end
 		else
 			CEPGP_RaidAssistLootClosed();
 		end
 		
 		
-		--Raid assists receiving !need responses in the format of !need,playername`itemID (of item being distributed)
-	elseif strfind(message, "!need," .. UnitName("player")) and sender ~= UnitName("player") then-- and IsRaidOfficer()  then
-		local arg2 = string.sub(message, strfind(message, ",")+1, strfind(message, "`")-1); --!need,sendername`itemID
-		table.insert(CEPGP_responses, arg2);
-		local slot = nil;
-		CEPGP_DistID = string.sub(message, 7+string.len(UnitName("player"))+1, string.len(message));
-		if CEPGP_DistID then
-			_, _, _, _, _, _, _, _, slot = GetItemInfo(CEPGP_DistID);
-		end
-		CEPGP_updateGuild();
-		if slot then
-			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-"..CEPGP_DistID.."~"..slot, "RAID");
-		else
-			CEPGP_SendAddonMsg(arg2.."-CEPGP_distributing-nil~nil", "RAID");
-		end
+		--Raid assists receiving !need responses in the format of !need;playername;itemID (of item being distributed)
+	elseif args[1] == "!need" and args[2] == UnitName("player") and sender ~= UnitName("player") then
+		CEPGP_itemsTable[args[2]] = {};
 		
-	elseif strfind(message, "?LootClosed") then
+	elseif args[1] == "LootClosed" then
 		_G["CEPGP_respond"]:Hide();		
 		
-	elseif strfind(message, "STANDBYEP"..UnitName("player")) then
-		CEPGP_print(string.sub(message, strfind(message, ",")+1));
+	elseif args[1] == "STANDBYEP" and args[2] == UnitName("player") then
+		CEPGP_print(args[3]);
 		
-		
-	elseif strfind(message, "!info"..UnitName("player")) then
-		CEPGP_print(string.sub(message, 5+string.len(UnitName("player"))+1));
-		
-	elseif message == "?forceSync" and ALLOW_FORCED_SYNC and sender ~= UnitName("player") then
-		local _, _, _, rIndex = CEPGP_getGuildInfo(sender); --rank index
-		if not rIndex then return; end
-		if rIndex + 1 <= CEPGP_force_sync_rank then --Index obtained by GetGuildRosterInfo starts at 0 whereas GuildControlGetRankName starts at 1 for some reason
-			CEPGP_print(sender .. " is synchronising your settings with theirs");
-			CEPGP_SendAddonMsg(sender.."-import", "GUILD");
+	elseif args[1] == "StandbyListAdd" and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and sender ~= UnitName("player") then
+		for _, t in pairs(CEPGP_standbyRoster) do -- Is the player already in the standby roster?
+			if t[1] == args[2] then
+				return;
+			end
 		end
-		
-	elseif message == UnitName("player").."-import" then
-		local lane;
-		if CEPGP_tContains(CEPGP_raidRoster, sender) then
-			lane = "RAID";
-		elseif CEPGP_roster[sender] then
-			lane = "GUILD";
+		for _, v in ipairs(CEPGP_raidRoster) do -- Is the player part of your raid group?
+			if args[2] == v[1] then
+				return;
+			end
 		end
-		CEPGP_SendAddonMsg(sender.."-impresponse!CHANNEL~"..CHANNEL, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!MOD~"..MOD, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!COEF~"..COEF, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!MOD_COEF~"..MOD_COEF, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!BASEGP~"..BASEGP, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!WHISPERMSG~"..CEPGP_standby_whisper_msg, lane);
-		CEPGP_SendAddonMsg(sender.."-impresponse!KEYWORD~"..CEPGP_keyword, lane);
+		if not CEPGP_roster[args[2]] then -- Player might not be part of your guild. This could happen if you're pugging with another guild and they use CEPGP
+			return;
+		end
+		local player, class, rank, rankIndex, EP, GP, classFile = args[2], args[3], args[4], args[5], args[6], args[7], args[8];
+		CEPGP_standbyRoster[#CEPGP_standbyRoster+1] = {
+			[1] = player,
+			[2] = class,
+			[3] = rank,
+			[4] = rankIndex,
+			[5] = EP,
+			[6] = GP,
+			[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+			[8] = classFile
+		};
+		CEPGP_UpdateStandbyScrollBar();
+		
+	elseif args[1] == "StandbyListRemove" and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and sender ~= UnitName("player") then
+		for i, v in ipairs(CEPGP_standbyRoster) do
+			if v[1] == args[2] then
+				table.remove(CEPGP_standbyRoster, i);
+			end
+			break;
+		end
+	
+	elseif (args[1] == "StandbyRemoved" or args[1] == "StandbyAdded") and args[2] == UnitName("player") then
+		CEPGP_print(args[3]);	
+		
+	elseif args[1] == "!info" and args[2] == UnitName("player") then--strfind(message, "!info"..UnitName("player")) then
+		CEPGP_print(args[3]);
+		
+	elseif (args[1] == UnitName("player") or args[1] == "?forceSync") and args[2] == "import" then
+		local lane = "GUILD";
+		if args[1] == "?forceSync" then
+			local _, _, _, rIndex = CEPGP_getGuildInfo(sender); --rank index
+			if not rIndex then return; end
+			if rIndex + 1 <= CEPGP_force_sync_rank then --Index obtained by GetGuildRosterInfo starts at 0 whereas GuildControlGetRankName starts at 1 for some reason
+				CEPGP_print(sender .. " is synchronising your settings with theirs");
+			end
+		end
+		CEPGP_SendAddonMsg(sender..";impresponse;CHANNEL;"..CHANNEL, lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;MOD;"..MOD, lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;COEF;"..COEF, lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;MOD_COEF;"..MOD_COEF, lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;BASEGP;"..BASEGP, lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;WHISPERMSG;"..CEPGP_standby_whisper_msg, lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;KEYWORD;"..CEPGP_keyword, lane);
 		if STANDBYEP then
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYEP~1", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYEP;1", lane);
 		else
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYEP~0", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYEP;0", lane);
 		end
 		if STANDBYOFFLINE then
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYOFFLINE~1", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYOFFLINE;1", lane);
 		else
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYOFFLINE~0", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYOFFLINE;0", lane);
 		end
-		CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYPERCENT~"..STANDBYPERCENT, lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;STANDBYPERCENT;"..STANDBYPERCENT, lane);
 		for k, v in pairs(SLOTWEIGHTS) do
-			CEPGP_SendAddonMsg(sender.."-impresponse!SLOTWEIGHTS~"..k.."?"..v, lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;SLOTWEIGHTS;"..k..";"..v, lane);
 		end
 		if CEPGP_standby_byrank then --Implies result for both byrank and manual standby designation
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYBYRANK~1", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYBYRANK;1", lane);
 		else
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYBYRANK~0", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYBYRANK;0", lane);
 		end
 		if CEPGP_standby_accept_whispers then
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYALLOWWHISPERS~1", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYALLOWWHISPERS;1", lane);
 		else
-			CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYALLOWWHISPERS~0", lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;STANDBYALLOWWHISPERS;0", lane);
 		end
 		for k, v in pairs(STANDBYRANKS) do
 			if STANDBYRANKS[k][2] then
-				CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYRANKS~"..k.."?1", lane);
+				CEPGP_SendAddonMsg(sender..";impresponse;STANDBYRANKS;"..k..";1", lane);
 			else
-				CEPGP_SendAddonMsg(sender.."-impresponse!STANDBYRANKS~"..k.."?0", lane);
+				CEPGP_SendAddonMsg(sender..";impresponse;STANDBYRANKS;"..k..";0", lane);
 			end
 		end
 		for k, v in pairs(EPVALS) do
-			CEPGP_SendAddonMsg(sender.."-impresponse!EPVALS~"..k.."?"..v, lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;EPVALS;"..k..";"..v, lane);
 		end
 		for k, v in pairs(AUTOEP) do
 			if AUTOEP[k] then
-				CEPGP_SendAddonMsg(sender.."-impresponse!AUTOEP~"..k.."?1", lane);
+				CEPGP_SendAddonMsg(sender..";impresponse;AUTOEP;"..k..";1", lane);
 			else
-				CEPGP_SendAddonMsg(sender.."-impresponse!AUTOEP~"..k.."?0", lane);
+				CEPGP_SendAddonMsg(sender..";impresponse;AUTOEP;"..k..";0", lane);
 			end
 		end
 		for k, v in pairs(OVERRIDE_INDEX) do
-			CEPGP_SendAddonMsg(sender.."-impresponse!OVERRIDE~"..k.."?"..v, lane);
+			CEPGP_SendAddonMsg(sender..";impresponse;OVERRIDE;"..k..";"..v, lane);
 		end
-		CEPGP_SendAddonMsg(sender.."-impresponse!COMPLETE~", lane);
+		CEPGP_SendAddonMsg(sender..";impresponse;COMPLETE;", lane);
 		
-	elseif strfind(message, UnitName("player")) and strfind(message, "-impresponse!") then
-		local option = string.sub(message, strfind(message, "!")+1, strfind(message, "~")-1);
+	elseif args[1] == UnitName("player") and args[2] == "impresponse" then
+		local option = args[3];
 		
 		if option == "SLOTWEIGHTS" or option == "STANDBYRANKS" or option == "EPVALS" or option == "AUTOEP" or option == "OVERRIDE" then
-			local field = string.sub(message, strfind(message, "~")+1, strfind(message, "?")-1);
-			local val = string.sub(message, strfind(message, "?")+1);
+			local field = args[4];
+			local val = args[5];
+			
 			if option == "SLOTWEIGHTS" then
 				SLOTWEIGHTS[field] = tonumber(val);
 			elseif option == "STANDBYRANKS" then
@@ -269,7 +247,7 @@ function CEPGP_IncAddonMsg(message, sender)
 				OVERRIDE_INDEX[field] = val;
 			end
 		else
-			local val = string.sub(message, strfind(message, "~")+1);
+			local val = args[4];
 			if option == "CHANNEL" then
 				CHANNEL = val;
 			elseif option == "KEYWORD" then
@@ -324,52 +302,109 @@ function CEPGP_IncAddonMsg(message, sender)
 		
 		CEPGP_button_options_OnClick();
 		
-	elseif strfind(message, "CallItem") then
-		local id = string.sub(message, 10, strfind(message, "?gp=")-1);
-		local gp = string.sub(message, strfind(message, "?gp=")+4);
+	elseif args[1] == "?IgnoreUpdates" and sender ~= UnitName("player") then
+		if args[2] == "true" then
+			CEPGP_ignoreUpdates = true;
+		else
+			CEPGP_ignoreUpdates = false;
+			CEPGP_rosterUpdate("GUILD_ROSTER_UPDATE");
+		end
+	
+	elseif args[1] == "CallItem" and sender ~= UnitName("player") then
+		local id = args[2];
+		local gp = args[3];
 		CEPGP_callItem(id, gp);
 		
 	elseif strfind(message, "MainSpec") then
 		CEPGP_handleComms("CHAT_MSG_WHISPER", CEPGP_keyword, sender);
+		
 	
-	elseif strfind(message, "CEPGP_TRAFFIC") then
+	elseif args[1] == "CEPGP_TRAFFIC" then
 		if string.find(sender, "-") then
 			sender = string.sub(sender, 0, string.find(sender, "-")-1);
 		end
 		if sender == UnitName("player") then return; end
-		local player = string.sub(message, 21, strfind(message, "ISSUER")-1);
-		local issuer = string.sub(message, strfind(message, "ISSUER")+6, strfind(message, "ACTION")-1);
-		local action = string.sub(message, strfind(message, "ACTION")+6, strfind(message, "EPB")-1);
-		local EPB = string.sub(message, strfind(message, "EPB")+3, strfind(message, "EPA")-1);
-		local EPA = string.sub(message, strfind(message, "EPA")+3, strfind(message, "GPB")-1);
-		local GPB = string.sub(message, strfind(message, "GPB")+3, strfind(message, "GPA")-1);
-		local GPA = string.sub(message, strfind(message, "GPA")+3, strfind(message, "ITEMID")-1);
-		local itemID = string.sub(message, strfind(message, "ITEMID")+6);
-		local itemLink = CEPGP_getItemLink(itemID);
-		TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
-			[1] = player,
-			[2] = issuer,
-			[3] = action,
-			[4] = EPB,
-			[5] = EPA,
-			[6] = GPB,
-			[7] = GPA,
-			[8] = itemLink
-		};
+		local player = args[2];
+		local issuer = args[3];
+		local action = args[4];
+		local EPB = args[5];
+		local EPA = args[6];
+		local GPB = args[7];
+		local GPA = args[8];
+		local itemID = args[9];
+		if itemID == "" then itemID = 0; end
+		local tStamp = args[10];
+		if not tStamp or tStamp == "" then
+			tStamp = time();
+		end
+		if CEPGP_itemExists(tonumber(itemID)) then
+			local itemLink = CEPGP_getItemLink(itemID);
+			if not itemLink then
+				local item = Item:CreateFromItemID(tonumber(itemID));
+				item:ContinueOnItemLoad(function()
+					itemLink = CEPGP_getItemLink(itemID);
+					TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+					[1] = player,
+					[2] = issuer,
+					[3] = action,
+					[4] = EPB,
+					[5] = EPA,
+					[6] = GPB,
+					[7] = GPA,
+					[8] = itemLink,
+					[9] = tStamp
+				};
+				end);
+			elseif itemLink then
+				TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+					[1] = player,
+					[2] = issuer,
+					[3] = action,
+					[4] = EPB,
+					[5] = EPA,
+					[6] = GPB,
+					[7] = GPA,
+					[8] = itemLink,
+					[9] = tStamp
+				};
+			end
+		else
+			TRAFFIC[CEPGP_ntgetn(TRAFFIC)+1] = {
+				[1] = player,
+				[2] = issuer,
+				[3] = action,
+				[4] = EPB,
+				[5] = EPA,
+				[6] = GPB,
+				[7] = GPA,
+				[9] = tStamp
+			};
+		end
 		CEPGP_UpdateTrafficScrollBar();
+	elseif args[1] == ROLE_CHECK_COMMAND_BEGIN then
+		CEPGP_RoleCheckEventHandler();
+	elseif args[1] == ROLE_CHECK_COMMAND_SEND_ROLE then
+		CEPGP_RoleSetEventHandler(sender, args[2]);
+	elseif args[1] == SHOW_MESSAGE_COMMAND then
+		DEFAULT_CHAT_FRAME:AddMessage(args[2]);
 	end
 end
 
-function CEPGP_SendAddonMsg(message, channel)
-	--print(debugstack(2,3,2));
+function CEPGP_SendAddonMsg(message, channel, person)
+	local prefix = 'CEPGP';
 	if channel == "GUILD" and IsInGuild() then
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "GUILD");
+		C_ChatInfo.SendAddonMessage(prefix, message, "GUILD");
+	elseif channel == 'WHISPER' then
+		if person ~= nil then
+			CEPGP_debugMsg('Sending message ' .. message .. ' to ' .. person);
+			C_ChatInfo.SendAddonMessage(prefix, message, channel, person);
+		end;
 	elseif (channel == "RAID" or not channel) and IsInRaid("player") then --Player is in a raid group
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "RAID");
+		C_ChatInfo.SendAddonMessage(prefix, message, "RAID");
 	elseif GetNumGroupMembers() > 0 and not IsInRaid("player") then --Player is in a party but not a raid
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "PARTY");
+		C_ChatInfo.SendAddonMessage(prefix, message, "PARTY");
 	elseif IsInGuild() then --If channel is not specified then assume guild
-		C_ChatInfo.SendAddonMessage("CEPGP", message, "GUILD");
+		C_ChatInfo.SendAddonMessage(prefix, message, "GUILD");
 	end
 end
 
@@ -394,6 +429,6 @@ function CEPGP_ShareTraffic(player, issuer, action, EPB, EPA, GPB, GPA, itemID)
 		GPA = "";
 	end
 	if CanEditOfficerNote() then
-		CEPGP_SendAddonMsg("CEPGP_TRAFFIC-PLAYER" .. player .. "ISSUER" .. issuer .. "ACTION" .. action .. "EPB" .. EPB .. "EPA" .. EPA .. "GPB" .. GPB .. "GPA" .. GPA .. "ITEMID" .. itemID, "GUILD");
+		CEPGP_SendAddonMsg("CEPGP_TRAFFIC;" .. player .. ";" .. issuer .. ";" .. action .. ";" .. EPB .. ";" .. EPA .. ";" .. GPB .. ";" .. GPA .. ";" .. itemID, "GUILD");
 	end
 end

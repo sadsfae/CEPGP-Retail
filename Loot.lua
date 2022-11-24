@@ -1,33 +1,58 @@
 function CEPGP_LootFrame_Update()
 	local items = {};
 	local count = 0;
-	local numLootItems = LootFrame.numLootItems;
-	local texture, item, quantity, quality;
-	for index = 1, numLootItems do
-		local slot = index;
-		if ( slot <= numLootItems ) then	
-			if (LootSlotHasItem(slot)) then
-				texture, item, quantity, _, quality = GetLootSlotInfo(slot);
-				if tostring(GetLootSlotLink(slot)) ~= "nil" or CEPGP_inOverride(item) then
+	if CEPGP_ElvUI then
+		local numLootItems = GetNumLootItems();
+		local texture, item, quantity, quality;
+		for index = 1, numLootItems do
+			if ( index <= numLootItems ) then	
+				texture, item, quantity, _, quality = GetLootSlotInfo(index);
+				if (tostring(GetLootSlotLink(index)) ~= "nil" or CEPGP_inOverride(item)) and item ~= nil then
 					items[index-count] = {};
 					items[index-count][1] = texture;
 					items[index-count][2] = item;
 					items[index-count][3] = quality;
-					items[index-count][4] = GetLootSlotLink(slot);
+					items[index-count][4] = GetLootSlotLink(index);
 					local link = GetLootSlotLink(index);
 					local itemString = string.find(link, "item[%-?%d:]+");
 					itemString = strsub(link, itemString, string.len(link)-string.len(item)-6);
 					items[index-count][5] = itemString;
-					items[index-count][6] = slot;
+					items[index-count][6] = index;
 					items[index-count][7] = quantity;
 				else
 					count = count + 1;
 				end
 			end
 		end
+	else
+		local numLootItems = LootFrame.numLootItems;
+		local texture, item, quantity, quality;
+		for index = 1, numLootItems do
+			local slot = index;
+			if ( slot <= numLootItems ) then	
+				if (LootSlotHasItem(slot)) then
+					texture, item, quantity, _, quality = GetLootSlotInfo(slot);
+					if tostring(GetLootSlotLink(slot)) ~= "nil" or CEPGP_inOverride(item) then
+						items[index-count] = {};
+						items[index-count][1] = texture;
+						items[index-count][2] = item;
+						items[index-count][3] = quality;
+						items[index-count][4] = GetLootSlotLink(slot);
+						local link = GetLootSlotLink(index);
+						local itemString = string.find(link, "item[%-?%d:]+");
+						itemString = strsub(link, itemString, string.len(link)-string.len(item)-6);
+						items[index-count][5] = itemString;
+						items[index-count][6] = slot;
+						items[index-count][7] = quantity;
+					else
+						count = count + 1;
+					end
+				end
+			end
+		end
 	end
 	for k, v in pairs(items) do -- k = loot slot number, v is the table result
-		if (UnitInRaid("player") or CEPGP_debugMode) and (v[3] > 2 or CEPGP_inOverride(item)) then
+		if (UnitInRaid("player") or CEPGP_debugMode) and (v[3] >= CEPGP_min_threshold) or (CEPGP_inOverride(v[2]) or CEPGP_inOverride(v[4])) then
 			if CEPGP_isML() == 0 then
 				CEPGP_frame:Show();
 				CEPGP_mode = "loot";
@@ -47,7 +72,7 @@ function CEPGP_announce(link, x, slotNum, quantity)
 		CEPGP_itemsTable = {};
 		CEPGP_distItemLink = link;
 		CEPGP_DistID = id;
-		CEPGP_SendAddonMsg("CEPGP_setDistID?" .. id, "RAID");
+		CEPGP_SendAddonMsg("CEPGP_setDistID;" .. id, "RAID");
 		CEPGP_distSlot = slot;
 		CEPGP_distSlotID = slotNum;
 		gp = _G[CEPGP_mode..'itemGP'..x]:GetText();
@@ -71,12 +96,17 @@ function CEPGP_announce(link, x, slotNum, quantity)
 				_, rank = GetRaidRosterInfo(i);
 			end
 		end
-		CEPGP_SendAddonMsg("RaidAssistLootDist"..link..","..gp.."\\"..UnitName("player"), "RAID");
-		if CEPGP_loot_GUI then
-			CEPGP_callItem(id);
-			CEPGP_SendAddonMsg("CallItem?"..id .. "?gp=" .. gp, "RAID");
+		if CEPGP_raid_wide_dist then
+			CEPGP_SendAddonMsg("RaidAssistLootDist;"..link..";"..gp..";true", "RAID");
 		else
-			SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
+			CEPGP_SendAddonMsg("RaidAssistLootDist;"..link..";"..gp..";false", "RAID");
+		end
+		if CEPGP_loot_GUI then
+			CEPGP_callItem(id, gp);
+			CEPGP_SendAddonMsg("CallItem;"..id .. ";" .. gp, "RAID");
+			SendChatMessage("NOW DISTRIBUTING: " .. link .. " for " .. gp .. " GP", "RAID_WARNING", CEPGP_LANGUAGE);
+		else
+			SendChatMessage("--------------------------", "RAID", CEPGP_LANGUAGE);
 			if rank > 0 then
 				if quantity > 1 then
 					SendChatMessage("NOW DISTRIBUTING: x" .. quantity .. " " .. link, "RAID_WARNING", CEPGP_LANGUAGE);
@@ -91,12 +121,12 @@ function CEPGP_announce(link, x, slotNum, quantity)
 				end
 			end
 			if quantity > 1 then
-				SendChatMessage("GP Value: " .. gp .. " (~" .. math.floor(gp/quantity) .. "GP per unit)", RAID, CEPGP_LANGUAGE);
+				SendChatMessage("GP Value: " .. gp .. " (~" .. math.floor(gp/quantity) .. "GP per unit)", "RAID", CEPGP_LANGUAGE);
 			else
-				SendChatMessage("GP Value: " .. gp, RAID, CEPGP_LANGUAGE);
+				SendChatMessage("GP Value: " .. gp, "RAID", CEPGP_LANGUAGE);
 			end
-			SendChatMessage("Whisper me " .. CEPGP_keyword .. " for mainspec only", RAID, CEPGP_LANGUAGE);
-			SendChatMessage("--------------------------", RAID, CEPGP_LANGUAGE);
+			SendChatMessage("Whisper me " .. CEPGP_keyword .. " for mainspec only", "RAID", CEPGP_LANGUAGE);
+			SendChatMessage("--------------------------", "RAID", CEPGP_LANGUAGE);
 		end
 		CEPGP_distribute:Show();
 		CEPGP_loot:Hide();
