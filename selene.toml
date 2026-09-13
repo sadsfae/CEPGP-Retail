@@ -1,0 +1,11 @@
+std = "wow"
+
+[lints]
+# The addon intentionally reads/writes globals (WoW API + cross-file access).
+global_usage = "allow"
+unscoped_variables = "allow"
+# Legacy style: several statements on one line, and verbose if conditions.
+multiple_statements = "allow"
+parenthese_conditions = "allow"
+# Keep the real code-smell checks reported, but non-blocking for now.
+if_same_then_else = "warn"

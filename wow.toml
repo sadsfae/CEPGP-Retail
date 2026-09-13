@@ -1,0 +1,976 @@
+[selene]
+base = "lua51"
+
+["ALLOW_FORCED_SYNC"]
+any = true
+
+["AUTOEP"]
+any = true
+
+["BASEGP"]
+any = true
+
+["BNGetFriendInfo"]
+any = true
+
+["BNGetNumFriends"]
+any = true
+
+["CEPGP_1120_notice"]
+any = true
+
+["CEPGP_AddEPBeforePull"]
+any = true
+
+["CEPGP_AddEPBeforeRaid"]
+any = true
+
+["CEPGP_AddRaidEP"]
+any = true
+
+["CEPGP_DistID"]
+any = true
+
+["CEPGP_EPPerMinute"]
+any = true
+
+["CEPGP_ElvUI"]
+any = true
+
+["CEPGP_IncAddonMsg"]
+any = true
+
+["CEPGP_LANGUAGE"]
+any = true
+
+["CEPGP_Locale"]
+any = true
+
+["CEPGP_LootFrame_Update"]
+any = true
+
+["CEPGP_RaidAssistLootClosed"]
+any = true
+
+["CEPGP_RaidAssistLootDist"]
+any = true
+
+["CEPGP_RaidRoles"]
+any = true
+
+["CEPGP_RoleCheckEventHandler"]
+any = true
+
+["CEPGP_RoleSetEventHandler"]
+any = true
+
+["CEPGP_SendAddonMsg"]
+any = true
+
+["CEPGP_ShareTraffic"]
+any = true
+
+["CEPGP_SlotNameToID"]
+any = true
+
+["CEPGP_StartRaidRoleCheck"]
+any = true
+
+["CEPGP_THEKAL_PARAMS"]
+any = true
+
+["CEPGP_UpdateAttendanceScrollBar"]
+any = true
+
+["CEPGP_UpdateGuildScrollBar"]
+any = true
+
+["CEPGP_UpdateLootScrollBar"]
+any = true
+
+["CEPGP_UpdateOverrideScrollBar"]
+any = true
+
+["CEPGP_UpdateRaidScrollBar"]
+any = true
+
+["CEPGP_UpdateStandbyScrollBar"]
+any = true
+
+["CEPGP_UpdateTrafficScrollBar"]
+any = true
+
+["CEPGP_UpdateVersionScrollBar"]
+any = true
+
+["CEPGP_VERSION"]
+any = true
+
+["CEPGP_addBP"]
+any = true
+
+["CEPGP_addEP"]
+any = true
+
+["CEPGP_addGP"]
+any = true
+
+["CEPGP_addGuildEP"]
+any = true
+
+["CEPGP_addStandbyEP"]
+any = true
+
+["CEPGP_addTimedEP"]
+any = true
+
+["CEPGP_addToStandby"]
+any = true
+
+["CEPGP_announce"]
+any = true
+
+["CEPGP_attendance_dropdown"]
+any = true
+
+["CEPGP_auto_pass"]
+any = true
+
+["CEPGP_award"]
+any = true
+
+["CEPGP_boss_config_frames"]
+any = true
+
+["CEPGP_button_guild"]
+any = true
+
+["CEPGP_button_guild_restore"]
+any = true
+
+["CEPGP_button_loot_dist"]
+any = true
+
+["CEPGP_button_options_OnClick"]
+any = true
+
+["CEPGP_button_raid"]
+any = true
+
+["CEPGP_calcAttIntervals"]
+any = true
+
+["CEPGP_calcAttendance"]
+any = true
+
+["CEPGP_callItem"]
+any = true
+
+["CEPGP_checkEPGPBP"]
+any = true
+
+["CEPGP_checkVersion"]
+any = true
+
+["CEPGP_classes"]
+any = true
+
+["CEPGP_cleanName"]
+any = true
+
+["CEPGP_cleanTable"]
+any = true
+
+["CEPGP_context_amount"]
+any = true
+
+["CEPGP_context_popup"]
+any = true
+
+["CEPGP_context_popup_BP_check"]
+any = true
+
+["CEPGP_context_popup_EP_check"]
+any = true
+
+["CEPGP_context_popup_GP_check"]
+any = true
+
+["CEPGP_context_popup_additional_check"]
+any = true
+
+["CEPGP_context_popup_additional_check_text"]
+any = true
+
+["CEPGP_context_popup_cancel"]
+any = true
+
+["CEPGP_context_popup_confirm"]
+any = true
+
+["CEPGP_context_popup_desc"]
+any = true
+
+["CEPGP_context_popup_header"]
+any = true
+
+["CEPGP_context_popup_title"]
+any = true
+
+["CEPGP_context_reason"]
+any = true
+
+["CEPGP_criteria"]
+any = true
+
+["CEPGP_db"]
+any = true
+
+["CEPGP_debugMode"]
+any = true
+
+["CEPGP_debugMsg"]
+any = true
+
+["CEPGP_debuginfo"]
+any = true
+
+["CEPGP_decay"]
+any = true
+
+["CEPGP_def_channel_dropdown"]
+any = true
+
+["CEPGP_distGP"]
+any = true
+
+["CEPGP_distItemLink"]
+any = true
+
+["CEPGP_distPlayer"]
+any = true
+
+["CEPGP_distSlot"]
+any = true
+
+["CEPGP_distribute"]
+any = true
+
+["CEPGP_distribute_GP_value"]
+any = true
+
+["CEPGP_distribute_item_tex"]
+any = true
+
+["CEPGP_distribute_popup"]
+any = true
+
+["CEPGP_distribute_popup_title"]
+any = true
+
+["CEPGP_distributing"]
+any = true
+
+["CEPGP_ep_before_raid"]
+any = true
+
+["CEPGP_export_class_check"]
+any = true
+
+["CEPGP_export_rank_check"]
+any = true
+
+["CEPGP_extra_ep_button"]
+any = true
+
+["CEPGP_extra_ep_dump"]
+any = true
+
+["CEPGP_flushConsumptions"]
+any = true
+
+["CEPGP_flushQueuedEP"]
+any = true
+
+["CEPGP_force_sync_rank"]
+any = true
+
+["CEPGP_frame"]
+any = true
+
+["CEPGP_frames"]
+any = true
+
+["CEPGP_getEPGPBP"]
+any = true
+
+["CEPGP_getGuildInfo"]
+any = true
+
+["CEPGP_getIndex"]
+any = true
+
+["CEPGP_getItemID"]
+any = true
+
+["CEPGP_getItemLink"]
+any = true
+
+["CEPGP_getItemString"]
+any = true
+
+["CEPGP_getPlayerClass"]
+any = true
+
+["CEPGP_getPlayerRole"]
+any = true
+
+["CEPGP_getRealtimeRoster"]
+any = true
+
+["CEPGP_groupVersion"]
+any = true
+
+["CEPGP_guild"]
+any = true
+
+["CEPGP_guild_add_EP"]
+any = true
+
+["CEPGP_guild_decay"]
+any = true
+
+["CEPGP_guild_reset"]
+any = true
+
+["CEPGP_handleCombat"]
+any = true
+
+["CEPGP_handleComms"]
+any = true
+
+["CEPGP_handleLoot"]
+any = true
+
+["CEPGP_ignoreUpdates"]
+any = true
+
+["CEPGP_inOverride"]
+any = true
+
+["CEPGP_indexToName"]
+any = true
+
+["CEPGP_initialise"]
+any = true
+
+["CEPGP_invisibleFrame"]
+any = true
+
+["CEPGP_invisibleFrameUpdateHandler"]
+any = true
+
+["CEPGP_isML"]
+any = true
+
+["CEPGP_itemExists"]
+any = true
+
+["CEPGP_itemsTable"]
+any = true
+
+["CEPGP_keyword"]
+any = true
+
+["CEPGP_lastFlush"]
+any = true
+
+["CEPGP_loot"]
+any = true
+
+["CEPGP_lootChannel"]
+any = true
+
+["CEPGP_lootSlot"]
+any = true
+
+["CEPGP_loot_CEPGP_distributing"]
+any = true
+
+["CEPGP_loot_GUI"]
+any = true
+
+["CEPGP_loot_channel_dropdown"]
+any = true
+
+["CEPGP_minEP"]
+any = true
+
+["CEPGP_minGPDecayFactor"]
+any = true
+
+["CEPGP_min_threshold"]
+any = true
+
+["CEPGP_min_threshold_dropdown"]
+any = true
+
+["CEPGP_mode"]
+any = true
+
+["CEPGP_notice"]
+any = true
+
+["CEPGP_notice_frame"]
+any = true
+
+["CEPGP_ntgetn"]
+any = true
+
+["CEPGP_open_replacement_list"]
+any = true
+
+["CEPGP_options"]
+any = true
+
+["CEPGP_options_allow_forced_sync_check"]
+any = true
+
+["CEPGP_options_coef_2_edit"]
+any = true
+
+["CEPGP_options_coef_edit"]
+any = true
+
+["CEPGP_options_gp_base_edit"]
+any = true
+
+["CEPGP_options_keyword_edit"]
+any = true
+
+["CEPGP_options_min_EP_check"]
+any = true
+
+["CEPGP_options_mod_edit"]
+any = true
+
+["CEPGP_options_page_2"]
+any = true
+
+["CEPGP_options_page_3"]
+any = true
+
+["CEPGP_options_page_3_aq20"]
+any = true
+
+["CEPGP_options_page_3_aq40"]
+any = true
+
+["CEPGP_options_page_3_bwl"]
+any = true
+
+["CEPGP_options_page_3_mc"]
+any = true
+
+["CEPGP_options_page_3_naxx"]
+any = true
+
+["CEPGP_options_page_3_worldboss"]
+any = true
+
+["CEPGP_options_page_3_zg"]
+any = true
+
+["CEPGP_options_standby_ep_accept_whispers"]
+any = true
+
+["CEPGP_options_standby_ep_accept_whispers_check"]
+any = true
+
+["CEPGP_options_standby_ep_byrank_check"]
+any = true
+
+["CEPGP_options_standby_ep_check"]
+any = true
+
+["CEPGP_options_standby_ep_list_button"]
+any = true
+
+["CEPGP_options_standby_ep_manual_check"]
+any = true
+
+["CEPGP_options_standby_ep_message_val"]
+any = true
+
+["CEPGP_options_standby_ep_val"]
+any = true
+
+["CEPGP_options_standby_ep_whisper_message"]
+any = true
+
+["CEPGP_override"]
+any = true
+
+["CEPGP_overrideScrollFrame"]
+any = true
+
+["CEPGP_plugins"]
+any = true
+
+["CEPGP_populateFrame"]
+any = true
+
+["CEPGP_print"]
+any = true
+
+["CEPGP_queueEP"]
+any = true
+
+["CEPGP_raid"]
+any = true
+
+["CEPGP_raidRoster"]
+any = true
+
+["CEPGP_raid_add_EP"]
+any = true
+
+["CEPGP_raid_add_pull_EP"]
+any = true
+
+["CEPGP_raid_add_timed_EP"]
+any = true
+
+["CEPGP_raid_flush_timed_EP"]
+any = true
+
+["CEPGP_raid_logs"]
+any = true
+
+["CEPGP_raid_role_check"]
+any = true
+
+["CEPGP_raid_role_personal"]
+any = true
+
+["CEPGP_raid_wide_dist"]
+any = true
+
+["CEPGP_resetAll"]
+any = true
+
+["CEPGP_responses"]
+any = true
+
+["CEPGP_restoreDropdown"]
+any = true
+
+["CEPGP_restore_guild_logs"]
+any = true
+
+["CEPGP_role_check_popup"]
+any = true
+
+["CEPGP_roster"]
+any = true
+
+["CEPGP_rosterUpdate"]
+any = true
+
+["CEPGP_save_guild_logs"]
+any = true
+
+["CEPGP_sendChatMessage"]
+any = true
+
+["CEPGP_settings_import"]
+any = true
+
+["CEPGP_showFlushWindow"]
+any = true
+
+["CEPGP_snapshot"]
+any = true
+
+["CEPGP_split"]
+any = true
+
+["CEPGP_standby"]
+any = true
+
+["CEPGP_standbyRoster"]
+any = true
+
+["CEPGP_standby_accept_whispers"]
+any = true
+
+["CEPGP_standby_addRank"]
+any = true
+
+["CEPGP_standby_byrank"]
+any = true
+
+["CEPGP_standby_manual"]
+any = true
+
+["CEPGP_standby_share"]
+any = true
+
+["CEPGP_standby_whisper_msg"]
+any = true
+
+["CEPGP_suppress_announcements"]
+any = true
+
+["CEPGP_sync_rank"]
+any = true
+
+["CEPGP_tContains"]
+any = true
+
+["CEPGP_tSort"]
+any = true
+
+["CEPGP_toggleFrame"]
+any = true
+
+["CEPGP_tokens"]
+any = true
+
+["CEPGP_traffic"]
+any = true
+
+["CEPGP_updateGuild"]
+any = true
+
+["CEPGP_use"]
+any = true
+
+["CEPGP_vInfo"]
+any = true
+
+["CEPGP_vSearch"]
+any = true
+
+["CEPGP_version"]
+any = true
+
+["CEPPG_gp_tooltips"]
+any = true
+
+["CHANNEL"]
+any = true
+
+["COEF"]
+any = true
+
+["C_ChatInfo"]
+any = true
+
+["C_Item"]
+any = true
+
+["C_Timer"]
+any = true
+
+["CanEditOfficerNote"]
+any = true
+
+["CombatLogGetCurrentEventInfo"]
+any = true
+
+["CreateFrame"]
+any = true
+
+["DEFAULT_CHAT_FRAME"]
+any = true
+
+["EPVALS"]
+any = true
+
+["FauxScrollFrame_GetOffset"]
+any = true
+
+["FauxScrollFrame_Update"]
+any = true
+
+["GAME_LOCALE"]
+any = true
+
+["GameTooltip"]
+any = true
+
+["GetAddOnInfo"]
+any = true
+
+["GetChannelName"]
+any = true
+
+["GetContainerItemID"]
+any = true
+
+["GetContainerItemInfo"]
+any = true
+
+["GetContainerNumSlots"]
+any = true
+
+["GetDefaultLanguage"]
+any = true
+
+["GetGuildRosterInfo"]
+any = true
+
+["GetInventoryItemLink"]
+any = true
+
+["GetItemInfo"]
+any = true
+
+["GetItemSubClassInfo"]
+any = true
+
+["GetLocale"]
+any = true
+
+["GetLootMethod"]
+any = true
+
+["GetLootSlotInfo"]
+any = true
+
+["GetLootSlotLink"]
+any = true
+
+["GetMasterLootCandidate"]
+any = true
+
+["GetNumAddOns"]
+any = true
+
+["GetNumGroupMembers"]
+any = true
+
+["GetNumGuildMembers"]
+any = true
+
+["GetNumLootItems"]
+any = true
+
+["GetRaidRosterInfo"]
+any = true
+
+["GiveMasterLoot"]
+any = true
+
+["GuildControlGetRankName"]
+any = true
+
+["GuildRoster"]
+any = true
+
+["GuildRosterSetOfficerNote"]
+any = true
+
+["HideUIPanel"]
+any = true
+
+["ITEM_QUALITY_COLORS"]
+any = true
+
+["IsInGuild"]
+any = true
+
+["IsInRaid"]
+any = true
+
+["Item"]
+any = true
+
+["ItemRefTooltip"]
+any = true
+
+["LootFrame"]
+any = true
+
+["LootSlotHasItem"]
+any = true
+
+["MAJOR"]
+any = true
+
+["MOD"]
+any = true
+
+["MOD_COEF"]
+any = true
+
+["OVERRIDE_INDEX"]
+any = true
+
+["PlaySound"]
+any = true
+
+["RAID_CLASS_COLORS"]
+any = true
+
+["RECORDS"]
+any = true
+
+["ROLE_CHECK_COMMAND_BEGIN"]
+any = true
+
+["ROLE_CHECK_COMMAND_SEND_ROLE"]
+any = true
+
+["ROLE_HEAL"]
+any = true
+
+["ROLE_MDD"]
+any = true
+
+["ROLE_RDD"]
+any = true
+
+["ROLE_TANK"]
+any = true
+
+["SHOW_MESSAGE_COMMAND"]
+any = true
+
+["SLOTWEIGHTS"]
+any = true
+
+["STANDBYEP"]
+any = true
+
+["STANDBYOFFLINE"]
+any = true
+
+["STANDBYPERCENT"]
+any = true
+
+["STANDBYRANKS"]
+any = true
+
+["SendChatMessage"]
+any = true
+
+["SetItemRef"]
+any = true
+
+["ShowUIPanel"]
+any = true
+
+["SlashCmdList"]
+any = true
+
+["SortGuildRoster"]
+any = true
+
+["TRAFFIC"]
+any = true
+
+["UIDROPDOWNMENU_BUTTON_HEIGHT"]
+any = true
+
+["UIDROPDOWNMENU_MAXBUTTONS"]
+any = true
+
+["UIDROPDOWNMENU_MAXLEVELS"]
+any = true
+
+["UIDROPDOWNMENU_MENU_LEVEL"]
+any = true
+
+["UIDROPDOWNMENU_OPEN_MENU"]
+any = true
+
+["UIDropDownMenu_AddButton"]
+any = true
+
+["UIDropDownMenu_GetSelectedValue"]
+any = true
+
+["UIDropDownMenu_SetSelectedName"]
+any = true
+
+["UIDropDownMenu_SetSelectedValue"]
+any = true
+
+["UISpecialFrames"]
+any = true
+
+["UnitAffectingCombat"]
+any = true
+
+["UnitAura"]
+any = true
+
+["UnitClass"]
+any = true
+
+["UnitInRaid"]
+any = true
+
+["UnitIsGroupAssistant"]
+any = true
+
+["UnitIsGroupLeader"]
+any = true
+
+["UnitName"]
+any = true
+
+["_"]
+any = true
+
+["arg1"]
+any = true
+
+["bossNameIndex"]
+any = true
+
+["class"]
+any = true
+
+["date"]
+any = true
+
+["distributing"]
+any = true
+
+["format"]
+any = true
+
+["getCurChannel"]
+any = true
+
+["geterrorhandler"]
+any = true
+
+["hooksecurefunc"]
+any = true
+
+["itemID"]
+any = true
+
+["numLootItems"]
+any = true
+
+["self"]
+any = true
+
+["strfind"]
+any = true
+
+["strsub"]
+any = true
+
+["time"]
+any = true
+
+["tinsert"]
+any = true
+["table.getn"]
+any = true
