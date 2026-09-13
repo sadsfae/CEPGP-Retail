@@ -1,5 +1,8 @@
+local L = CEPGP_Locale:GetLocale("CEPGP")
+
 function CEPGP_initialise()
 	_, _, _, CEPGP_ElvUI = GetAddOnInfo("ElvUI");
+	if not CEPGP_ElvUI then CEPGP_ElvUI = GetAddOnInfo("TukUI"); end
 	_G["CEPGP_version_number"]:SetText("Running Version: " .. CEPGP_VERSION);
 	local ver2 = string.gsub(CEPGP_VERSION, "%.", ",");
 	if not CEPGP_notice then
@@ -8,6 +11,9 @@ function CEPGP_initialise()
 	if CHANNEL == nil then
 		CHANNEL = "GUILD";
 	end
+	if CEPGP_lootChannel == nil then
+		CEPGP_lootChannel = "RAID";
+	end
 	if MOD == nil then
 		MOD = 1;
 	end
@@ -15,10 +21,13 @@ function CEPGP_initialise()
 		COEF = 4.83;
 	end
 	if MOD_COEF == nil then
-		MOD_COEF = 1;
+		MOD_COEF = 2;
 	end
 	if BASEGP == nil then
 		BASEGP = 1;
+	end
+	if CEPGP_min_threshold == nil then
+		CEPGP_min_threshold = 2;
 	end
 	if CEPGP_keyword == nil then
 		CEPGP_keyword = "!need";
@@ -32,6 +41,11 @@ function CEPGP_initialise()
 		for k, v in pairs(bossNameIndex) do
 			EPVALS[k] = v;
 		end
+	end
+	-- Localize boss names on the config UI
+	local bossNames = _G["CEPGP_options_page_3_mc"].bosses
+	for k, entity in pairs(bossNames) do
+		entity:SetText(L[entity:GetText()])
 	end
 	if CEPGP_ntgetn(SLOTWEIGHTS) == 0 then
 		SLOTWEIGHTS = {
@@ -72,10 +86,7 @@ function CEPGP_initialise()
 		end
 	end
 	if UnitInRaid("player") then
-		for i = 1, GetNumGroupMembers() do
-			name = GetRaidRosterInfo(i);
-			CEPGP_raidRoster[i] = name;
-		end 
+		CEPGP_rosterUpdate("GROUP_ROSTER_UPDATE");
 	end
 	if CEPGP_force_sync_rank == nil then
 		CEPGP_force_sync_rank = 1;
@@ -95,112 +106,137 @@ function CEPGP_initialise()
 	
 	if not CEPGP_notice then
 		CEPGP_notice_frame:Show();
+	elseif not CEPGP_1120_notice then
+		_G["CEPGP_update_notice"]:Show();
 	end
 	
 	if IsInRaid("player") and CEPGP_isML() == 0 then
 		_G["CEPGP_confirmation"]:Show();
 	end
+	
+	CEPGP_updateGuild();
+	GameTooltip:HookScript("OnTooltipSetItem", CEPGP_addGPTooltip);
+	hooksecurefunc("ChatFrame_OnHyperlinkShow", CEPGP_addGPHyperlink);
 end
 
 function CEPGP_calcGP(link, quantity, id)	
-	local name, rarity, ilvl, itemType, subType, slot;
+	local name, rarity, ilvl, itemType, subType, slot, classID, subClassID;
 	if id then
-		name, link, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(id);
+		name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
 	elseif link then
-		name, _, rarity, ilvl, itemType, subType, _, _, slot = GetItemInfo(link);
+		name, _, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(link);
 	else
 		return 0;
 	end
-	if not name then return 0; end
-	if not ilvl then ilvl = 0; end
-	for k, v in pairs(OVERRIDE_INDEX) do
-		if string.lower(name) == string.lower(k) then
-			return OVERRIDE_INDEX[k];
-		end
-	end
-	local found = false;
-	--[[if not found then
-		if ((slot ~= "" and level == 60 and rarity > 3) or (slot == "" and rarity > 3))
-			and (itemType ~= "Blacksmithing" and itemType ~= "Tailoring" and itemType ~= "Alchemy" and itemType ~= "Leatherworking"
-			and itemType ~= "Enchanting" and itemType ~= "Engineering" and itemType ~= "Mining") then
-			local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
-			CEPGP_print("Warning: " .. name .. " not found in index! Please report this to the addon developer");
-			if slot ~= "" then
-				slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
-			end
-		end
-		return 0;
-	end]]
-	if slot == "" or slot == nil then
-		--Tier 3 slots
-		if strfind(name, "desecrated") and rarity == 4 then
-			if (name == "desecratedshoulderpads" or name == "desecratedspaulders" or name == "desecratedpauldrons") then slot = "INVTYPE_SHOULDER";
-			elseif (name == "desecratedsandals" or name == "desecratedboots" or name == "desecratedsabatons") then slot = "INVTYPE_FEET";
-			elseif (name == "desecratedbindings" or name == "desecratedwristguards" or name == "desecratedbracers") then slot = "INVTYPE_WRIST";
-			elseif (name == "desecratedgloves" or name == "desecratedhandguards" or name == "desecratedgauntlets") then slot = "INVTYPE_HAND";
-			elseif (name == "desecratedbelt" or name == "desecratedwaistguard" or name == "desecratedgirdle") then slot = "INVTYPE_WAIST";
-			elseif (name == "desecratedleggings" or name == "desecratedlegguards" or name == "desecratedlegplates") then slot = "INVTYPE_LEGS";
-			elseif (name == "desecratedcirclet" or name == "desecratedheadpiece" or name == "desecratedhelmet") then slot = "INVTYPE_HEAD";
-			elseif name == "desecratedrobe" then slot = "INVTYPE_ROBE";
-			elseif (name == "desecratedtunic" or name == "desecratedbreastplate") then slot = "INVTYPE_CHEST";
+	if not name and CEPGP_itemExists(tonumber(id)) then
+		local item = Item:CreateFromItemID(tonumber(id));
+		item:ContinueOnItemLoad(function()
+			name, link, rarity, ilvl, itemType, subType, _, _, slot, _, _, classID, subClassID = GetItemInfo(id);
+			for k, v in pairs(OVERRIDE_INDEX) do
+				if k == link then
+					return v;
+				end
+				local temp = string.lower(string.gsub(name, " ", ""));
+				k = string.lower(string.gsub(k, " ", ""));
+				if string.lower(temp) == string.lower(k) then
+					return v;
+				end
 			end
 			
-		elseif strfind(name, "primalhakkari") and rarity == 4 then
-			if (name == "primalhakkari bindings" or name == "primalhakkari armsplint" or name == "primalhakkari stanchion") then slot = "INVTYPE_WRIST";
-			elseif (name == "primalhakkari girdle" or name == "primalhakkari sash" or name == "primalhakkari shawl") then slot = "INVTYPE_WAIST";
-			elseif (name == "primalhakkari tabard" or name == "primalhakkari kossack" or name == "primalhakkari aegis") then slot = "INVTYPE_CHEST";
+			for _, k in pairs(CEPGP_tokens) do
+			for slotName, v in pairs(k) do
+				if k[slotName][tonumber(id)] then
+					slot = "INVTYPE_" .. string.upper(slotName);
+					ilvl = k[slotName][tonumber(id)];
+					break;
+				end
 			end
+		end
+		if slot == "" or slot == nil then
+			slot = "INVTYPE_EXCEPTION";
+		end
+			
+			if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
+			if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
+			slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
+			slot = SLOTWEIGHTS[slot];
+			if ilvl and rarity and slot then
+				return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
+			else
+				return 0;
+			end
+		end);
+	else
+		if not ilvl then ilvl = 0; end
+		for k, v in pairs(OVERRIDE_INDEX) do
+			if k == link then
+				return v;
+			end
+			local temp = string.lower(string.gsub(name, " ", ""));
+			k = string.lower(string.gsub(k, " ", ""));
+			if string.lower(temp) == string.lower(k) then
+				return v;
+			end
+		end
+		for _, k in pairs(CEPGP_tokens) do
+			for slotName, v in pairs(k) do
+				if k[slotName][tonumber(id)] then
+					slot = "INVTYPE_" .. string.upper(slotName);
+					ilvl = k[slotName][tonumber(id)];
+					break;
+				end
+			end
+		end
+		if slot == "" or slot == nil then
+			slot = "INVTYPE_EXCEPTION";
+		end
 		
-		elseif strfind(name, "qiraji") then
-			if (name == "qirajispikedhilt" or name == "qirajiornatehilt") then slot = "INVTYPE_WEAPONMAINHAND";
-			elseif (name == "qirajiregaldrape" or name == "qirajimartialdrape") then slot = "INVTYPE_CLOAK";
-			elseif (name == "qirajimagisterialring" or name == "qirajiceremonialring") then slot = "INVTYPE_FINGER";
-			elseif (name == "imperialqirajiarmaments" or name == "imperialqirajiregalia") then slot = "INVTYPE_2HWEAPON";
-			elseif (name == "qirajibindingsofcommand" or name == "qirajibindingsofdominance") then slot = "INVTYPE_WRIST";
-			end
-			
-		elseif name == "headofossiriantheunscarred" or name == "headofonyxia" or name == "headofnefarian" or name == "eyeofcthun" then
-			slot = "INVTYPE_NECK";
-		elseif name == "thephylacteryofkel'thuzad" or name == "heartofhakkar" then
-			slot = "INVTYPE_TRINKET";
-		elseif name == "huskoftheoldgod" or name == "carapaceoftheoldgod" then
-			slot = "INVTYPE_CHEST";
-		elseif name == "ourosintacthide" or name == "skinofthegreatsandworm" then
-			slot = "INVTYPE_LEGS";
-				
-		--Exceptions: Items that should not carry GP but still need to be distributed
-		elseif name == "splinterofatiesh"
-			or name == "tomeoftranquilizingshot"
-			or name == "bindingsofthewindseeker"
-			or name == "resilienceofthescourge"
-			or name == "fortitudeofthescourge"
-			or name == "mightofthescourge" 
-			or name == "powerofthescourge"
-			or name == "sulfuroningot"
-			or name == "matureblackdragonsinew"
-			or name == "nightmareengulfedobject"
-			or name == "ancientpetrifiedleaf" then
-			slot = "INVTYPE_EXCEPTION";
+		if slot == "INVTYPE_ROBE" then slot = "INVTYPE_CHEST"; end
+		if slot == "INVTYPE_WEAPON" then slot = "INVTYPE_WEAPONOFFHAND"; end
+		slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
+		slot = SLOTWEIGHTS[slot];
+		if ilvl and rarity and slot then
+			return math.floor((((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity));
 		else
-			slot = "INVTYPE_EXCEPTION";
+			return 0;
 		end
 	end
-	if CEPGP_debugMode then
-		local quality = rarity == 0 and "Poor" or rarity == 1 and "Common" or rarity == 2 and "Uncommon" or rarity == 3 and "Rare" or rarity == 4 and "Epic" or "Legendary";
-		CEPGP_print("Name: " .. name);
-		CEPGP_print("Rarity: " .. quality);
-		CEPGP_print("Item Level: " .. ilvl);
-		CEPGP_print("Item Type: " .. itemType);
-		CEPGP_print("Subtype: " .. subType);
-		CEPGP_print("Slot: " .. slot);
-	end
-	slot = strsub(slot,strfind(slot,"INVTYPE_")+8,string.len(slot));
-	slot = SLOTWEIGHTS[slot];
-	name, quality, itemType, subType = nil;
-	if ilvl and rarity and slot then
-		return (math.floor((COEF * (MOD_COEF^((ilvl/26) + (rarity-4))) * slot)*MOD)*quantity);
+end
+
+function CEPGP_addGPTooltip(self)
+	if not CEPPG_gp_tooltips or not self:GetItem() or self:GetItem() == nil or self:GetItem() == "" then return; end
+	local _, link = self:GetItem();
+	local id = CEPGP_getItemID(CEPGP_getItemString(link));
+	if not CEPGP_itemExists(tonumber(id)) then return; end
+	local name = GetItemInfo(id);
+	if not name and CEPGP_itemExists(tonumber(id)) then
+		local item = Item:CreateFromItemID(tonumber(id));
+		item:ContinueOnItemLoad(function()
+			local gp = CEPGP_calcGP(_, 1, id);
+			GameTooltip:AddLine("GP Value: " .. gp, {1,1,1});	
+		end);
 	else
-		return 0;
+		local gp = CEPGP_calcGP(_, 1, id);
+		GameTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+	end
+	
+end
+
+function CEPGP_addGPHyperlink(self, iString)
+	if not string.find(iString, "item:") or not CEPPG_gp_tooltips then return; end
+	local id = CEPGP_getItemID(iString);
+	local name = GetItemInfo(id);
+	if not name and CEPGP_itemExists(tonumber(id)) then
+		local item = Item:CreateFromItemID(tonumber(id));
+		item:ContinueOnItemLoad(function()
+			local gp = CEPGP_calcGP(_, 1, id);
+			ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+			ItemRefTooltip:Show();
+		end);
+	else
+		local gp = CEPGP_calcGP(_, 1, id);
+		ItemRefTooltip:AddLine("GP Value: " .. gp, {1,1,1});
+		ItemRefTooltip:Show();
 	end
 end
 
@@ -221,9 +257,9 @@ function CEPGP_populateFrame(CEPGP_criteria, items)
 	end
 	local tempItems = {};
 	local total;
-	if CEPGP_mode == "guild" then
+	if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
 		CEPGP_UpdateGuildScrollBar();
-	elseif CEPGP_mode == "raid" then
+	elseif CEPGP_mode == "raid" and _G["CEPGP_raid"]:IsVisible() then
 		CEPGP_UpdateRaidScrollBar();
 	elseif CEPGP_mode == "loot" then
 		subframe = CEPGP_loot;
@@ -338,26 +374,18 @@ function CEPGP_populateFrame(CEPGP_criteria, items)
 	end
 end
 
-function CEPGP_strSplit(msgStr, c)
-	if not msgStr then
-		return nil;
-	end
-	local table_str = {};
-	local capture = string.format("(.-)%s", c);
-	
-	for v in string.gmatch(msgStr, capture) do
-		table.insert(table_str, v);
-	end
-	
-	return unpack(table_str);
-end
-
 function CEPGP_print(str, err)
 	if not str then return; end;
 	if err == nil then
 		DEFAULT_CHAT_FRAME:AddMessage("|c006969FFCEPGP: " .. tostring(str) .. "|r");
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("|c006969FFCEPGP:|r " .. "|c00FF0000Error|r|c006969FF - " .. tostring(str) .. "|r");
+	end
+end
+
+function CEPGP_debugMsg(message)
+	if CEPGP_debugMode then
+		CEPGP_print(message)
 	end
 end
 
@@ -396,71 +424,150 @@ function CEPGP_toggleFrame(frame)
 end
 
 function CEPGP_rosterUpdate(event)
+	if CEPGP_ignoreUpdates or not IsInGuild() then return; end
 	if event == "GUILD_ROSTER_UPDATE" then
-		_G["CEPGP_frame"]:UnregisterEvent("GUILD_ROSTER_UPDATE");
+		local numGuild = GetNumGuildMembers();
 		CEPGP_roster = {};
 		if CanEditOfficerNote() then
 			ShowUIPanel(CEPGP_guild_add_EP);
 			ShowUIPanel(CEPGP_guild_decay);
+			ShowUIPanel(CEPGP_raid_role_personal);
+			ShowUIPanel(CEPGP_extra_ep_button);
 			ShowUIPanel(CEPGP_guild_reset);
 			ShowUIPanel(CEPGP_raid_add_EP);
+			ShowUIPanel(CEPGP_open_replacement_list);
+			ShowUIPanel(CEPGP_ep_before_raid);
+			ShowUIPanel(CEPGP_raid_add_pull_EP);
+			ShowUIPanel(CEPGP_raid_add_timed_EP);
+			ShowUIPanel(CEPGP_raid_flush_timed_EP);
+			ShowUIPanel(CEPGP_raid_role_check);
 			ShowUIPanel(CEPGP_button_guild_restore);
 		else --[[ Hides context sensitive options if player cannot edit officer notes ]]--
 			HideUIPanel(CEPGP_guild_add_EP);
 			HideUIPanel(CEPGP_guild_decay);
+			ShowUIPanel(CEPGP_extra_ep_button);
 			HideUIPanel(CEPGP_guild_reset);
 			HideUIPanel(CEPGP_raid_add_EP);
+			HideUIPanel(CEPGP_open_replacement_list);
+			HideUIPanel(CEPGP_ep_before_raid);
+			HideUIPanel(CEPGP_raid_add_pull_EP);
+			HideUIPanel(CEPGP_raid_add_timed_EP);
+			HideUIPanel(CEPGP_raid_flush_timed_EP);
 			HideUIPanel(CEPGP_button_guild_restore);
 		end
-		for i = 1, GetNumGuildMembers() do
-			local name, rank, rankIndex, _, class, _, _, officerNote = GetGuildRosterInfo(i);
-			
+		for i = 1, numGuild do
+			local name, rank, rankIndex, _, class, _, _, officerNote, online, _, classFileName = GetGuildRosterInfo(i);
 			if string.find(name, "-") then
 				name = string.sub(name, 0, string.find(name, "-")-1);
 			end
 			if name then
-				local EP, GP = CEPGP_getEPGP(officerNote, i, name);
+				local EP, GP = CEPGP_getEPGPBP(officerNote, i, name);
 				local PR = math.floor((EP/GP)*100)/100;
+				if name == "Енотовод" then
+					CEPGP_debugMsg(name .. ' update guild roster: EP - ' .. EP .. ' OffNote is ' .. officerNote);
+				end
 				CEPGP_roster[name] = {
-				[1] = i,
-				[2] = class,
-				[3] = rank,
-				[4] = rankIndex,
-				[5] = officerNote,
-				[6] = PR
+					[1] = i,
+					[2] = class,
+					[3] = rank,
+					[4] = rankIndex,
+					[5] = officerNote,
+					[6] = PR,
+					[7] = classFileName,
+					[8] = online
 				};
+				if online and CEPGP_vSearch == "GUILD" then
+					CEPGP_groupVersion[i] = {
+						[1] = name,
+						[2] = "Addon not enabled",
+						[3] = class,
+						[4] = classFileName
+					};
+				elseif CEPGP_vSearch == "GUILD" then
+					CEPGP_groupVersion[i] = {
+						[1] = name,
+						[2] = "Offline",
+						[3] = class,
+						[4] = classFileName
+					};
+				end
 			end
-			name, rank, rankIndex, class, officerNote, EP, GP, PR = nil;
 		end
-		if CEPGP_mode == "guild" then
+		CEPGP_groupVersion = CEPGP_tSort(CEPGP_groupVersion, 1);
+		if CEPGP_mode == "guild" and _G["CEPGP_guild"]:IsVisible() then
 			CEPGP_UpdateGuildScrollBar();
-		elseif CEPGP_mode == "raid" then
+		elseif CEPGP_mode == "raid" and _G["CEPGP_raid"]:IsVisible() then
 			CEPGP_UpdateRaidScrollBar();
 		end
-		_G["CEPGP_frame"]:RegisterEvent("GUILD_ROSTER_UPDATE");
+		if not UnitInRaid("player") then
+			CEPGP_standbyRoster = {};
+		end
+		CEPGP_UpdateStandbyScrollBar();
+		
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		if IsInRaid("player") and CEPGP_isML() == 0 then
 			if not CEPGP_use then
 				_G["CEPGP_confirmation"]:Show();
 			end
 		end
+		if IsInRaid("player") then
+			_G["CEPGP_button_raid"]:Show();
+		else
+			_G["CEPGP_button_raid"]:Hide();
+		end
 		CEPGP_raidRoster = {};
-		_G["CEPGP_frame"]:UnregisterEvent("GROUP_ROSTER_UPDATE");
 		for i = 1, GetNumGroupMembers() do
 			local name = GetRaidRosterInfo(i);
 			if not name then break; end
-			if CEPGP_tContains(CEPGP_standbyRoster, name) then
-				for k, v in pairs(CEPGP_standbyRoster) do
-					if v == name then
-						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid1
+			if not UnitInRaid("player") then
+				CEPGP_standbyRoster = {};
+				CEPGP_UpdateStandbyScrollBar();
+			else
+				for k, v in ipairs(CEPGP_standbyRoster) do
+					if v[1] == name then
+						table.remove(CEPGP_standbyRoster, k); --Removes player from standby list if they have joined the raid
+						CEPGP_SendAddonMsg("StandbyRemoved;" .. name .. ";You have been removed from the standby list because you have joined the raid.", "RAID");
+						CEPGP_UpdateStandbyScrollBar();
 					end
 				end
-				--CEPGP_UpdateStandbyScrollBar();
 			end
-			CEPGP_raidRoster[i] = name;
-			name = nil;
+			local rank;
+			local _, _, _, _, class, classFileName = GetRaidRosterInfo(i);
+			local role = CEPGP_RaidRoles[name];
+			if role == nil then role = 'Unknown'; end
+			if CEPGP_roster[name] then
+				rank = CEPGP_roster[name][3];
+				local EP, GP, BP = CEPGP_getEPGPBP(CEPGP_roster[name][5], _, name);
+				local rankIndex = CEPGP_roster[name][4];
+				CEPGP_debugMsg('Raid roster update: ' .. name .. ', EP ' .. EP)
+				CEPGP_raidRoster[i] = {
+					[1] = name,
+					[2] = class,
+					[3] = rank,
+					[4] = rankIndex,
+					[5] = EP,
+					[6] = GP,
+					[7] = tonumber(EP)/tonumber(GP),
+					[8] = classFileName,
+					[9] = BP,
+					[10] = role,
+				};
+			else
+				rank = "Not in Guild";
+				CEPGP_raidRoster[i] = {
+					[1] = name,
+					[2] = class,
+					[3] = rank,
+					[4] = 0,
+					[5] = 0,
+					[6] = 0,
+					[7] = 0,
+					[8] = classFileName,
+					[9] = 0,
+					[10] = role,
+				};
+			end
 		end
-		_G["CEPGP_frame"]:RegisterEvent("GROUP_ROSTER_UPDATE");
 		if UnitInRaid("player") then
 			ShowUIPanel(CEPGP_button_raid);
 		else --[[ Hides the raid and loot distribution buttons if the player is not in a raid group ]]--
@@ -468,62 +575,91 @@ function CEPGP_rosterUpdate(event)
 			CEPGP_toggleFrame("CEPGP_guild");
 			
 		end
-		CEPGP_UpdateRaidScrollBar();
+		if _G["CEPGP_guild"]:IsVisible() then
+			CEPGP_UpdateRaidScrollBar();
+		end
 	end
 end
 
 function CEPGP_addToStandby(player)
 	if not player then return; end
-	player = CEPGP_standardiseString(player);
-	if not CEPGP_tContains(CEPGP_roster, player, true) then
+	if not UnitInRaid("player") then
+		CEPGP_print("You cannot add players to the standby list while not in a raid group.", true);
+		return;
+	end
+	if player == UnitName("player") then
+		CEPGP_print("You cannot add yourself to the standby list.", true);
+		return;
+	end
+	if not CEPGP_roster[player] then
 		CEPGP_print(player .. " is not a guild member", true);
 		return;
-	elseif CEPGP_tContains(CEPGP_standbyRoster, player) then
-		CEPGP_print(player .. " is already in the standby roster", true);
-		return;
-	elseif CEPGP_tContains(CEPGP_raidRoster, player, true) then
-		CEPGP_print(player .. " is part of the raid", true);
-		return;
-	else
-		table.insert(CEPGP_standbyRoster, player);
-		CEPGP_UpdateStandbyScrollBar();
 	end
+	for _, v in pairs(CEPGP_standbyRoster) do
+		if string.lower(v[1]) == string.lower(player) then
+			CEPGP_print(player .. " is already in the standby roster", true);
+			return;
+		end
+	end
+	for _, v in ipairs(CEPGP_raidRoster) do
+		if string.lower(player) == string.lower(v[1]) then
+			CEPGP_print(player .. " is part of the raid", true);
+			return;
+		end
+	end	
+	local _, class, rank, rankIndex, oNote, _, classFile = CEPGP_getGuildInfo(player);
+	local EP,GP = CEPGP_getEPGPBP(oNote);
+	CEPGP_standbyRoster[#CEPGP_standbyRoster+1] = {
+		[1] = player,
+		[2] = class,
+		[3] = rank,
+		[4] = rankIndex,
+		[5] = EP,
+		[6] = GP,
+		[7] = math.floor((tonumber(EP)/tonumber(GP))*100)/100,
+		[8] = classFile
+	};
+	CEPGP_standbyRoster = CEPGP_tSort(CEPGP_standbyRoster, 1);
+	if CEPGP_standby_share then CEPGP_SendAddonMsg("StandbyListAdd;"..player..";"..class..";"..rank..";"..rankIndex..";"..EP..";"..GP..";"..classFile, "RAID"); end
+	CEPGP_SendAddonMsg("StandbyAdded;" .. player .. ";You have been added to the standby list.", "GUILD");
+	CEPGP_UpdateStandbyScrollBar();
 end
 
 function CEPGP_standardiseString(str)
 	--Returns the string with proper nouns capitalised
 	if not str then return; end
-	local result = "";
-	local _, delims = string.gsub(str, " ", ""); --accommodates for spaces
-	local values = CEPGP_split(str, " ", delims);
-	for k, v in pairs(values) do
-		if string.find(v, "%-") then
-			_, delims2 = string.gsub(v, "%-", ""); --accommodates for hyphens
-			values2 = CEPGP_split(v, "%-", delims2);
-			for index, value in pairs(values2) do
-				local first = string.upper(string.sub(value, 1, 1));
-				if index <= delims2 then
-					result = result .. first .. string.sub(value, 2, string.len(value)) .. "-";
-				else
-					result = result .. first .. string.lower(string.sub(value, 2, string.len(value)));
-				end
+	local words = {};
+	
+	local count = 0;
+	for i in (str .. " "):gmatch("([^ ]*) ") do
+		if count == 0 then
+			if string.lower(i) == "the" then
+				count = count + 1;
+				words[count] = "The";
+			else
+				count = count + 1;
+				words[count] = string.upper(string.sub(i, 1, 1)) .. string.lower(string.sub(i, 2, string.len(i)));
 			end
 		else
-			if v == "of" or (v == "the" and k > 1) then
-				result = result .. v .. " ";
+			if string.lower(i) == "the" or string.lower(i) == "of" then
+				count = count + 1;
+				words[count] = string.lower(i);
 			else
-				local first = string.upper(string.sub(v, 1, 1));
-				if k <= delims then
-					result = result .. first .. string.lower(string.sub(v, 2, string.len(v))) .. " ";
-				else
-					result = result .. first .. string.lower(string.sub(v, 2, string.len(v)));
-				end
+				count = count + 1;
+				words[count] = string.upper(string.sub(i, 1, 1)) .. string.lower(string.sub(i, 2, string.len(i)));
 			end
+		end
+	end
+	local result = "";
+	for i = 1, count do
+		if i == 1 then
+			result = words[i];
+		elseif i <= count then
+			result = result .. " " .. words[i];
 		end
 	end
 	
 	return result;
-
 end
 
 function CEPGP_split(str, delim, iters) --String to be split, delimiter, number of iterations
@@ -570,8 +706,6 @@ function CEPGP_toggleStandbyRanks(show)
 		CEPGP_options_standby_ep_list_button:Hide();
 		CEPGP_options_standby_ep_accept_whispers_check:Hide();
 		CEPGP_options_standby_ep_accept_whispers:Hide();
-		CEPGP_options_standby_ep_offline_check:Hide();
-		CEPGP_options_standby_ep_offline:Hide();
 		CEPGP_options_standby_ep_message_val:Hide();
 		CEPGP_options_standby_ep_whisper_message:Hide();
 		CEPGP_options_standby_ep_byrank_check:SetChecked(true);
@@ -584,8 +718,6 @@ function CEPGP_toggleStandbyRanks(show)
 		CEPGP_options_standby_ep_list_button:Show();
 		CEPGP_options_standby_ep_accept_whispers_check:Show();
 		CEPGP_options_standby_ep_accept_whispers:Show();
-		CEPGP_options_standby_ep_offline_check:Show();
-		CEPGP_options_standby_ep_offline:Show();
 		CEPGP_options_standby_ep_message_val:Show();
 		CEPGP_options_standby_ep_byrank_check:SetChecked(false);
 		CEPGP_options_standby_ep_manual_check:SetChecked(true);
@@ -594,7 +726,7 @@ end
 
 function CEPGP_getGuildInfo(name)
 	if CEPGP_tContains(CEPGP_roster, name, true) then
-		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6];  -- index, class, Rank, RankIndex, Class, OfficerNote, PR
+		return CEPGP_roster[name][1], CEPGP_roster[name][2], CEPGP_roster[name][3], CEPGP_roster[name][4], CEPGP_roster[name][5], CEPGP_roster[name][6], CEPGP_roster[name][7];  -- index, class, Rank, RankIndex, OfficerNote, PR, className in English
 	else
 		return nil;
 	end
@@ -604,6 +736,29 @@ function CEPGP_getVal(str)
 	local val = nil;
 	val = strsub(str, strfind(str, " ")+1, string.len(str));
 	return val;
+end
+
+function CEPGP_getIndex(name, index)
+	if index then
+		local temp = string.sub(GetGuildRosterInfo(index), 0, string.find(GetGuildRosterInfo(index), "-")-1);
+		if temp == name then
+			return index;
+		else
+			for i = 1, GetNumGuildMembers() do
+				local temp = string.sub(GetGuildRosterInfo(i), 0, string.find(GetGuildRosterInfo(i), "-")-1);
+				if temp == name then
+					return i;
+				end
+			end
+		end
+	else
+		for i = 1, GetNumGuildMembers() do
+			local temp = string.sub(GetGuildRosterInfo(i), 0, string.find(GetGuildRosterInfo(i), "-")-1);
+			if temp == name then
+				return i;
+			end
+		end
+	end
 end
 
 function CEPGP_indexToName(index)
@@ -621,88 +776,49 @@ function CEPGP_nameToIndex(name)
 		end
 	end
 end
+function CEPGP_checkEPGPBP(offNote)
 
-function CEPGP_getEPGP(offNote, index, name)
-	if not name then index = CEPGP_nameToIndex(name); end
-	--if not index then return 0, 1; end --Happens when character logs initiailly
-	if offNote ~= "" then
-		if not CEPGP_checkEPGP(offNote) then
-			if not index then return 0, BASEGP; end
-			local EP, GP;
-			--Error with player's EPGP has been detected and will attempt to be salvaged
-			if string.find(offNote, '^[0-9]+,') then --EP is assumed in tact
-				if string.find(offNote, ',[0-9]+') then
-					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-					GP = strsub(offNote, string.find(offNote, ',[0-9]+')+1, string.find(offNote, '[^0-9,]')-1);
-					if CanEditOfficerNote() then
-						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP,GP;
-				elseif string.find(offNote, '[0-9]+$') then
-					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-					GP = strsub(offNote, string.find(offNote, '[0-9]+$'), string.len(offNote));
-					if CanEditOfficerNote() then
-						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP,GP;
-				else
-					EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-					if CanEditOfficerNote() then
-						GuildRosterSetOfficerNote(index, EP .. "," .. BASEGP);
-						CEPGP_print("An error was found with " .. name .. "'s GP. Their EP has been retained as " .. EP .. " but their GP will need to be manually set if known.");
-					end
-					return EP, BASEGP;
-				end
-				return EP, BASEGP;
-			elseif string.find(offNote, ',[0-9]+$') then --GP is assumed in tact
-				GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
-				
-				if string.find(offNote, '[^0-9]+,[0-9]+$') then --EP might still be intact, but characters might be padding between EP and the comma
-					EP = strsub(offNote, 1, string.find(offNote, '[^0-9]+,')-1);
-					if CanEditOfficerNote() then
-						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP, GP;
-					
-				elseif string.find(offNote, '^[^0-9]+[0-9]+,[0-9]+$') then --or pheraps the error is at the start of the string?
-					EP = strsub(offNote, string.find(offNote, '[0-9]+,'), string.find(offNote, ',[0-9]+$')-1);
-					if CanEditOfficerNote() then
-						GuildRosterSetOfficerNote(index, EP .. "," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their EPGP has been salvaged as " .. EP .. "," .. GP .. ". Please confirm if this is correct and modify the officer note if required.");
-					end
-					return EP, GP;
-					
-				else --EP cannot be salvaged
-					if CanEditOfficerNote() then
-						GuildRosterSetOfficerNote(index, "0," .. GP);
-						CEPGP_print("An error was found with " .. name .. "'s EP. Their GP has been retained as " .. GP .. " but their EP will need to be manually set if known. For now, their EP has defaulted to 0.");
-					end
-					return 0, GP;
-				end
-			else --Neither are in tact
-				GuildRosterSetOfficerNote(index, "0," .. BASEGP);
-				return 0, BASEGP;
-			end
-		end
+	local data = {};
+	for i in offNote:gmatch("([^,%s]+)") do
+		data[#data + 1] = i
 	end
-	local EP, GP = nil;
-	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
-		return 0, 1;
+
+	local EP = tonumber(data[1]);
+	local GP = tonumber(data[2]);
+	local BP = tonumber(data[3]);
+
+	if EP ~= nil and GP ~= nil and BP ~= nil then
+		return true;
 	end
-	EP = tonumber(strsub(offNote, 1, strfind(offNote, ",")-1));
-	GP = tonumber(strsub(offNote, strfind(offNote, ",")+1, string.len(offNote)));
-	return EP, GP;
+	return false;
 end
 
-function CEPGP_checkEPGP(note)
-	if string.find(note, '^[0-9]+,[0-9]+$') then
-		return true;
-	else
-		return false;
+function CEPGP_getEPGPBP(offNote, index, name)
+	if not name then index = CEPGP_nameToIndex(name); end
+	
+	if offNote == "" then --Click here to set an officer note qualifies as blank, also occurs if the officer notes are not visible
+		return 0, tonumber(BASEGP), 0;
 	end
+
+	local data = {};
+	for i in offNote:gmatch("([^,%s]+)") do
+		data[#data + 1] = i
+	end
+
+	local EP = tonumber(data[1]);
+	local GP = tonumber(data[2]);
+	local BP = tonumber(data[3]);
+
+	if BP == nil then
+		BP = 0;
+	end
+
+	if EP == nil or GP == nil or BP == nil then
+		CEPGP_print("An error was found with " .. name .. "'s EPGP. Their officer note has been set to " .. offNote);
+		return 0, tonumber(BASEGP), 0;
+	end
+
+	return EP, GP, BP;
 end
 
 function CEPGP_getItemString(link)
@@ -900,6 +1016,7 @@ function CEPGP_setCriteria(x, disp)
 		CEPGP_critReverse = not CEPGP_critReverse
 	end
 	CEPGP_criteria = x;
+	if not disp then return; end
 	if disp == "Raid" then
 		CEPGP_UpdateRaidScrollBar();
 	elseif disp == "Guild" then
@@ -908,6 +1025,8 @@ function CEPGP_setCriteria(x, disp)
 		CEPGP_UpdateLootScrollBar();
 	elseif disp == "Standby" then
 		CEPGP_UpdateStandbyScrollBar();
+	elseif disp == "Attendance" then
+		CEPGP_UpdateAttendanceScrollBar();
 	end
 end
 
@@ -959,11 +1078,6 @@ function CEPGP_button_options_OnClick()
 	else
 		CEPGP_options_standby_ep_message_val:Show();
 		CEPGP_options_standby_ep_whisper_message:Show();
-	end;
-	if CEPGP_options_standby_ep_check:GetChecked() then
-		CEPGP_options_standby_ep_options:Show();
-	else
-		CEPGP_options_standby_ep_options:Hide();
 	end
 	for k, v in pairs(SLOTWEIGHTS) do
 		if k ~= "ROBE" and k ~= "WEAPON" and k ~= "EXCEPTION" then
@@ -980,6 +1094,13 @@ function CEPGP_button_options_OnClick()
 		CEPGP_options_allow_forced_sync_check:SetChecked(false);
 		_G["CEPGP_sync_rank"]:Hide();
 		_G["CEPGP_button_options_force_sync"]:Hide();
+	end
+	if CEPGP_minEP[1] then
+		CEPGP_options_min_EP_check:SetChecked(true);
+		_G["CEPGP_options_min_EP_amount"]:Show();
+	else
+		CEPGP_options_min_EP_check:SetChecked(false);
+		_G["CEPGP_options_min_EP_amount"]:Hide();
 	end
 	if CEPGP_loot_GUI then
 		_G["CEPGP_options_response_gui_checkbox"]:SetChecked(true);
@@ -1046,82 +1167,131 @@ function CEPGP_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level
 end
 
 function CEPGP_getDebugInfo()
-	local info = "<details><summary>Debug Info</summary><br />";
-	info = info .. "Version: " .. CEPGP_VERSION .. "<br /><br />";
-	info = info .. "GP Modifier: " .. MOD .. "<br /><br />";
-	info = info .. "Base GP: " .. BASEGP .. "<br /><br />";
-	if STANDBYEP then
-		info = info .. "Standby EP: True<br /><br />";
+	local info = "<details><summary>Debug Info</summary><br />\n";
+	info = info .. "Version: " .. CEPGP_VERSION .. "<br />\n";
+	info = info .. "Locale: " .. GetLocale() .. "<br />\n";
+	info = info .. "GP Formula: (" .. COEF .. "x(" .. MOD_COEF .. "^<sup>((ilvl/26)+(rarity-4))</sup>)xSlot Modifier)x" .. MOD .. "<br />";
+	info = info .. "Base GP: " .. BASEGP .. "<br />\n";
+	if CEPGP_minGPDecayFactor then
+		info = info .. "Base GP Decay Factor: true<br />\n";
 	else
-		info = info .. "Standby EP: False<br /><br />";
+		info = info .. "Base GP Decay Factor: false<br />\n";
+	end
+	if STANDBYEP then
+		info = info .. "Standby EP: True<br />\n";
+	else
+		info = info .. "Standby EP: False<br />\n";
 	end
 	if STANDBYOFFLINE then
-		info = info .. "Standby Offline: True<br /><br />";
+		info = info .. "Standby Offline: True<br />\n";
 	else
-		info = info .. "Standby Offline: False<br /><br />";
+		info = info .. "Standby Offline: False<br />\n";
 	end
-	info = info .. "Standby Percent: " .. STANDBYPERCENT .. "<br /><br />";
+	info = info .. "Standby Percent: " .. STANDBYPERCENT .. "<br />\n";
 		if CEPGP_standby_accept_whispers then
-		info = info .. "Standby Accept Whispers: True<br /><br />";
+		info = info .. "Standby Accept Whispers: True<br />\n";
 	else
-		info = info .. "Standby Accept Whispers: False<br /><br />";
+		info = info .. "Standby Accept Whispers: False<br />\n";
 	end
 	if CEPGP_standby_byrank then
-		info = info .. "Standby EP by Rank: True<br /><br />";
+		info = info .. "Standby EP by Rank: True<br />\n";
 	else
-		info = info .. "Standby EP by Rank: False<br /><br />";
+		info = info .. "Standby EP by Rank: False<br />\n";
 	end
 	if CEPGP_standby_manual then
-		info = info .. "Standby EP Manual Delegation: True<br /><br />";
+		info = info .. "Standby EP Manual Delegation: True<br />\n";
 	else
-		info = info .. "Standby EP Manual Delegation: False<br /><br />";
+		info = info .. "Standby EP Manual Delegation: False<br />\n";
 	end
 	
 	if CEPGP_loot_GUI then
-		info = info .. "GUI for Loot: True<br /><br />";
+		info = info .. "GUI for Loot: True<br />\n";
 	else
-		info = info .. "GUI for Loot: False<br /><br />";
+		info = info .. "GUI for Loot: False<br />\n";
 	end
-	
-	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br /><br />";
-		
-	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br /><br />";
-
-	info = info .. "<details><summary>Auto EP</summary><br />";
+	info = info .. "Loot Response Keyphrase: " .. CEPGP_keyword .. "<br />\n";
+	info = info .. "Standby EP Whisper Keyphrase: " .. CEPGP_standby_whisper_msg .. "<br />\n";
+	if CEPGP_auto_pass then
+		info = info .. "Auto Pass on Ineligible Items: true<br />\n";
+	else
+		info = info .. "Auto Pass on Ineligible Items: false<br />\n";
+	end
+	if CEPGP_raid_wide_dist then
+		info = info .. "Full Raid Loot Visibility: true<br />\n";
+	else
+		info = info .. "Full Raid Loot Visibility: false<br />\n";
+	end
+	if CEPPG_gp_tooltips then
+		info = info .. "GP on Tooltips: true<br />\n";
+	else
+		info = info .. "GP on Tooltips: false<br />\n";
+	end
+	if CEPGP_suppress_announcements then
+		info = info .. "Suppress Loot Announcements: true<br />\n";
+	else
+		info = info .. "Suppress Loot Announcements: false<br />\n";
+	end
+	if CEPGP_minEP[1] then
+		info = info .. "Minimum EP: true, " .. CEPGP_minEP[2] .. "<br />\n";
+	else
+		info = info .. "Minimum EP: false, " .. CEPGP_minEP[2] .. "<br />\n";
+	end
+	info = info .. "Reporting Channel: " .. CHANNEL .. "<br />\n";
+	info = info .. "Loot Response Channel: " .. CEPGP_lootChannel .. "<br />\n";
+	info = info .. "Minimum Threshold for Loot: " .. CEPGP_min_threshold .. "<br />\n";
+	if ALLOW_FORCED_SYNC then
+		info = info .. "Allow Force Sync: true, " .. GuildControlGetRankName(CEPGP_force_sync_rank) .. "<br />\n";
+	else
+		info = info .. "Allow Force Sync: false, " .. GuildControlGetRankName(CEPGP_force_sync_rank) .. "<br />\n";
+	end
+	info = info .. "<br /><details><summary>Auto EP</summary>\n";
 	for k, v in pairs(AUTOEP) do
 		if v then
-			info = info .. "<details><summary>" .. k .. "</summary>True</details><br />";
+			info = info .. k .. ": True<br />\n";
 		else
-			info = info .. "<details><summary>" .. k .. "</summary>False</details><br />";
+			info = info .. k .. ": False<br />\n";
 		end
 	end
-	info = info .. "</details><br />";
-	info = info .. "<details><summary>EP Values</summary><br />";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>EP Values</summary>\n";
 	for k, v in pairs(EPVALS) do
-		info = info .. "<details><summary>" .. k .. "</summary>" .. v .. "</details><br />";
+		info = info .. k .. ": " .. v .. "<br />\n";
 	end
-	info = info .. "</details><br />";
-	info = info .. "<details><summary>Standby Guild Ranks</summary><br />";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Standby Guild Ranks</summary>\n";
 	for k, v in pairs(STANDBYRANKS) do
-		if v[1] then
+		if v[1] ~= "" and v[1] ~= nil then
 			if v[2] then
-				info = info .. "<details><summary>" .. v[1] .. "</summary>True</details><br />";
+				info = info .. v[1] .. ": True<br />\n";
 			else
-				info = info .. "<details><summary>" .. v[1] .. "</summary>False</details><br />";
+				info = info .. v[1] .. ": False<br />\n";
 			end
 		end
 	end
-	info = info .. "</details><br />";
-	info = info .. "<details><summary>Slot Weights</summary><br />";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Slot Weights</summary>\n";
 	for k, _ in pairs(SLOTWEIGHTS) do
-		info = info .. "<details><summary>" .. k .. "</summary>" .. SLOTWEIGHTS[k] .. "</details><br />";
+		info = info .. k .. ": " .. SLOTWEIGHTS[k] .. "<br />\n";
 	end
-	info = info .. "</details><br />";
-	info = info .. "<details><summary>Addons List</summary><br />";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Override List</summary>\n";
+	for k, v in pairs(OVERRIDE_INDEX) do
+		info = info .. k .. ": " .. v .. "<br />\n";
+	end
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Addons List</summary>\n";
 	for i = 1, GetNumAddOns() do
-		info = info .. "" .. GetAddOnInfo(i) .. "<br />";
+		local name, _, _, enabled = GetAddOnInfo(i);
+		if enabled then
+			info = info .. name .. "<br />\n";
+		end
 	end
-	info = info .. "</details>";
+	info = info .. "</details>\n";
+	info = info .. "<details><summary>Enabled Plugins</summary>\n";
+	for _, plugin in ipairs(CEPGP_plugins) do
+		info = info .. plugin .. "<br />\n";
+	end
+	info = info .. "</details>\n";
 	info = info .. "</details>";
 	return info;
 end
@@ -1136,15 +1306,15 @@ function CEPGP_getPlayerClass(name, index)
 		return _, {r=1, g=0.10, b=0.10};
 	end
 	if index then
-		_, _, _, _, class = GetGuildRosterInfo(index);
-		return class, RAID_CLASS_COLORS[string.upper(class)];
+		_, _, _, _, _, _, _, _, _, _, classFileName = GetGuildRosterInfo(index);
+		return class, RAID_CLASS_COLORS[classFileName];
 	else
 		local id = CEPGP_nameToIndex(name);
 		if not id then
 			return nil;
 		else
-			_, _, _, _, class = GetGuildRosterInfo(id);
-			return class, RAID_CLASS_COLORS[string.upper(class)];
+			_, _, _, _, _, _, _, _, _, _, classFileName = GetGuildRosterInfo(id);
+			return class, RAID_CLASS_COLORS[classFileName];
 		end
 	end
 end
@@ -1154,11 +1324,20 @@ function CEPGP_recordAttendance()
 		CEPGP_print("You are not in a raid group", true);
 		return;
 	end
-	CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)+1] = {
+	CEPGP_raid_logs[#CEPGP_raid_logs+1] = {
 		[1] = time()
 	};
 	for i = 1, GetNumGroupMembers(), 1 do
-		CEPGP_raid_logs[CEPGP_ntgetn(CEPGP_raid_logs)][i+1] = GetRaidRosterInfo(i);
+		CEPGP_raid_logs[#CEPGP_raid_logs][i+1] = {
+			[1] = GetRaidRosterInfo(i),
+			[2] = false --Are they a standby player? Nope.
+		};
+	end
+	for k, v in pairs(CEPGP_standbyRoster) do
+		CEPGP_raid_logs[#CEPGP_raid_logs][#CEPGP_raid_logs[#CEPGP_raid_logs]+1] = { --CEPGP_raid_logs[index][timestamp][1] = player name, [2] = bool
+			[1] = v[1],
+			[2] = true --Are they a standby player? YUP.
+		};
 	end
 	CEPGP_print("Snapshot recorded");
 	CEPGP_UpdateAttendanceScrollBar();
@@ -1176,8 +1355,70 @@ function CEPGP_deleteAttendance()
 		CEPGP_raid_logs[index] = CEPGP_raid_logs[index+1];
 	end
 	CEPGP_raid_logs[size] = nil;
+	CEPGP_snapshot = nil;
 	UIDropDownMenu_SetSelectedValue(CEPGP_attendance_dropdown, 0);
 	CEPGP_UpdateAttendanceScrollBar();
+end
+
+function CEPGP_formatExport()
+	--form is the export format
+	local temp = {};
+	local text = "";
+	for k, v in pairs(CEPGP_roster) do
+		temp[#temp+1] = {
+			[1] = k; -- Player Name
+			[2] = v[2]; -- Class
+			[3] = v[3]; -- Guild Rank
+			[4] = v[5]; -- Officer Note (Doesn't need to be broken down into EP and GP separately)
+			[5] = v[6]; -- Priority
+		};
+	end
+	temp = CEPGP_tSort(temp, 1);
+	local form = _G["CEPGP_export"]:GetAttribute("format");
+	
+	
+	if form == "CSV" then
+		for i = 1, #temp do
+			text = text .. temp[i][1];
+			if CEPGP_export_class_check:GetChecked() then
+				text = text .. "," .. temp[i][2]; -- Class
+			end
+			if CEPGP_export_rank_check:GetChecked() then
+				text = text .. "," .. temp[i][3];
+			end
+			text = text .. "," .. temp[i][4];
+			text = text .. "," .. temp[i][5];
+			text = text .. "\n";
+		end
+		_G["CEPGP_export_dump"]:SetText(text);
+		_G["CEPGP_export_dump"]:HighlightText();
+		
+		
+	elseif form == "JSON" then
+		text = "{";
+		text = text .. "\"roster\": [";
+		for i = 1, #temp do
+			text = text .. "[\"" .. temp[i][1] .. "\""; -- Player Name
+			if CEPGP_export_class_check:GetChecked() then
+				text = text .. ",\"" .. temp[i][2] .. "\""; -- Class
+			end
+			if CEPGP_export_rank_check:GetChecked() then
+				text = text .. ",\"" .. temp[i][3] .. "\""; -- Guild Rank
+			end
+			text = text .. "," .. temp[i][4];
+			text = text .. "," .. temp[i][5];
+			if i+1 <= #temp then
+				text = text .. "],";
+			else
+				text = text .. "]";
+			end
+		end
+		text = text .. "],";
+		text = text .. "\"timestamp\":" .. time() .. "";
+		text = text .. "}";
+		_G["CEPGP_export_dump"]:SetText(text);
+		_G["CEPGP_export_dump"]:HighlightText();
+	end
 end
 
 function CEPGP_calcAttendance(name)
@@ -1187,16 +1428,33 @@ function CEPGP_calcAttendance(name)
 	local cMonth = 0; --count month
 	local cTwoMonth = 0; --count 2 months
 	local cThreeMonth = 0; --count 3 months
-	for k, v in pairs(CEPGP_raid_logs) do
-		if CEPGP_snapshot and k ~= CEPGP_snapshot then
-			break;
-		end
+	for _, v in pairs(CEPGP_raid_logs) do
 		for i = 2, CEPGP_ntgetn(v), 1 do
 			local diff = time() - v[1];
 			diff = diff/60/60/24;
-			if v[i] == name then
+			if v[i] == name then --Accommodates for the old raid attendance structure
 				count = count + 1;
-				if diff <= 90 and not CEPGP_snapshot then -- no point in collecting interval data if a snapshot was requested
+				if diff <= 90 then
+					cThreeMonth = cThreeMonth + 1;
+					if diff <= 60 then
+						cTwoMonth = cTwoMonth + 1;
+						if diff <= 30 then
+							cMonth = cMonth + 1;
+							if diff <= 14 then
+								cFN = cFN + 1;
+								if diff <= 7 then
+									cWeek = cWeek + 1;
+								end
+							end
+						end
+					end
+				end
+				break;
+			elseif v[i][1] == name then --Accommodates for the new raid attendance structure (i.e. [1] = name, [2] = bool for standby roster
+				local diff = time() - v[1];
+				diff = diff/60/60/24;
+				count = count + 1;
+				if diff <= 90 then
 					cThreeMonth = cThreeMonth + 1;
 					if diff <= 60 then
 						cTwoMonth = cTwoMonth + 1;
@@ -1219,7 +1477,6 @@ function CEPGP_calcAttendance(name)
 end
 
 function CEPGP_calcAttIntervals()
-	if CEPGP_snapshot then return; end
 	local week = 0;
 	local fn = 0;
 	local mon = 0;
@@ -1250,12 +1507,16 @@ end
 function CEPGP_callItem(id, gp)
 	if not id then return; end
 	id = tonumber(id); -- Must be in a numerical format
-	local name, link, _, _, _, _, _, _, _, tex = GetItemInfo(id);
+	local name, link, _, _, _, _, _, _, _, tex, _, classID, subClassID = GetItemInfo(id);
 	local iString;
-	if not link then
+	if not link and CEPGP_itemExists(id) then
 		local item = Item:CreateFromItemID(id);
 		item:ContinueOnItemLoad(function()
-				_, link, _, _, _, _, _, _, _, tex = GetItemInfo(id)
+				_, link, _, _, _, _, _, _, _, tex, _, classID, subClassID = GetItemInfo(id)
+				if not CEPGP_canEquip(GetItemSubClassInfo(classID, subClassID)) and CEPGP_auto_pass then
+					CEPGP_print("Cannot equip " .. link .. "|c006969FF. Passing on item.|r");
+					return;
+				end
 				iString = CEPGP_getItemString(link);
 				_G["CEPGP_respond"]:Show();
 				_G["CEPGP_respond_texture"]:SetTexture(tex);
@@ -1272,6 +1533,10 @@ function CEPGP_callItem(id, gp)
 				_G["CEPGP_respond_gp_value"]:SetText(gp);
 			end);
 	else
+		if not CEPGP_canEquip(GetItemSubClassInfo(classID, subClassID)) and CEPGP_auto_pass then
+			CEPGP_print("Cannot equip " .. link .. "|c006969FF. Passing on item.|r");
+			return;
+		end
 		iString = CEPGP_getItemString(link);
 		_G["CEPGP_respond"]:Show();
 		_G["CEPGP_respond_texture"]:SetTexture(tex);
@@ -1290,29 +1555,82 @@ function CEPGP_callItem(id, gp)
 end
 
 function CEPGP_checkVersion(message)
-	local build = string.sub(message, string.find(message, " " )+1); --The whole message, but bits get taken off to form the major, minor and build
+	local build = string.sub(message, string.find(message, ";")+1); --The whole message, but bits get taken off to form the major, minor and build
+	build = string.sub(build, string.find(build, ";")+1);
 	local major = string.sub(build, 0, string.find(build, "%.")-1);
 	build = string.sub(build, string.len(major)+2);
 	local minor = string.sub(build, 0, string.find(build, "%.")-1);
-	build = string.sub(build, string.find(build, "%.")+1, string.len(minor)+2);
+	build = string.sub(build, string.find(build, "%.")+1);
 	
 	--Current build information
 	local curBuild = CEPGP_VERSION;
 	local curMajor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
-	curBuild = string.sub(curBuild, string.len(major)+2);
+	curBuild = string.sub(curBuild, string.len(curMajor)+2);
 	local curMinor = string.sub(curBuild, 0, string.find(curBuild, "%.")-1);
-	curBuild = string.sub(curBuild, string.find(curBuild, "%.")+1, string.len(minor)+2);
-	outMessage = "Your addon is out of date. Version " .. major .. "." .. minor .. "." .. build .. " is now available for download at https://github.com/Alumian/CEPGP-Retail"
+	curBuild = string.sub(curBuild, string.find(curBuild, "%.")+1);
+	
+	outMessage = "Ваша версия устарела. Версия  " .. major .. "." .. minor .. "." .. build .. " теперь доступна для скачивания в Дискорде"
 	if not CEPGP_VERSION_NOTIFIED then
-		if major > curMajor then 
+		if tonumber(major) > tonumber(curMajor) then 
 			CEPGP_print(outMessage);
 			CEPGP_VERSION_NOTIFIED = true;
-		elseif major == curMajor and minor > curMinor then
+		elseif tonumber(major) == tonumber(curMajor) and tonumber(minor) > tonumber(curMinor) then
 			CEPGP_print(outMessage);
 			CEPGP_VERSION_NOTIFIED = true;
-		elseif major == curMajor and minor == curMinor and build > curBuild then
+		elseif tonumber(major) == tonumber(curMajor) and tonumber(minor) == tonumber(curMinor) and tonumber(build) > tonumber(curBuild) then
 			CEPGP_print(outMessage);
 			CEPGP_VERSION_NOTIFIED = true;
 		end
+	end
+end
+
+function CEPGP_split(msg)
+	local args = {};
+	local count = 1;
+	for i in (msg .. ";"):gmatch("([^;]*);") do
+		args[count] = i;
+		count = count + 1;
+	end
+	return args;
+end
+
+function CEPGP_canEquip(slot)
+	local _, class = UnitClass("player");
+	local temp = string.sub(class, 2, string.len(class));
+	class = string.sub(class, 1, 1) .. string.lower(temp);
+	if CEPGP_tContains(CEPGP_classes[class], slot) then return true; end
+	return false;
+end
+
+function CEPGP_itemExists(id)
+	if not id or not tonumber(id) then return false; end
+	if C_Item.DoesItemExistByID(tonumber(id)) then
+		return true;
+	else
+		return false;
+	end
+end
+
+function CEPGP_getReportChannel(channel)
+	local channels = {"SAY","YELL","PARTY","RAID","GUILD","OFFICER"};
+	for k, v in pairs(channels) do
+		if string.upper(channel) == v then
+			return string.upper(channel);
+		end
+	end
+	for i = 4, C_ChatInfo.GetNumActiveChannels() do
+		if select(2, GetChannelName(i)) == channel then
+			return i;
+		end
+	end
+	CEPGP_print("Couldn't post to channel \"" .. channel .. "\". Please update your reporting channel in CEPGP options.");
+end
+
+function CEPGP_sendChatMessage(msg, channel)
+	if not msg then return; end
+	if tonumber(CEPGP_getReportChannel(channel)) then
+		SendChatMessage(msg, "CHANNEL", CEPGP_LANGUAGE, CEPGP_getReportChannel(channel));
+	else
+		SendChatMessage(msg, channel, CEPGP_LANGUAGE);
 	end
 end
