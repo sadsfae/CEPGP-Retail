@@ -44,3 +44,11 @@ To install:
   3. Rename the extracted folder from cepgp-retail-master to CEPGP (Ensure that the folder name is in FULL CAPITALS)
 
 Author: Alumian
+
+## Development
+
+The addon is linted with [selene](https://github.com/Kampfkarren/selene). Run it locally to check your changes:
+
+    selene . --allow-warnings
+
+`selene.toml` points selene at `wow.toml`, which declares the WoW API and addon globals so the linter knows about them. The same command runs on every push and pull request.

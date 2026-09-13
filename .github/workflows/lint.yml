@@ -1,0 +1,26 @@
+name: Lua lint
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  selene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install selene
+        run: |
+          curl -sSL -o /tmp/selene.zip https://github.com/Kampfkarren/selene/releases/download/0.31.0/selene-0.31.0-linux.zip
+          unzip -o /tmp/selene.zip -d /tmp
+          sudo install -m 0755 /tmp/selene /usr/local/bin/selene
+
+      - name: Lint
+        # Fail on errors (undefined globals, syntax, std misuse); report
+        # legacy warnings (unused vars, shadowing) without blocking for now.
+        run: selene . --allow-warnings
