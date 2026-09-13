@@ -17,6 +17,7 @@ jobs:
       - name: Install selene
         run: |
           curl -sSL -o /tmp/selene.zip https://github.com/Kampfkarren/selene/releases/download/0.31.0/selene-0.31.0-linux.zip
+          echo "dac452422747999ec4919bbb8bb52992b66aae533b60022bf005669de8616671  /tmp/selene.zip" | sha256sum -c -
           unzip -o /tmp/selene.zip -d /tmp
           sudo install -m 0755 /tmp/selene /usr/local/bin/selene
 
